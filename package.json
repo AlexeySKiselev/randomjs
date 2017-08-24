@@ -1,0 +1,14 @@
+{
+  "name": "randomjs",
+  "version": "1.0.0",
+  "description": "Random numbers and Distributions generation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "random"
+  ],
+  "author": "Alexey S. Kiselev",
+  "license": "ISC"
+}
