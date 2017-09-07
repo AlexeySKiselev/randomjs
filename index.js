@@ -33,3 +33,9 @@ RandomJS.prototype.help = function(){
 };
 
 module.exports = new RandomJS();
+
+// TODO: Generators
+// TODO: Analysis
+// TODO: Regression
+// TODO: Prediction
+// TODO: Shuffle
