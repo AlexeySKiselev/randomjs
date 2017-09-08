@@ -1,36 +1,46 @@
 /**
  * Created by Alexey S. Kiselev
  */
+// @flow
 
-var fs = require('fs');
+let fs = require('fs');
 
-function RandomJS(){
-    var self = this;
-    this.random = {};
-    this.distribution = {};
-    fs.readdirSync('./core/random').forEach(function(file) {
-        Object.defineProperty(self.random, file.substr(0,file.length-3),{
-            __proto__: null,
-            get: function(){
-                return require('./core/random/' + file);
-            }
+class RandomJS {
+    constructor(): void {
+        this.random = {};
+        this.distribution = {};
+        fs.readdirSync(__dirname + '/core/random').forEach((file: string): void => {
+            /**
+             *  Add a "random" method which contains different distribution methods
+             *  @return float number correspond to distribution
+             */
+            Object.defineProperty(this.random, file.slice(0,-3),{
+                __proto__: null,
+                get: () => {
+                    return require(__dirname + '/core/random/' + file);
+                }
+            });
+            /**
+             * Add a "distribution" method which contains different distribution methods
+             *  @return array contains float numbers correspond to distribution
+             */
+            Object.defineProperty(this.distribution, file.slice(0,-3),{
+                __proto__: null,
+                get: () => {
+                    return require(__dirname + '/core/distribution/' + file);
+                }
+            });
         });
-        Object.defineProperty(self.distribution, file.substr(0,file.length-3),{
-            __proto__: null,
-            get: function(){
-                return require('./core/distribution/' + file);
-            }
+    }
+
+    help(): void {
+        let help = require('./core/help');
+        console.log('Available Distribution methods:');
+        Object.keys(help).forEach((method: string): void => {
+            console.log(method + ': ' + help[method]);
         });
-    });
+    }
 }
-
-RandomJS.prototype.help = function(){
-    var help = require('./core/help');
-    console.log('Available Distribution methods:');
-    Object.keys(help).forEach(function(method){
-        console.log(method + ': ' + help[method]);
-    });
-};
 
 module.exports = new RandomJS();
 

@@ -2,7 +2,9 @@
  * Created by Alexey S. Kiselev
  */
 
-function normal(max){
+// @flow
+
+function normal(max: number): number{
     return Math.random()*max;
 }
 

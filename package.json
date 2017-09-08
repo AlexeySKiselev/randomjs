@@ -1,18 +1,30 @@
 {
   "name": "randomjs",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Random numbers and Distributions generation",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "babel-node test.js",
+    "lint": "eslint --config .eslintrc.json ./",
+    "build:node": "gulp build:node --watch"
   },
   "keywords": [
     "random"
   ],
-  "author": "Alexey S. Kiselev",
+  "author": "Alexey S. Kiselev <alexeys.kiselev@yahoo.com>",
   "license": "ISC",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-flow": "^6.23.0",
     "eslint": "^4.6.1",
-    "flow-bin": "^0.54.1"
+    "eslint-plugin-flowtype": "^2.35.1",
+    "flow-bin": "^0.54.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-flowtype": "^1.0.0",
+    "gulp-replace-path": "^0.4.0"
   }
 }

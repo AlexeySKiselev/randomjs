@@ -1,7 +1,7 @@
-/**
+/** Tests
  * Created by Alexey on 24.08.2017.
  */
 
-var randomjs = require('./index');
+let randomjs = require('./lib/index');
 
-console.log(randomjs.random.normal(110));
+console.log('Normal Distribution:', randomjs.random.normal(110));
