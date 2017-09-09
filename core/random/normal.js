@@ -4,19 +4,21 @@
  */
 
 // @flow
-let uniform = require('./uniform');
+let uniform: (min: number, max: number) => number = require('./uniform');
 
 function normal(mu: number, sigma: number): number {
-    let X1, U1, U2, W, mult;
+    let U1: number,
+        U2: number,
+        W: number,
+        mult: number;
     do {
         U1 = uniform(-1, 1);
         U2 = uniform(-1, 1);
         W = Math.pow(U1, 2) + Math.pow(U2, 2);
     } while(W >= 1 || W === 0);
     mult = Math.sqrt((-2*Math.log(W))/W);
-    X1 = U1 * mult;
 
-    return mu + sigma * X1;
+    return mu + sigma * U1 * mult;
 }
 
 module.exports = normal;

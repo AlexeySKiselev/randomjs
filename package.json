@@ -1,10 +1,10 @@
 {
   "name": "randomjs",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "babel-node test.js",
+    "test": "babel-node test/test.js",
     "lint": "eslint --config .eslintrc.json ./",
     "build:node": "gulp build:node --watch"
   },
