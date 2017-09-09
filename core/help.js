@@ -6,5 +6,6 @@
 module.exports = {
     'uniform': 'Uniform Distribution',
     'normal': 'Gaussian Distribution',
-    'bernoulli': 'Bernoulli Distribution'
+    'bernoulli': 'Bernoulli Distribution',
+    'binomial': 'Binomial Distribution'
 };

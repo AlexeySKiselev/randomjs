@@ -1,6 +1,7 @@
 /**
  * Bernoulli Distribution
  * @param p: number (0 <= p <= 1) - Probability of success
+ * @param count: number - Count of values in returned array
  * @returns an array contains Bernoulli Distributed 0 or 1 based on p parameter
  * Created by Alexey S. Kiselev
  */
