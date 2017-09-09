@@ -4,5 +4,6 @@
  */
 
 module.exports = {
+    'uniform': 'Uniform Distribution',
     'normal': 'Gaussian Distribution'
 };

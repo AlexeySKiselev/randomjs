@@ -4,4 +4,5 @@
 
 let randomjs = require('./lib/index');
 
-console.log('Normal Distribution:', randomjs.random.normal(110));
+console.log('Uniform Distribution:', randomjs.random.uniform(1, 2));
+console.log('Normal Distribution:', randomjs.random.normal(0, 1));
