@@ -1,6 +1,9 @@
 /**
  * Uniform Distribution
- * Created by Alexey S. Kiselev on 09.09.2017.
+ * @param min: number - Minimal value of Uniform Distribution
+ * @param max: number - Maximum value of Uniform Distribution
+ * @returns Uniform Distributed value based on parameters
+ * Created by Alexey S. Kiselev
  */
 // @flow
 

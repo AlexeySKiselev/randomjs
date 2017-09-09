@@ -1,5 +1,8 @@
 /**
  * Normal Gaussian Distribution
+ * @param mu: number - Mu value of Normal Distribution
+ * @param sigma: number - Sigma value of Normal Distribution
+ * @returns Normal Distributed value based on parameters
  * Created by Alexey S. Kiselev
  */
 

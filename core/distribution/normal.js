@@ -4,7 +4,7 @@
  * @param sigma: number - Sigma value of Normal Distribution
  * @param count: number - Count of values in returned array
  * @returns an array contains N values of Normal Distributed values based on parameters
- * Created by Alexey S. Kiselev on 09.09.2017.
+ * Created by Alexey S. Kiselev
  */
 
 // @flow
