@@ -1,3 +1,4 @@
+// @flow
 /**
  * Poisson Distribution (Knuth algorithm)
  * @parap lambda: number (lambda > 0)
@@ -5,12 +6,16 @@
  * Created by Alexey S. Kiselev
  */
 
-// @flow
-
 function poisson(lambda: number): number {
-    if(parseInt(lambda) <= 0) {
-        throw new Error('lambda must an integer number and lambda > 0');
+    if(Math.floor(lambda) !== lambda){
+        lambda = Math.floor(lambda);
+        console.log('Poisson distribution: Parameter "lambda" rounded to minimum integer value');
     }
+
+    if(lambda <= 0) {
+        throw new Error('Poisson distribution: Parameter "lambda" must be an integer number and lambda > 0');
+    }
+
     let res: number = 0,
         p: number = 1,
         L: number = Math.exp(-lambda);
