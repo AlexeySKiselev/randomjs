@@ -14,7 +14,7 @@ function gamma(a: number, b: number, count: number): Array<number> {
     }
 
     if(count > 10000){
-        throw new Error('Array is too big. Try to use ".generate.binomial(' + a + ', ' + b + ', ' + count + ')" method');
+        throw new Error('Array is too big. Try to use ".generate.gamma(' + a + ', ' + b + ', ' + count + ')" method');
     }
 
     if(Math.floor(b) !== b){
