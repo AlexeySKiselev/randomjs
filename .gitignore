@@ -1,11 +1,11 @@
 # Node Modules
-node_modules
+node_modules/
 
 # IDE environment
-.idea
+.idea/
 
 # lib Folder - This folder contains bundled files
-lib
+lib/
 
 # Test folder
-test
+test/

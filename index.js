@@ -42,7 +42,7 @@ class RandomJS {
     }
 }
 
-module.exports = new RandomJS();
+export default new RandomJS();
 
 // TODO: Generators
 // TODO: Analysis

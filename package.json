@@ -1,12 +1,16 @@
 {
   "name": "randomjs",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
     "test": "babel-node test/test.js",
     "lint": "eslint --config .eslintrc.json ./",
     "build:node": "gulp build:node --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexeySKiselev/randomjs"
   },
   "keywords": [
     "random"
