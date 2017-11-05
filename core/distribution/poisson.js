@@ -1,3 +1,4 @@
+// @flow
 /**
  * Poisson Distribution (Knuth algorithm)
  * @parap lambda: number (lambda > 0)
@@ -5,8 +6,6 @@
  * @returns an array of Poisson Distributed integer values
  * Created by Alexey S. Kiselev
  */
-
-// @flow
 
 function poissonNumber(lambda: number): number {
     let res: number = 0,
@@ -27,6 +26,7 @@ function poisson(lambda: number, count: number): Array<number> {
     if(lambda <= 0) {
         throw new Error('lambda must an integer number and lambda > 0');
     }
+
     let poissonArray: Array<number> = [];
     for(let i: number = 0; i < count; i += 1){
         poissonArray[i] = poissonNumber(lambda);

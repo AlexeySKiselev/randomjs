@@ -1,3 +1,4 @@
+// @flow
 /**
  * Normal Gaussian Distribution
  * @param mu: number - Mu value of Normal Distribution
@@ -6,7 +7,6 @@
  * Created by Alexey S. Kiselev
  */
 
-// @flow
 let uniform: (min: number, max: number) => number = require('./uniform');
 
 function normal(mu: number, sigma: number): number {

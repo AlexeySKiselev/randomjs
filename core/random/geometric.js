@@ -1,11 +1,10 @@
+// @flow
 /**
  * Geometric Distribution
  * @param p: number (0 <= p <= 1) - Probability of success
  * @returns Geometric Distributed Value
  * Created by Alexey S. Kiselev
  */
-
-// @flow
 
 function geometric(p: number): number {
     let res: number = 1;

@@ -1,3 +1,4 @@
+// @flow
 /**
  * Normal Distribution
  * @param mu: number - Mu value of Normal Distribution
@@ -6,8 +7,6 @@
  * @returns an array contains N values of Normal Distributed values based on parameters
  * Created by Alexey S. Kiselev
  */
-
-// @flow
 
 let uniform: (min: number, max: number) => number = require('../random/uniform');
 

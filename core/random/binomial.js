@@ -1,3 +1,4 @@
+// @flow
 /**
  * Binomial Distribution
  * @param n: number - Number of Independent Bernoulli trials
@@ -5,8 +6,6 @@
  * @returns Binomial Distributed number
  * Created by Alexey S. Kiselev
  */
-
-// @flow
 
 function binomial(n: number, p: number): number {
     let res: number = 0;

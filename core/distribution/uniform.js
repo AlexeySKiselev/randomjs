@@ -1,3 +1,4 @@
+// @flow
 /**
  * Uniform distribution
  * @param min: number - Minimal value of Uniform Distribution
@@ -7,7 +8,6 @@
  * Created by Alexey S. Kiselev
  */
 
-// @flow
 let uniformNumber: (min: number, max: number) => number = require('../random/uniform');
 
 function uniform(min: number = 0, max: number = 1, count: number = 10): Array<number> {
