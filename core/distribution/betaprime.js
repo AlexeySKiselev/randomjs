@@ -19,16 +19,6 @@ function betaprime(a: number, b: number, count: number): Array<number> {
         throw new Error('Array is too big. Try to use ".generate.beta(' + a + ', ' + b + ', ' + count + ')" method');
     }
 
-    if(Math.floor(b) !== b){
-        b = Math.floor(b);
-        console.log('Beta distribution: Parameter "b" rounded to minimum integer value');
-    }
-
-    if(Math.floor(a) !== a){
-        a = Math.floor(a);
-        console.log('Beta distribution: Parameter "a" rounded to minimum integer value');
-    }
-
     if(a <= 0 || b <= 0){
         throw new Error('Parameters "a" and "b" must be positive');
     }

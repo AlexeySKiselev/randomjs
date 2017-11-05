@@ -42,10 +42,12 @@ class RandomJS {
     }
 }
 
-export default new RandomJS();
+module.exports = new RandomJS();
 
+// TODO: Create a check-values external function
 // TODO: Generators
 // TODO: Analysis
 // TODO: Regression
 // TODO: Prediction
 // TODO: Shuffle
+// TODO: Promise-like functions

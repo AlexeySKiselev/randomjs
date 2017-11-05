@@ -15,11 +15,6 @@ function negativeBinomial(r: number, p: number): number {
         throw new Error('Negative Binomial distribution: parameter "p" must be in range [0, 1]');
     }
 
-    if(Math.floor(r) !== r){
-        r = Math.floor(r);
-        console.log('Negative Binomial distribution: parameter "p" rounded to minimum integer value');
-    }
-
     if(r <= 0){
         throw new Error('Negative Binomial distribution: parameter "r" must be a positive integer');
     }

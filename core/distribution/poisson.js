@@ -24,7 +24,7 @@ function poisson(lambda: number, count: number): Array<number> {
         throw new Error('Array is too small. Try to use ".random.poisson(' + lambda + ')" method');
     if(count > 10000)
         throw new Error('Array is too big. Try to use ".generate.poisson(' + lambda + ', ' + count + ')" method');
-    if(parseInt(lambda) <= 0) {
+    if(lambda <= 0) {
         throw new Error('lambda must an integer number and lambda > 0');
     }
     let poissonArray: Array<number> = [];

@@ -21,11 +21,6 @@ function erlang(a: number, m: number, count: number): Array<number> {
         throw new Error('Erlang distribution: parameter "a" must be greater then zero');
     }
 
-    if(Math.floor(m) !== m){
-        m = Math.floor(m);
-        console.log('Erlang distribution: parameter "m" rounded to minimum integer value');
-    }
-
     if(m < 0){
         throw new Error('Erlang distribution: parameter "m" must be a positive integer');
     }

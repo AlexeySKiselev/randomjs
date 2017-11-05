@@ -8,10 +8,6 @@
  */
 
 function gamma(a: number, b: number): number {
-    if(Math.floor(b) !== b){
-        b = Math.floor(b);
-        console.log('Gamma distribution: Parameter "b" rounded to minimum integer value');
-    }
     if(a <= 0 || b <= 0){
         throw new Error('Parameters "a" and "b" must be positive');
     }

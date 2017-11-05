@@ -9,11 +9,6 @@
 let chiSquare: (n: number) => number = require('./chisquare');
 
 function chi(n: number): number {
-    if(Math.floor(n) !== n) {
-        n = Math.floor(n);
-        console.log('Chi Square Distribution: parameter "n" rounded to minimum integer value');
-    }
-
     if(n <= 0){
         throw new Error('Chi Square Distribution: parameter "n" must be a positive integer');
     }

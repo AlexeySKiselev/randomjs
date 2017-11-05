@@ -7,11 +7,6 @@
  */
 
 function poisson(lambda: number): number {
-    if(Math.floor(lambda) !== lambda){
-        lambda = Math.floor(lambda);
-        console.log('Poisson distribution: Parameter "lambda" rounded to minimum integer value');
-    }
-
     if(lambda <= 0) {
         throw new Error('Poisson distribution: Parameter "lambda" must be an integer number and lambda > 0');
     }
