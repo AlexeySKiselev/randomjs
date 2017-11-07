@@ -33,7 +33,7 @@ class RandomJS {
                 }
             });
         });*/
-        fs.readdirSync(__dirname + '/core/methods').forEach((file: string): void => {
+        fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
             /**
              *  Add a "random" method which contains different distribution methods
              *  Uses a factory pattern for creating instances of distributions classes
@@ -42,7 +42,7 @@ class RandomJS {
             Object.defineProperty(this, file.slice(0,-3),{
                 __proto__: null,
                 get: () => {
-                    return (...params): Factory => {
+                    return (...params) => {
                         return new Factory(file, ...params);
                     };
                 }

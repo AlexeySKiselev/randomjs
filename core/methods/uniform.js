@@ -62,9 +62,11 @@ class Uniform {
      * @returns {string}
      */
     toString() {
-        return `Continuous Uniform Distribution
-                Usage: randomjs.uniform(${this.min}, ${this.max}).random()
-                `;
+        let info = [
+            'Continuous Uniform Distribution',
+            `Usage: randomjs.uniform(${this.min}, ${this.max}).random()`
+        ];
+        return info.join('\n');
     }
 
     /**
@@ -73,7 +75,7 @@ class Uniform {
      * For calculating real mean value use analyzer
      */
     get mean(): number {
-        return (this.mix + this.max) / 2;
+        return (this.min + this.max) / 2;
     }
 
     /**
@@ -82,7 +84,7 @@ class Uniform {
      * For calculating real median value use analyzer
      */
     get median(): number {
-        return (this.mix + this.max) / 2;
+        return (this.min + this.max) / 2;
     }
 
     /**
