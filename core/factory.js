@@ -78,7 +78,7 @@ interface IRandomFactory {
 }
 
 class RandomFactory implements IRandomFactory {
-    constructor(method: string, ...params) {
+    constructor(method: string, ...params): void {
         let Method = require(__dirname + '/methods/' + method);
         this.method = new Method(...params);
         /**
@@ -99,7 +99,7 @@ class RandomFactory implements IRandomFactory {
         });
     }
 
-    random() {
+    random(): number {
         return new Promise((resolve, reject) => {
             if(this.isError()){
                 reject(this.isError());
@@ -109,14 +109,14 @@ class RandomFactory implements IRandomFactory {
         });
     }
 
-    randomSync() {
+    randomSync(): number {
         if(this.isError()){
             throw new Error(this.isError().error);
         } else
             return this.method.random();
     }
 
-    distribution(n: number = 10, ...distParams) {
+    distribution(n: number = 10, ...distParams): Array<number> {
         return new Promise((resolve, reject) => {
             if(this.isError()){
                 reject(this.isError());
@@ -126,22 +126,22 @@ class RandomFactory implements IRandomFactory {
         });
     }
 
-    distributionSync(n: number = 10, ...distParams) {
+    distributionSync(n: number = 10, ...distParams): Array<number> {
         if(this.isError()){
             throw new Error(this.isError().error);
         } else
             return this.method.distribution(n, ...distParams);
     }
 
-    isError() {
+    isError(): boolean | {error: string} {
         return this.method.isError();
     }
 
-    refresh(...newParams) {
+    refresh(...newParams): void {
         this.method = this.method.refresh(...newParams);
     }
 
-    toString() {
+    toString(): string {
         return this.method.toString();
     }
 }
