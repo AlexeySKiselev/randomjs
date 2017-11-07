@@ -36,12 +36,13 @@ class RandomJS {
         fs.readdirSync(__dirname + '/core/methods').forEach((file: string): void => {
             /**
              *  Add a "random" method which contains different distribution methods
+             *  Uses a factory pattern for creating instances of distributions classes
              *  @returns Object corresponds to distribution
              */
             Object.defineProperty(this, file.slice(0,-3),{
                 __proto__: null,
                 get: () => {
-                    return (...params) => {
+                    return (...params): Factory => {
                         return new Factory(file, ...params);
                     };
                 }

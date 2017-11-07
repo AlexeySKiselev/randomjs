@@ -17,7 +17,7 @@ class Normal {
         return this.mu;
     }
 
-    distribution(): Array<number> {
+    distribution(n: number): Array<number> {
         return [this.sigma];
     }
 
