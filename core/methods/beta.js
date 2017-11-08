@@ -1,7 +1,7 @@
 // @flow
 /**
  * Beta Distribution
- * This is discreet distribution
+ * This is continuous distribution
  * https://en.wikipedia.org/wiki/Beta_distribution
  * @param alpha: number - alpha > 0, alpha must be integer
  * @param beta: number - beta > 0, beta must be integer
@@ -46,7 +46,7 @@ class Beta {
      * For generating array I am not going to use .random method
      * For performance I am going to create another instance of Gamma class
      * @param n: number - Number of elements in resulting array, n > 0
-     * @returns Array<number> - normal distributed numbers
+     * @returns Array<number> - Beta distributed numbers
      */
     distribution(n: number): Array<number> {
         let betaArray: Array<number> = [],
@@ -72,10 +72,10 @@ class Beta {
      */
     isError(): boolean | {error: string} {
         if(this.alpha <= 0){
-            return {error: 'Parameter "alpha" must be positive'};
+            return {error: 'Beta distribution: Parameter "alpha" must be positive'};
         }
         if(this.beta <= 0){
-            return {error: 'Parameter "beta" must be positive'};
+            return {error: 'Beta distribution: Parameter "beta" must be positive'};
         }
         return false;
     }

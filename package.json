@@ -1,6 +1,6 @@
 {
   "name": "randomjs",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
@@ -18,7 +18,9 @@
     "uniform",
     "normal",
     "gaussian",
-    "bernoulli"
+    "bernoulli",
+    "gamma",
+    "beta"
   ],
   "author": "Alexey S. Kiselev <alexeys.kiselev@yahoo.com>",
   "license": "ISC",
