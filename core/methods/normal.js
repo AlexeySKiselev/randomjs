@@ -52,9 +52,6 @@ class Normal {
      * @returns Array<number> - normal distributed numbers
      */
     distribution(n: number): Array<number> {
-        if(n <= 1){
-            n = 1;
-        }
         let normalArray: Array<number> = [],
             U1: number,
             U2: number,

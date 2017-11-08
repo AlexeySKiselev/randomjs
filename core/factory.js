@@ -117,6 +117,9 @@ class RandomFactory implements IRandomFactory {
     }
 
     distribution(n: number = 10, ...distParams): Array<number> {
+        if(n < 1) {
+            n = 1;
+        }
         return new Promise((resolve, reject) => {
             if(this.isError()){
                 reject(this.isError());
@@ -127,6 +130,9 @@ class RandomFactory implements IRandomFactory {
     }
 
     distributionSync(n: number = 10, ...distParams): Array<number> {
+        if(n < 1) {
+            n = 1;
+        }
         if(this.isError()){
             throw new Error(this.isError().error);
         } else

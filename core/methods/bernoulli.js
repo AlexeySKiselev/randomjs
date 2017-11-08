@@ -31,8 +31,6 @@ class Bernoulli {
      * @returns Array<number> - Bernoulli distributed numbers
      */
     distribution(n: number): Array<0 | 1> {
-        if(n <= 1)
-            n = 1;
         let bernoulliArray: Array<0 | 1> = [];
         for(let i: number = 0; i < n; i += 1){
             bernoulliArray[i] = this.random();
