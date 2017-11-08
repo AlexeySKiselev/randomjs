@@ -119,7 +119,7 @@ class Normal {
      * Information only
      * For calculating real mean value use analyzer
      */
-    get mean() {
+    get mean(): number {
         return this.mu;
     }
 
@@ -128,7 +128,7 @@ class Normal {
      * Information only
      * For calculating real median value use analyzer
      */
-    get median() {
+    get median(): number {
         return this.mu;
     }
 
@@ -137,7 +137,7 @@ class Normal {
      * Information only
      * For calculating real mode value use analyzer
      */
-    get mode() {
+    get mode(): number {
         return this.mu;
     }
 
@@ -146,7 +146,7 @@ class Normal {
      * Information only
      * For calculating real variance value use analyzer
      */
-    get variance() {
+    get variance(): number {
         return Math.pow(this.sigma, 2);
     }
 
@@ -155,7 +155,7 @@ class Normal {
      * Information only
      * For calculating real skewness value use analyzer
      */
-    get skewness() {
+    get skewness(): number {
         return 0;
     }
 
@@ -164,7 +164,7 @@ class Normal {
      * Information only
      * For calculating real entropy value use analyzer
      */
-    get entropy() {
+    get entropy(): number {
         return Math.log(2* Math.PI * Math.E * this.variance) / 2;
     }
 
@@ -172,7 +172,7 @@ class Normal {
      * Fisher information matrix
      * Information only
      */
-    get fisher() {
+    get fisher(): Array<Array<number>> {
         return [[(1 / this.variance), 0], [0, (0.5 / Math.pow(this.variance, 2))]];
     }
 
@@ -180,7 +180,7 @@ class Normal {
      * All parameters of distribution in one object
      * Information only
      */
-    get parameters() {
+    get parameters(): {} {
         return {
             mean: this.mean,
             median: this.median,
