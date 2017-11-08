@@ -9,3 +9,6 @@ lib/
 
 # Test folder
 test/
+
+# Log files
+/*.log
