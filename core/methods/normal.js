@@ -130,7 +130,7 @@ class Normal {
     }
 
     /**
-     * Mode value - value, which appears most offen
+     * Mode value - value, which appears most often
      * Information only
      * For calculating real mode value use analyzer
      */
