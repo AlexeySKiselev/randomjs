@@ -144,7 +144,7 @@ class RandomFactory implements IRandomFactory {
     }
 
     refresh(...newParams): void {
-        this.method = this.method.refresh(...newParams);
+        this.method.refresh(...newParams);
     }
 
     toString(): string {
