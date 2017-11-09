@@ -44,8 +44,8 @@ class Binomial {
 
     /**
      * Error handling
-     * So, there is no situation, when an error can occurs
-     * In this case method simply returns "false"
+     * Parameter "n" must be positive integer
+     * Parameter "p" must be 0 <= p <= 1
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
