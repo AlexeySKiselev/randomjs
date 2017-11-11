@@ -108,7 +108,7 @@ class Poisson {
     /**
      * Fisher information
      * Information only
-     * For calculating real skewness value use analyzer
+     * For calculating real fisher information value use analyzer
      */
     get fisher(): number {
         return 1 / this.lambda;
