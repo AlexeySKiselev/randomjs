@@ -1,12 +1,13 @@
 {
   "name": "randomjs",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "babel-node test/test.js",
+    "mocha": "node node_modules/mocha/bin/mocha test/test.js",
     "lint": "eslint --config .eslintrc.json ./",
-    "build:node": "gulp build:node --watch"
+    "build:node": "gulp build:node --watch",
+    "test": "node node_modules/npm-run-all/bin/run-s build:node mocha"
   },
   "repository": {
     "type": "git",
@@ -33,13 +34,17 @@
     "babel-eslint": "^7.2.3",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-flow": "^6.23.0",
+    "chai": "^4.1.2",
     "eslint": "^4.6.1",
     "eslint-plugin-flowtype": "^2.35.1",
+    "eslint-plugin-mocha": "^4.11.0",
     "flow-bin": "^0.54.1",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-flowtype": "^1.0.0",
-    "gulp-replace-path": "^0.4.0"
+    "gulp-replace-path": "^0.4.0",
+    "mocha": "^4.0.1",
+    "npm-run-all": "^4.1.2"
   }
 }

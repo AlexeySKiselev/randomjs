@@ -40,6 +40,9 @@ class Uniform {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if((!this.min && this.min !== 0) || (!this.max && this.max !== 0)) {
+            return {error: 'Uniform distribution: you should point "min" and "max" values'};
+        }
         if(this.min === this.max) {
             return {error: 'Uniform distribution: min and max values can\'t be the same'};
         }
