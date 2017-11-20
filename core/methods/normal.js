@@ -12,8 +12,8 @@ let Uniform = require('./uniform');
 
 class Normal {
     constructor(mu: number, sigma: number): void {
-        this.mu = mu;
-        this.sigma = sigma;
+        this.mu = Number(mu);
+        this.sigma = Number(sigma);
         /**
          * Create an instance of Uniform class
          * Use this class for generation random normal distributed numbers
@@ -85,6 +85,10 @@ class Normal {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if((!this.mu && this.mu !== 0) || (!this.sigma && this.sigma !== 0)) {
+            return {error: 'Normal distribution: you should point "mu" and "sigma" numerical values'};
+        }
+
         return false;
     }
 
@@ -95,8 +99,8 @@ class Normal {
      * This method does not return values
      */
     refresh(newMu: number, newSigma: number): void {
-        this.mu = newMu;
-        this.sigma = newSigma;
+        this.mu = Number(newMu);
+        this.sigma = Number(newSigma);
     }
 
     /**
