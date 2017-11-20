@@ -7,5 +7,5 @@ node_modules/
 # lib Folder - This folder contains bundled files
 lib/
 
-# Test folder
-test/
+# Log files
+/*.log
