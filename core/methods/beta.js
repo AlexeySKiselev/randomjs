@@ -14,8 +14,8 @@ let Gamma = require('./gamma'),
 
 class Beta {
     constructor(alpha: number, beta: number): void {
-        this.alpha = alpha;
-        this.beta = beta;
+        this.alpha = Number(alpha);
+        this.beta = Number(beta);
         // Create an instance of Gamma distribution class for alpha
         this.gammaA = new Gamma(this.alpha, 1);
         // Create an instance of Gamma distribution class for beta
@@ -71,6 +71,9 @@ class Beta {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.alpha || !this.beta) {
+            return {error: 'Beta distribution: you should point "alpha" and "beta" positive numerical values'};
+        }
         if(this.alpha <= 0){
             return {error: 'Beta distribution: Parameter "alpha" must be positive'};
         }
@@ -87,8 +90,8 @@ class Beta {
      * This method does not return values
      */
     refresh(newAlpha: number, newBeta: number): void {
-        this.alpha = newAlpha;
-        this.beta = newBeta;
+        this.alpha = Number(newAlpha);
+        this.beta = Number(newBeta);
     }
 
     /**
