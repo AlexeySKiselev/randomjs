@@ -10,7 +10,7 @@
 
 class Geometric {
     constructor(p: number): void {
-        this.successProb = p;
+        this.successProb = Number(p);
     }
 
     /**
@@ -44,6 +44,9 @@ class Geometric {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.successProb && this.successProb !== 0){
+            return {error: 'Geometric distribution: you should specify parameter "p" with numerical value'};
+        }
         if(this.successProb < 0 || this.successProb > 1) {
             return {error: 'Geometric distribution: parameter "p" (probability of success) must be 0 <= p <= 1'};
         }
@@ -56,7 +59,7 @@ class Geometric {
      * This method does not return values
      */
     refresh(newP: number): void {
-        this.successProb = newP;
+        this.successProb = Number(newP);
     }
 
     /**

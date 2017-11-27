@@ -10,7 +10,7 @@
 
 class Poisson {
     constructor(lambda: number): void {
-        this.lambda = lambda;
+        this.lambda = Number(lambda);
     }
 
     /**
@@ -47,6 +47,9 @@ class Poisson {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.lambda) {
+            return {error: 'Poisson distribution: you should point parameter "lambda" with numerical value'};
+        }
         if(this.lambda <= 0){
             return {error: 'Poisson distribution: parameter "lambda" must be positive integer'};
         }
@@ -59,7 +62,7 @@ class Poisson {
      * This method does not return values
      */
     refresh(newLambda: number): void {
-        this.lambda = newLambda;
+        this.lambda = Number(newLambda);
     }
 
     /**

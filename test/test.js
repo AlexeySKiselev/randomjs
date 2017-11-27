@@ -1105,3 +1105,337 @@ describe('Gamma distribution', () => {
         expect(countDiffs).to.be.at.least(300);
     });
 });
+
+// Geometric distribution
+describe('Geometric distribution', () => {
+    let Geometric = require('../lib/methods/geometric');
+    it('requires one numerical argument with 0 <= p <= 1', () => {
+        let zeroParams = () => {
+            let geometric = new Geometric();
+            if(geometric.isError())
+                throw new Error(geometric.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let geometric = new Geometric(0.5);
+            if(geometric.isError())
+                throw new Error(geometric.isError());
+        };
+        oneParam.should.not.throw(Error);
+
+        let badParams = () => {
+            let geometric = new Geometric('a');
+            if(geometric.isError())
+                throw new Error(geometric.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let geometric = new Geometric(-1);
+            if(geometric.isError())
+                throw new Error(geometric.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsGreat = () => {
+            let geometric = new Geometric(1.1);
+            if(geometric.isError())
+                throw new Error(geometric.isError());
+        };
+        badParamsGreat.should.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let geometric = new Geometric(0.6);
+        expect(geometric).to.have.property('random');
+        expect(geometric).to.respondsTo('random');
+        expect(geometric).to.have.property('distribution');
+        expect(geometric).to.respondsTo('distribution');
+        expect(geometric).to.have.property('refresh');
+        expect(geometric).to.respondsTo('refresh');
+        expect(geometric).to.have.property('isError');
+        expect(geometric).to.respondsTo('isError');
+    });
+    it('should have value for initial p = 0.6 equals to p = 0.7 after .refresh(0.7) method',() => {
+        let geometric = new Geometric(0.6);
+        geometric.successProb.should.equal(0.6);
+        geometric.refresh(0.7);
+        geometric.successProb.should.equal(0.7);
+    });
+    it('should have mean value for p = 0.6 equals to 1.66666..., but for p = 0.4 equals to 2.5',() => {
+        let geometric = new Geometric(0.6);
+        expect(geometric.mean).to.be.a('number');
+        expect(geometric.mean).to.be.closeTo(1.666, 0.002);
+        geometric.refresh(0.4);
+        expect(geometric.mean).to.be.a('number');
+        expect(geometric.mean).to.be.closeTo(2.5, 0.002);
+    });
+    it('should return few different values with 10 experiments', () => {
+        let geometric = new Geometric(0.6),
+            value1,
+            countRandoms = {};
+        for(let i = 0; i < 10; i += 1){
+            value1 = geometric.random();
+            expect(geometric.random()).to.be.a('number');
+            countRandoms[value1] = 1;
+        }
+        expect(Object.keys(countRandoms).length).to.be.at.least(2);
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let geometric = new Geometric(0.6),
+            randomArray = geometric.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.9;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(3);
+    });
+    it('should generate only integer values', () => {
+        let geometric = new Geometric(0.4),
+            randomArray = geometric.distribution(100),
+            correct = true;
+        for(let rand of randomArray) {
+            if(parseInt(rand) !== rand){
+                correct = false;
+                break;
+            }
+        }
+        expect(correct).to.be.equal(true);
+    });
+});
+
+// Negative Binomial distribution
+describe('Negative Binomial distribution', () => {
+    let NegativeBinomial = require('../lib/methods/negativebinomial');
+    it('requires two numerical arguments with n > 0 and 0 <= p <= 1', () => {
+        let zeroParams = () => {
+            let negativeBinomial = new NegativeBinomial();
+            if(negativeBinomial.isError())
+                throw new Error(negativeBinomial.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let negativeBinomial = new NegativeBinomial(0.5);
+            if(negativeBinomial.isError())
+                throw new Error(negativeBinomial.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let negativeBinomial = new NegativeBinomial('a', 'b');
+            if(negativeBinomial.isError())
+                throw new Error(negativeBinomial.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let negativeBinomial = new NegativeBinomial(-1, 0.5);
+            if(negativeBinomial.isError())
+                throw new Error(negativeBinomial.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsLess2 = () => {
+            let negativeBinomial = new NegativeBinomial(1, -1);
+            if(negativeBinomial.isError())
+                throw new Error(negativeBinomial.isError());
+        };
+        badParamsLess2.should.throw(Error);
+
+        let badParamsGreat = () => {
+            let negativeBinomial = new NegativeBinomial(2, 2);
+            if(negativeBinomial.isError())
+                throw new Error(negativeBinomial.isError());
+        };
+        badParamsGreat.should.throw(Error);
+
+        let twoParams =  () => {
+            let negativeBinomial = new NegativeBinomial(2, 0.5);
+            if(negativeBinomial.isError())
+                throw new Error(negativeBinomial.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let negativeBinomial = new NegativeBinomial(2, 0.6);
+        expect(negativeBinomial).to.have.property('random');
+        expect(negativeBinomial).to.respondsTo('random');
+        expect(negativeBinomial).to.have.property('distribution');
+        expect(negativeBinomial).to.respondsTo('distribution');
+        expect(negativeBinomial).to.have.property('refresh');
+        expect(negativeBinomial).to.respondsTo('refresh');
+        expect(negativeBinomial).to.have.property('isError');
+        expect(negativeBinomial).to.respondsTo('isError');
+    });
+    it('should have values for initial r = 1 and p = 0.6 equals to r = 2 and p = 0.7 after .refresh(2, 0.7) method',() => {
+        let negativeBinomial = new NegativeBinomial(1, 0.6);
+        negativeBinomial.numberFailures.should.equal(1);
+        negativeBinomial.successProb.should.equal(0.6);
+        negativeBinomial.refresh(2, 0.7);
+        negativeBinomial.numberFailures.should.equal(2);
+        negativeBinomial.successProb.should.equal(0.7);
+    });
+    it('should have mean value for r = 1 and p = 0.6 equals to 1.5, but for r = 2 and p = 0.4 equals to 1.33333...',() => {
+        let negativeBinomial = new NegativeBinomial(1, 0.6);
+        expect(negativeBinomial.mean).to.be.a('number');
+        expect(negativeBinomial.mean).to.be.closeTo(1.5, 0.002);
+        negativeBinomial.refresh(2, 0.4);
+        expect(negativeBinomial.mean).to.be.a('number');
+        expect(negativeBinomial.mean).to.be.closeTo(1.333, 0.002);
+    });
+    it('should return few different values with 10 experiments', () => {
+        let negativeBinomial = new NegativeBinomial(2, 0.6),
+            value1,
+            countRandoms = {};
+        for(let i = 0; i < 10; i += 1){
+            value1 = negativeBinomial.random();
+            expect(negativeBinomial.random()).to.be.a('number');
+            countRandoms[value1] = 1;
+        }
+        expect(Object.keys(countRandoms).length).to.be.at.least(2);
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let negativeBinomial = new NegativeBinomial(1, 0.5),
+            randomArray = negativeBinomial.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.9;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(3);
+    });
+    it('should generate only integer values', () => {
+        let negativeBinomial = new NegativeBinomial(2, 0.4),
+            randomArray = negativeBinomial.distribution(100),
+            correct = true;
+        for(let rand of randomArray) {
+            if(parseInt(rand) !== rand){
+                correct = false;
+                break;
+            }
+        }
+        expect(correct).to.be.equal(true);
+    });
+});
+
+// Poisson distribution
+describe('Poisson distribution', () => {
+    let Poisson = require('../lib/methods/poisson');
+    it('requires one numerical argument with lambda > 0', () => {
+        let zeroParams = () => {
+            let poisson = new Poisson();
+            if(poisson.isError())
+                throw new Error(poisson.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let poisson = new Poisson(0.5);
+            if(poisson.isError())
+                throw new Error(poisson.isError());
+        };
+        oneParam.should.not.throw(Error);
+
+        let badParams = () => {
+            let poisson = new Poisson('a');
+            if(poisson.isError())
+                throw new Error(poisson.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let poisson = new Poisson(-1);
+            if(poisson.isError())
+                throw new Error(poisson.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsLambdaToZero = () => {
+            let poisson = new Poisson(0);
+            if(poisson.isError())
+                throw new Error(poisson.isError());
+        };
+        badParamsLambdaToZero.should.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let poisson = new Poisson(2);
+        expect(poisson).to.have.property('random');
+        expect(poisson).to.respondsTo('random');
+        expect(poisson).to.have.property('distribution');
+        expect(poisson).to.respondsTo('distribution');
+        expect(poisson).to.have.property('refresh');
+        expect(poisson).to.respondsTo('refresh');
+        expect(poisson).to.have.property('isError');
+        expect(poisson).to.respondsTo('isError');
+    });
+    it('should have value for initial lambda = 1 equals to lambda = 2 after .refresh(2) method',() => {
+        let poisson = new Poisson(1);
+        poisson.lambda.should.equal(1);
+        poisson.refresh(2);
+        poisson.lambda.should.equal(2);
+    });
+    it('should have mean value equals to lambda',() => {
+        let poisson = new Poisson(1);
+        expect(poisson.mean).to.be.a('number');
+        expect(poisson.mean).to.be.closeTo(1, 0.002);
+        poisson.refresh(2);
+        expect(poisson.mean).to.be.a('number');
+        expect(poisson.mean).to.be.closeTo(2, 0.002);
+    });
+    it('should return few different values with 10 experiments', () => {
+        let poisson = new Poisson(2),
+            value1,
+            countRandoms = {};
+        for(let i = 0; i < 10; i += 1){
+            value1 = poisson.random();
+            expect(poisson.random()).to.be.a('number');
+            countRandoms[value1] = 1;
+        }
+        expect(Object.keys(countRandoms).length).to.be.at.least(2);
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let poisson = new Poisson(2),
+            randomArray = poisson.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.9;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(3);
+    });
+    it('should generate only integer values', () => {
+        let poisson = new Poisson(2),
+            randomArray = poisson.distribution(100),
+            correct = true;
+        for(let rand of randomArray) {
+            if(parseInt(rand) !== rand){
+                correct = false;
+                break;
+            }
+        }
+        expect(correct).to.be.equal(true);
+    });
+});

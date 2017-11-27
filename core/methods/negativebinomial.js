@@ -14,9 +14,9 @@ let Gamma = require('./gamma'),
 
 class NegativeBinomial {
     constructor(r: number, p: number): void {
-        this.numberFailures = r;
-        this.successProb = p;
-        this.gamma = new Gamma(r, p / (1 - p));
+        this.numberFailures = Number(r);
+        this.successProb = Number(p);
+        this.gamma = new Gamma(this.numberFailures, this.successProb / (1 - this.successProb));
         this.poisson = new Poisson(1);
     }
 
@@ -51,6 +51,9 @@ class NegativeBinomial {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.numberFailures || (!this.successProb && this.successProb !== 0)){
+            return {error: 'Negative Binomial distribution: you should point "r" and "p" parameters with numerical values'};
+        }
         if(this.numberFailures <= 0){
             return {error: 'Negative Binomial distribution: parameter "r" must be positive integer'};
         }
@@ -67,8 +70,8 @@ class NegativeBinomial {
      * This method does not return values
      */
     refresh(newR: number, newP: number): void {
-        this.numberFailures = newR;
-        this.successProb = newP;
+        this.numberFailures = Number(newR);
+        this.successProb = Number(newP);
     }
 
     /**
