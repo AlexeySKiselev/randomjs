@@ -1439,3 +1439,188 @@ describe('Poisson distribution', () => {
         expect(correct).to.be.equal(true);
     });
 });
+
+// Exponential distribution
+describe('Exponential distribution', () => {
+    let Exponential = require('../lib/methods/exponential');
+    it('requires one numerical argument', () => {
+        let zeroParams = () => {
+            let exponential = new Exponential();
+            if(exponential.isError())
+                throw new Error(exponential.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let exponential = new Exponential(0.5);
+            if(exponential.isError())
+                throw new Error(exponential.isError());
+        };
+        oneParam.should.not.throw(Error);
+
+        let badParams = () => {
+            let exponential = new Exponential('a');
+            if(exponential.isError())
+                throw new Error(exponential.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmaller = () => {
+            let exponential = new Exponential(-1);
+            if(exponential.isError())
+                throw new Error(exponential.isError());
+        };
+        incorrectParamsSmaller.should.throw(Error);
+
+        let incorrectParamsLambdaToZero = () => {
+            let exponential = new Exponential(0);
+            if(exponential.isError())
+                throw new Error(exponential.isError());
+        };
+        incorrectParamsLambdaToZero.should.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let exponential = new Exponential(1);
+        expect(exponential).to.have.property('random');
+        expect(exponential).to.respondsTo('random');
+        expect(exponential).to.have.property('distribution');
+        expect(exponential).to.respondsTo('distribution');
+        expect(exponential).to.have.property('refresh');
+        expect(exponential).to.respondsTo('refresh');
+        expect(exponential).to.have.property('isError');
+        expect(exponential).to.respondsTo('isError');
+    });
+    it('should have "lambda" value for initial lambda = 0.5 equals to 1 after .refresh(1) method',() => {
+        let exponential = new Exponential(0.5);
+        exponential.lambda.should.equal(0.5);
+        exponential.refresh(1);
+        exponential.lambda.should.equal(1);
+    });
+    it('should have mean value equals to 1 / lambda',() => {
+        let exponential = new Exponential(0.4);
+        expect(exponential.mean).to.be.a('number');
+        expect(exponential.mean).to.be.closeTo(2.5, 0.001);
+        exponential.refresh(3);
+        expect(exponential.mean).to.be.a('number');
+        expect(exponential.mean).to.be.closeTo(0.333, 0.001);
+    });
+    it('should return different values each time', () => {
+        let exponential = new Exponential(3),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = exponential.random();
+            expect(exponential.random()).to.be.a('number');
+            exponential.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let exponential = new Exponential(3),
+            randomArray = exponential.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});
+
+// Extreme Value (Gumbel-type) distribution
+describe('Extreme Value (Gumbel-type) distribution', () => {
+    let ExtremeValue = require('../lib/methods/extremevalue');
+    it('requires two numerical arguments with sigma > 0', () => {
+        let zeroParams = () => {
+            let extremevalue = new ExtremeValue();
+            if(extremevalue.isError())
+                throw new Error(extremevalue.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let extremevalue = new ExtremeValue(0.5);
+            if(extremevalue.isError())
+                throw new Error(extremevalue.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let extremevalue = new ExtremeValue('a', 'b');
+            if(extremevalue.isError())
+                throw new Error(extremevalue.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmaller = () => {
+            let extremevalue = new ExtremeValue(1, -1);
+            if(extremevalue.isError())
+                throw new Error(extremevalue.isError());
+        };
+        incorrectParamsSmaller.should.throw(Error);
+
+        let incorrectParamsLambdaToZero = () => {
+            let extremevalue = new ExtremeValue(1, 0);
+            if(extremevalue.isError())
+                throw new Error(extremevalue.isError());
+        };
+        incorrectParamsLambdaToZero.should.throw(Error);
+
+        let twoParams = () => {
+            let extremevalue = new ExtremeValue(1, 1);
+            if(extremevalue.isError())
+                throw new Error(extremevalue.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let extremevalue = new ExtremeValue(1, 1);
+        expect(extremevalue).to.have.property('random');
+        expect(extremevalue).to.respondsTo('random');
+        expect(extremevalue).to.have.property('distribution');
+        expect(extremevalue).to.respondsTo('distribution');
+        expect(extremevalue).to.have.property('refresh');
+        expect(extremevalue).to.respondsTo('refresh');
+        expect(extremevalue).to.have.property('isError');
+        expect(extremevalue).to.respondsTo('isError');
+    });
+    it('should have "mu" and "sigma" values for initial mu = 0.5 and sigma = 0.5 equals to 1 and 1 after .refresh(1, 1) method',() => {
+        let extremevalue = new ExtremeValue(0.5, 0.5);
+        extremevalue.mu.should.equal(0.5);
+        extremevalue.sigma.should.equal(0.5);
+        extremevalue.refresh(1, 1);
+        extremevalue.mu.should.equal(1);
+        extremevalue.sigma.should.equal(1);
+    });
+    it('should return different values each time', () => {
+        let extremevalue = new ExtremeValue(3, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = extremevalue.random();
+            expect(extremevalue.random()).to.be.a('number');
+            extremevalue.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let extremevalue = new ExtremeValue(3, 2),
+            randomArray = extremevalue.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});
