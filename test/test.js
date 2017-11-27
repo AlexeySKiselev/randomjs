@@ -565,7 +565,7 @@ describe('Binomial distribution', () => {
         binomial.trials.should.equal(2);
         binomial.successProb.should.equal(0.7);
     });
-    it('should have mean value for n = 1 and p = 0.5 equals to 0.5, but for n = 3 and p = 0.6 equals to 0.18',() => {
+    it('should have mean value for n = 1 and p = 0.5 equals to 0.5, but for n = 3 and p = 0.6 equals to 1.8',() => {
         let binomial = new Binomial(1, 0.5);
         expect(binomial.mean).to.be.a('number');
         binomial.mean.should.equal(0.5);
@@ -692,6 +692,404 @@ describe('Cauchy distribution', () => {
     it('should generate an array with random values with length of 500', () => {
         let cauchy = new Cauchy(1, 2),
             randomArray = cauchy.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(300);
+    });
+});
+
+// Chi distribution
+describe('Chi distribution', () => {
+    let Chi = require('../lib/methods/chi');
+    it('requires one numerical argument with k > 0', () => {
+        let zeroParams = () => {
+            let chi = new Chi();
+            if(chi.isError())
+                throw new Error(chi.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let chi = new Chi(0.5);
+            if(chi.isError())
+                throw new Error(chi.isError());
+        };
+        oneParam.should.not.throw(Error);
+
+        let badParams = () => {
+            let chi = new Chi('a');
+            if(chi.isError())
+                throw new Error(chi.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let chi = new Chi(-1);
+            if(chi.isError())
+                throw new Error(chi.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsKToZero = () => {
+            let chi = new Chi(0);
+            if(chi.isError())
+                throw new Error(chi.isError());
+        };
+        badParamsKToZero.should.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let chi = new Chi(2);
+        expect(chi).to.have.property('random');
+        expect(chi).to.respondsTo('random');
+        expect(chi).to.have.property('distribution');
+        expect(chi).to.respondsTo('distribution');
+        expect(chi).to.have.property('refresh');
+        expect(chi).to.respondsTo('refresh');
+        expect(chi).to.have.property('isError');
+        expect(chi).to.respondsTo('isError');
+    });
+    it('should have value for initial k = 1 equals to k = 2 after .refresh(2) method',() => {
+        let chi = new Chi(1);
+        chi.degrees.should.equal(1);
+        chi.refresh(2);
+        chi.degrees.should.equal(2);
+    });
+    it('should return different values each time', () => {
+        let chi = new Chi(2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = chi.random();
+            expect(chi.random()).to.be.a('number');
+            chi.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let chi = new Chi(2),
+            randomArray = chi.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(300);
+    });
+});
+
+// Chi Square distribution
+describe('Chi Square distribution', () => {
+    let ChiSquare = require('../lib/methods/chisquare');
+    it('requires one numerical argument with k > 0', () => {
+        let zeroParams = () => {
+            let chiSquare = new ChiSquare();
+            if(chiSquare.isError())
+                throw new Error(chiSquare.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let chiSquare = new ChiSquare(0.5);
+            if(chiSquare.isError())
+                throw new Error(chiSquare.isError());
+        };
+        oneParam.should.not.throw(Error);
+
+        let badParams = () => {
+            let chiSquare = new ChiSquare('a');
+            if(chiSquare.isError())
+                throw new Error(chiSquare.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let chiSquare = new ChiSquare(-1);
+            if(chiSquare.isError())
+                throw new Error(chiSquare.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsKToZero = () => {
+            let chiSquare = new ChiSquare(0);
+            if(chiSquare.isError())
+                throw new Error(chiSquare.isError());
+        };
+        badParamsKToZero.should.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let chiSquare = new ChiSquare(2);
+        expect(chiSquare).to.have.property('random');
+        expect(chiSquare).to.respondsTo('random');
+        expect(chiSquare).to.have.property('distribution');
+        expect(chiSquare).to.respondsTo('distribution');
+        expect(chiSquare).to.have.property('refresh');
+        expect(chiSquare).to.respondsTo('refresh');
+        expect(chiSquare).to.have.property('isError');
+        expect(chiSquare).to.respondsTo('isError');
+    });
+    it('should have value for initial k = 1 equals to k = 2 after .refresh(2) method',() => {
+        let chiSquare = new ChiSquare(1);
+        chiSquare.degrees.should.equal(1);
+        chiSquare.refresh(2);
+        chiSquare.degrees.should.equal(2);
+    });
+    it('should return different values each time', () => {
+        let chiSquare = new ChiSquare(2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = chiSquare.random();
+            expect(chiSquare.random()).to.be.a('number');
+            chiSquare.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let chiSquare = new ChiSquare(2),
+            randomArray = chiSquare.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(300);
+    });
+});
+
+// Erlang distribution
+describe('Erlang distribution', () => {
+    let Erlang = require('../lib/methods/erlang');
+    it('requires two numerical arguments with mu > 0 and k > 0', () => {
+        let zeroParams = () => {
+            let erlang = new Erlang();
+            if(erlang.isError())
+                throw new Error(erlang.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let erlang = new Erlang(0.5);
+            if(erlang.isError())
+                throw new Error(erlang.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let erlang = new Erlang('a', 'b');
+            if(erlang.isError())
+                throw new Error(erlang.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let erlang = new Erlang(1, -1);
+            if(erlang.isError())
+                throw new Error(erlang.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsGammaToZero = () => {
+            let erlang = new Erlang(1, 0);
+            if(erlang.isError())
+                throw new Error(erlang.isError());
+        };
+        badParamsGammaToZero.should.throw(Error);
+
+        let badParamsLess2 = () => {
+            let erlang = new Erlang(-1, 1);
+            if(erlang.isError())
+                throw new Error(erlang.isError());
+        };
+        badParamsLess2.should.throw(Error);
+
+        let badParamsGammaToZero2 = () => {
+            let erlang = new Erlang(0, 1);
+            if(erlang.isError())
+                throw new Error(erlang.isError());
+        };
+        badParamsGammaToZero2.should.throw(Error);
+
+        let twoParams =  () => {
+            let erlang = new Erlang(2, 0.5);
+            if(erlang.isError())
+                throw new Error(erlang.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let erlang = new Erlang(2, 2);
+        expect(erlang).to.have.property('random');
+        expect(erlang).to.respondsTo('random');
+        expect(erlang).to.have.property('distribution');
+        expect(erlang).to.respondsTo('distribution');
+        expect(erlang).to.have.property('refresh');
+        expect(erlang).to.respondsTo('refresh');
+        expect(erlang).to.have.property('isError');
+        expect(erlang).to.respondsTo('isError');
+    });
+    it('should have values for initial mu = 1 and k = 1 equals to mu = 2 and k = 3 after .refresh(3, 2) method',() => {
+        let erlang = new Erlang(1, 1);
+        erlang.shape.should.equal(1);
+        erlang.scale.should.equal(1);
+        erlang.refresh(3, 2);
+        erlang.shape.should.equal(3);
+        erlang.scale.should.equal(2);
+    });
+    it('should have mean value for mu = 1 and k = 0.5 equals to 0.5, but for mu = 3 and k = 0.6 equals to 1.8',() => {
+        let erlang = new Erlang(0.5, 1);
+        expect(erlang.mean).to.be.a('number');
+        erlang.mean.should.equal(0.5);
+        erlang.refresh(0.6, 3);
+        expect(erlang.mean).to.be.a('number');
+        expect(erlang.mean).to.be.closeTo(1.8, 0.005);
+    });
+    it('should return different values each time', () => {
+        let erlang = new Erlang(3, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = erlang.random();
+            expect(erlang.random()).to.be.a('number');
+            erlang.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let erlang = new Erlang(3, 2),
+            randomArray = erlang.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(300);
+    });
+});
+
+// Gamma distribution
+describe('Gamma distribution', () => {
+    let Gamma = require('../lib/methods/gamma');
+    it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
+        let zeroParams = () => {
+            let gamma = new Gamma();
+            if(gamma.isError())
+                throw new Error(gamma.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let gamma = new Gamma(0.5);
+            if(gamma.isError())
+                throw new Error(gamma.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let gamma = new Gamma('a', 'b');
+            if(gamma.isError())
+                throw new Error(gamma.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let gamma = new Gamma(1, -1);
+            if(gamma.isError())
+                throw new Error(gamma.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsGammaToZero = () => {
+            let gamma = new Gamma(1, 0);
+            if(gamma.isError())
+                throw new Error(gamma.isError());
+        };
+        badParamsGammaToZero.should.throw(Error);
+
+        let badParamsLess2 = () => {
+            let gamma = new Gamma(-1, 1);
+            if(gamma.isError())
+                throw new Error(gamma.isError());
+        };
+        badParamsLess2.should.throw(Error);
+
+        let badParamsGammaToZero2 = () => {
+            let gamma = new Gamma(0, 1);
+            if(gamma.isError())
+                throw new Error(gamma.isError());
+        };
+        badParamsGammaToZero2.should.throw(Error);
+
+        let twoParams =  () => {
+            let gamma = new Gamma(2, 0.5);
+            if(gamma.isError())
+                throw new Error(gamma.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let gamma = new Gamma(2, 2);
+        expect(gamma).to.have.property('random');
+        expect(gamma).to.respondsTo('random');
+        expect(gamma).to.have.property('distribution');
+        expect(gamma).to.respondsTo('distribution');
+        expect(gamma).to.have.property('refresh');
+        expect(gamma).to.respondsTo('refresh');
+        expect(gamma).to.have.property('isError');
+        expect(gamma).to.respondsTo('isError');
+    });
+    it('should have values for initial alpha = 1 and beta = 1 equals to alpha = 2 and beta = 3 after .refresh(2, 3) method',() => {
+        let gamma = new Gamma(1, 1);
+        gamma.alpha.should.equal(1);
+        gamma.beta.should.equal(1);
+        gamma.refresh(2, 3);
+        gamma.alpha.should.equal(2);
+        gamma.beta.should.equal(3);
+    });
+    it('should have mean value for alpha = 1 and beta = 0.5 equals to 2, but for alpha = 3 and beta = 2 equals to 1.5',() => {
+        let gamma = new Gamma(1, 0.5);
+        expect(gamma.mean).to.be.a('number');
+        expect(gamma.mean).to.be.closeTo(2, 0.005);
+        gamma.refresh(3, 2);
+        expect(gamma.mean).to.be.a('number');
+        expect(gamma.mean).to.be.closeTo(1.5, 0.005);
+    });
+    it('should return different values each time', () => {
+        let gamma = new Gamma(3, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = gamma.random();
+            expect(gamma.random()).to.be.a('number');
+            gamma.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let gamma = new Gamma(3, 2),
+            randomArray = gamma.distribution(500),
             countDiffs = 0,
             last,
             delta = 0.2;

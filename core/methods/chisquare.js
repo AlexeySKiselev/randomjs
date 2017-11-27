@@ -13,7 +13,7 @@ let Normal = require('./normal'),
 
 class ChiSquare {
     constructor(k: number): void {
-        this.degrees = k;
+        this.degrees = Number(k);
         this.normal = new Normal(0, 1);
     }
 
@@ -48,6 +48,9 @@ class ChiSquare {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.degrees){
+            return {error: 'Chi Square distribution: you should point parameter "k" positive numerical value'};
+        }
         if(this.degrees <= 0){
             return {error: 'Chi Square distribution: parameter "k" must be positive integer'};
         }
@@ -60,7 +63,7 @@ class ChiSquare {
      * This method does not return values
      */
     refresh(newK: number): void {
-        this.degrees = newK;
+        this.degrees = Number(newK);
     }
 
     /**

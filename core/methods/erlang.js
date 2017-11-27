@@ -13,8 +13,8 @@ let Utils = require('../utils/utils');
 
 class Erlang {
     constructor(k: number, mu: number) {
-        this.shape = k;
-        this.scale = mu;
+        this.shape = Number(k);
+        this.scale = Number(mu);
     }
 
     /**
@@ -49,8 +49,11 @@ class Erlang {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.scale || !this.shape){
+            return {error: 'Erlang distribution: you should point "mu" and "k" positive numerical values'};
+        }
         if(this.shape <= 0){
-            return {error: 'Erlang distribution: parameter "k" must be positive integer'};
+            return {error: 'Erlang distribution: parameter "k" must be a positive integer'};
         }
         if(this.scale <= 0) {
             return {error: 'Erlang distribution: parameter "mu" must be positive'};
@@ -65,8 +68,8 @@ class Erlang {
      * This method does not return values
      */
     refresh(newK: number, newMu: number): void {
-        this.shape = newK;
-        this.scale = newMu;
+        this.shape = Number(newK);
+        this.scale = Number(newMu);
     }
 
     /**

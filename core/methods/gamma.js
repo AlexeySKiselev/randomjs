@@ -10,12 +10,12 @@
  * Created by Alexey S. Kiselev
  */
 
-let Utils = require('../utils/utils')
+let Utils = require('../utils/utils');
 
 class Gamma {
     constructor(alpha: number, beta: number): number {
-        this.alpha = alpha;
-        this.beta = beta;
+        this.alpha = Number(alpha);
+        this.beta = Number(beta);
     }
 
     /**
@@ -50,6 +50,10 @@ class Gamma {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.alpha || !this.beta){
+            return {error: 'Gamma distribution: you should point parameters "alpha" and "beta" like a positive numerical values'};
+        }
+
         if(this.alpha <= 0){
             return {error: 'Gamma distribution: parameter "alpha" must be a positive integer'};
         }
@@ -68,8 +72,8 @@ class Gamma {
      * This method does not return values
      */
     refresh(newAlpha: number, newBeta: number): void {
-        this.alpha = newAlpha;
-        this.beta = newBeta;
+        this.alpha = Number(newAlpha);
+        this.beta = Number(newBeta);
     }
 
     /**
