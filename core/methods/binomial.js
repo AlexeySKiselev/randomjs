@@ -11,8 +11,8 @@
 
 class Binomial {
     constructor(n: number, p: number) {
-        this.trials = n;
-        this.successProb = p;
+        this.trials = Number(n);
+        this.successProb = Number(p);
     }
 
     /**
@@ -49,6 +49,9 @@ class Binomial {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.trials|| (!this.successProb && this.successProb !== 0)) {
+            return {error: 'Binomial distribution: you should point parameter "n" like a positive integer and parameter "p" like a numerical value'};
+        }
         if(this.trials <= 0){
             return {error: 'Binomial distribution: parameter "n" must be positive integer'};
         }
@@ -65,8 +68,8 @@ class Binomial {
      * This method does not return values
      */
     refresh(newN: number, newP: number): void {
-        this.trials = newN;
-        this.successProb = newP;
+        this.trials = Number(newN);
+        this.successProb = Number(newP);
     }
 
     /**

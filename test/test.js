@@ -388,3 +388,322 @@ describe('Beta distribution', () => {
         expect(countDiffs).to.be.at.least(200);
     });
 });
+
+// Beta Prime distribution
+describe('Beta Prime distribution', () => {
+    let BetaPrime = require('../lib/methods/betaprime');
+    it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
+        let zeroParams = () => {
+            let betaPrime = new BetaPrime();
+            if(betaPrime.isError())
+                throw new Error(betaPrime.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let betaPrime = new BetaPrime(0.5);
+            if(betaPrime.isError())
+                throw new Error(betaPrime.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let betaPrime = new BetaPrime('a', 'b');
+            if(betaPrime.isError())
+                throw new Error(betaPrime.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let betaPrime = new BetaPrime(-1, 1);
+            if(betaPrime.isError())
+                throw new Error(betaPrime.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsLess2 = () => {
+            let betaPrime = new BetaPrime(1, -1);
+            if(betaPrime.isError())
+                throw new Error(betaPrime.isError());
+        };
+        badParamsLess2.should.throw(Error);
+
+        let twoParams =  () => {
+            let betaPrime = new BetaPrime(0.5, 1);
+            if(betaPrime.isError())
+                throw new Error(betaPrime.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let betaPrime = new BetaPrime(0.5, 1);
+        expect(betaPrime).to.have.property('random');
+        expect(betaPrime).to.respondsTo('random');
+        expect(betaPrime).to.have.property('distribution');
+        expect(betaPrime).to.respondsTo('distribution');
+        expect(betaPrime).to.have.property('refresh');
+        expect(betaPrime).to.respondsTo('refresh');
+        expect(betaPrime).to.have.property('isError');
+        expect(betaPrime).to.respondsTo('isError');
+    });
+    it('should have values for initial alpha = 1 and beta = 1 equals to alpha = 2 and beta = 3 after .refresh(2, 3) method',() => {
+        let betaPrime = new BetaPrime(1, 1);
+        betaPrime.alpha.should.equal(1);
+        betaPrime.beta.should.equal(1);
+        betaPrime.refresh(2, 3);
+        betaPrime.alpha.should.equal(2);
+        betaPrime.beta.should.equal(3);
+    });
+    it('should have mean value for alpha = 1 and beta = 2 equals to 1, but for beta = 3 equals to 0.5, for beta = 0.5 equals to Infinity',() => {
+        let betaPrime = new BetaPrime(1, 2);
+        expect(betaPrime.mean).to.be.a('number');
+        betaPrime.mean.should.equal(1);
+        betaPrime.refresh(1, 3);
+        expect(betaPrime.mean).to.be.a('number');
+        betaPrime.mean.should.equal(0.5);
+        betaPrime.refresh(1, 0.5);
+        expect(betaPrime.mean).to.be.a('number');
+        betaPrime.mean.should.equal(Infinity);
+    });
+    it('should return different values each time', () => {
+        let betaPrime = new BetaPrime(1, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = betaPrime.random();
+            expect(betaPrime.random()).to.be.a('number');
+            betaPrime.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let betaPrime = new BetaPrime(1, 2),
+            randomArray = betaPrime.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});
+
+// Binomial distribution
+describe('Binomial distribution', () => {
+    let Binomial = require('../lib/methods/binomial');
+    it('requires two numerical arguments with n > 0 and 0 <= p <= 1', () => {
+        let zeroParams = () => {
+            let binomial = new Binomial();
+            if(binomial.isError())
+                throw new Error(binomial.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let binomial = new Binomial(0.5);
+            if(binomial.isError())
+                throw new Error(binomial.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let binomial = new Binomial('a', 'b');
+            if(binomial.isError())
+                throw new Error(binomial.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let binomial = new Binomial(-1, 0.5);
+            if(binomial.isError())
+                throw new Error(binomial.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsLess2 = () => {
+            let binomial = new Binomial(1, -1);
+            if(binomial.isError())
+                throw new Error(binomial.isError());
+        };
+        badParamsLess2.should.throw(Error);
+
+        let badParamsGreat = () => {
+            let binomial = new Binomial(2, 2);
+            if(binomial.isError())
+                throw new Error(binomial.isError());
+        };
+        badParamsGreat.should.throw(Error);
+
+        let twoParams =  () => {
+            let binomial = new Binomial(2, 0.5);
+            if(binomial.isError())
+                throw new Error(binomial.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let binomial = new Binomial(2, 0.5);
+        expect(binomial).to.have.property('random');
+        expect(binomial).to.respondsTo('random');
+        expect(binomial).to.have.property('distribution');
+        expect(binomial).to.respondsTo('distribution');
+        expect(binomial).to.have.property('refresh');
+        expect(binomial).to.respondsTo('refresh');
+        expect(binomial).to.have.property('isError');
+        expect(binomial).to.respondsTo('isError');
+    });
+    it('should have values for initial alpha = 1 and beta = 1 equals to alpha = 2 and beta = 3 after .refresh(2, 3) method',() => {
+        let binomial = new Binomial(1, 0.5);
+        binomial.trials.should.equal(1);
+        binomial.successProb.should.equal(0.5);
+        binomial.refresh(2, 0.7);
+        binomial.trials.should.equal(2);
+        binomial.successProb.should.equal(0.7);
+    });
+    it('should have mean value for n = 1 and p = 0.5 equals to 0.5, but for n = 3 and p = 0.6 equals to 0.18',() => {
+        let binomial = new Binomial(1, 0.5);
+        expect(binomial.mean).to.be.a('number');
+        binomial.mean.should.equal(0.5);
+        binomial.refresh(3, 0.6);
+        expect(binomial.mean).to.be.a('number');
+        expect(binomial.mean).to.be.closeTo(1.8, 0.005);
+    });
+    it('should return few different values with 10 experiments', () => {
+        let binomial = new Binomial(2, 0.6),
+            value1,
+            countRandoms = {};
+        for(let i = 0; i < 10; i += 1){
+            value1 = binomial.random();
+            expect(binomial.random()).to.be.a('number');
+            countRandoms[value1] = 1;
+        }
+        expect(Object.keys(countRandoms).length).to.be.at.least(2);
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let binomial = new Binomial(1, 0.5),
+            randomArray = binomial.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.9;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(3);
+    });
+    it('should generate only integer values', () => {
+        let binomial = new Binomial(2, 0.4),
+            randomArray = binomial.distribution(100),
+            correct = true;
+        for(let rand of randomArray) {
+            if(parseInt(rand) !== rand){
+                correct = false;
+                break;
+            }
+        }
+        expect(correct).to.be.equal(true);
+    });
+});
+
+// Cauchy distribution
+describe('Cauchy distribution', () => {
+    let Cauchy = require('../lib/methods/cauchy');
+    it('requires two numerical arguments with gamma > 0', () => {
+        let zeroParams = () => {
+            let cauchy = new Cauchy();
+            if(cauchy.isError())
+                throw new Error(cauchy.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let cauchy = new Cauchy(0.5);
+            if(cauchy.isError())
+                throw new Error(cauchy.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let cauchy = new Cauchy('a', 'b');
+            if(cauchy.isError())
+                throw new Error(cauchy.isError());
+        };
+        badParams.should.throw(Error);
+
+        let badParamsLess1 = () => {
+            let cauchy = new Cauchy(1, -1);
+            if(cauchy.isError())
+                throw new Error(cauchy.isError());
+        };
+        badParamsLess1.should.throw(Error);
+
+        let badParamsGammaToZero = () => {
+            let cauchy = new Cauchy(1, 0);
+            if(cauchy.isError())
+                throw new Error(cauchy.isError());
+        };
+        badParamsGammaToZero.should.throw(Error);
+
+        let twoParams =  () => {
+            let cauchy = new Cauchy(2, 0.5);
+            if(cauchy.isError())
+                throw new Error(cauchy.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let cauchy = new Cauchy(2, 0.5);
+        expect(cauchy).to.have.property('random');
+        expect(cauchy).to.respondsTo('random');
+        expect(cauchy).to.have.property('distribution');
+        expect(cauchy).to.respondsTo('distribution');
+        expect(cauchy).to.have.property('refresh');
+        expect(cauchy).to.respondsTo('refresh');
+        expect(cauchy).to.have.property('isError');
+        expect(cauchy).to.respondsTo('isError');
+    });
+    it('should have values for initial x = 1 and gamma = 2 equals to x = 2 and gamma = 3 after .refresh(2, 3) method',() => {
+        let cauchy = new Cauchy(1, 2);
+        cauchy.location.should.equal(1);
+        cauchy.scale.should.equal(2);
+        cauchy.refresh(2, 3);
+        cauchy.location.should.equal(2);
+        cauchy.scale.should.equal(3);
+    });
+    it('should return different values each time', () => {
+        let cauchy = new Cauchy(1, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = cauchy.random();
+            expect(cauchy.random()).to.be.a('number');
+            cauchy.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let cauchy = new Cauchy(1, 2),
+            randomArray = cauchy.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(300);
+    });
+});

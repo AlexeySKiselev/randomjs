@@ -80,8 +80,6 @@ class Normal {
 
     /**
      * Error handling
-     * So, there is no situation, when an error can occurs
-     * In this case method simply returns "false"
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {

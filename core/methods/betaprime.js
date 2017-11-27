@@ -13,8 +13,8 @@ let Beta = require('./beta');
 
 class BetaPrime {
     constructor(alpha: number, beta: number): void {
-        this.alpha = alpha;
-        this.beta = beta;
+        this.alpha = Number(alpha);
+        this.beta = Number(beta);
         this.betaRandom = new Beta(this.alpha, this.beta);
     }
 
@@ -53,6 +53,9 @@ class BetaPrime {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.alpha || !this.beta) {
+            return {error: 'Beta Prime distribution: you should point "alpha" and "beta" positive numerical values'};
+        }
         if(this.alpha <= 0){
             return {error: 'Beta Prime distribution: Parameter "alpha" must be positive'};
         }
@@ -69,8 +72,8 @@ class BetaPrime {
      * This method does not return values
      */
     refresh(newAlpha: number, newBeta: number): void {
-        this.alpha = newAlpha;
-        this.beta = newBeta;
+        this.alpha = Number(newAlpha);
+        this.beta = Number(newBeta);
     }
 
     /**

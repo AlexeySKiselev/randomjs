@@ -11,8 +11,8 @@
 
 class Cauchy {
     constructor(x: number, gamma: number): void {
-        this.location = x;
-        this.scale = gamma;
+        this.location = Number(x);
+        this.scale = Number(gamma);
     }
 
     /**
@@ -42,6 +42,9 @@ class Cauchy {
      * @returns {boolean}
      */
     isError(): boolean | {error: string} {
+        if(!this.location || (!this.scale && this.scale !== 0)){
+            return {error: 'Cauchy distribution: you should point "x" and "gamma" numerical values'};
+        }
         if(this.scale <= 0) {
             return {error: 'Cauchy distribution: parameter "gamma" must be positive'};
         }
@@ -55,8 +58,8 @@ class Cauchy {
      * This method does not return values
      */
     refresh(newX: number, newGamma: number): void {
-        this.location = newX;
-        this.scale = newGamma;
+        this.location = Number(newX);
+        this.scale = Number(newGamma);
     }
 
     /**
