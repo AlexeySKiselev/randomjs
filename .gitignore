@@ -9,3 +9,6 @@ lib/
 
 # Log files
 /*.log
+
+# nyc reports
+.nyc_output/

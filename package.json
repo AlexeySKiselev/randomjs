@@ -7,7 +7,9 @@
     "mocha": "node node_modules/mocha/bin/mocha test/test.js",
     "lint": "eslint --config .eslintrc.json ./",
     "build:node": "gulp build:node --watch",
-    "test": "node node_modules/npm-run-all/bin/run-s build:node mocha"
+    "test": "node node_modules/npm-run-all/bin/run-s build:node mocha",
+    "nyc-coverage": "node node_modules/nyc/bin/nyc --reporter=text mocha",
+    "test-coverage": "node node_modules/npm-run-all/bin/run-s build:node nyc-coverage"
   },
   "repository": {
     "type": "git",
@@ -45,6 +47,7 @@
     "gulp-flowtype": "^1.0.0",
     "gulp-replace-path": "^0.4.0",
     "mocha": "^4.0.1",
-    "npm-run-all": "^4.1.2"
+    "npm-run-all": "^4.1.2",
+    "nyc": "^11.3.0"
   }
 }
