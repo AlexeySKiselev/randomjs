@@ -6,3 +6,6 @@ branches:
     - master
 before_script:
   - npm install -g gulp
+cache:
+  directories:
+    - "node_modules"
