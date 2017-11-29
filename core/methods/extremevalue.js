@@ -80,7 +80,7 @@ class ExtremeValue {
     /**
      * Mean value
      * Information only
-     * Calculate this value useing Euler constant
+     * Calculate this value using Euler constant
      * For calculating real mean value use analyzer
      */
     get mean(): number {

@@ -1624,3 +1624,112 @@ describe('Extreme Value (Gumbel-type) distribution', () => {
         expect(countDiffs).to.be.at.least(200);
     });
 });
+
+// Laplace distribution
+describe('Laplace distribution', () => {
+    let Laplace = require('../lib/methods/laplace');
+    it('requires two numerical arguments with scale > 0', () => {
+        let zeroParams = () => {
+            let laplace = new Laplace();
+            if(laplace.isError())
+                throw new Error(laplace.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let laplace = new Laplace(0.5);
+            if(laplace.isError())
+                throw new Error(laplace.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let laplace = new Laplace('a', 'b');
+            if(laplace.isError())
+                throw new Error(laplace.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmaller = () => {
+            let laplace = new Laplace(1, -1);
+            if(laplace.isError())
+                throw new Error(laplace.isError());
+        };
+        incorrectParamsSmaller.should.throw(Error);
+
+        let incorrectParamsLambdaToZero = () => {
+            let laplace = new Laplace(1, 0);
+            if(laplace.isError())
+                throw new Error(laplace.isError());
+        };
+        incorrectParamsLambdaToZero.should.throw(Error);
+
+        let twoParams = () => {
+            let laplace = new Laplace(1, 1);
+            if(laplace.isError())
+                throw new Error(laplace.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let laplace = new Laplace(1, 1);
+        expect(laplace).to.have.property('random');
+        expect(laplace).to.respondsTo('random');
+        expect(laplace).to.have.property('distribution');
+        expect(laplace).to.respondsTo('distribution');
+        expect(laplace).to.have.property('refresh');
+        expect(laplace).to.respondsTo('refresh');
+        expect(laplace).to.have.property('isError');
+        expect(laplace).to.respondsTo('isError');
+    });
+    it('should have "mu" and "scale" values for initial mu = 0.5 and scale = 0.5 equals to 1 and 1 after .refresh(1, 1) method',() => {
+        let laplace = new Laplace(0.5, 0.5);
+        laplace.location.should.equal(0.5);
+        laplace.scale.should.equal(0.5);
+        laplace.refresh(1, 1);
+        laplace.location.should.equal(1);
+        laplace.scale.should.equal(1);
+    });
+    it('should have mean, mode, median values equals to mu',() => {
+        let laplace = new Laplace(0.4, 1);
+        expect(laplace.mean).to.be.a('number');
+        expect(laplace.mean).to.be.closeTo(0.4, 0.001);
+        expect(laplace.mode).to.be.a('number');
+        expect(laplace.mode).to.be.closeTo(0.4, 0.001);
+        expect(laplace.median).to.be.a('number');
+        expect(laplace.median).to.be.closeTo(0.4, 0.001);
+        laplace.refresh(1, 2);
+        expect(laplace.mean).to.be.a('number');
+        expect(laplace.mean).to.be.closeTo(1.0, 0.001);
+        expect(laplace.mode).to.be.a('number');
+        expect(laplace.mode).to.be.closeTo(1.0, 0.001);
+        expect(laplace.median).to.be.a('number');
+        expect(laplace.median).to.be.closeTo(1.0, 0.001);
+    });
+    it('should return different values each time', () => {
+        let laplace = new Laplace(3, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = laplace.random();
+            expect(laplace.random()).to.be.a('number');
+            laplace.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let laplace = new Laplace(3, 2),
+            randomArray = laplace.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});
