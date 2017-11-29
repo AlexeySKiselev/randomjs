@@ -1733,3 +1733,112 @@ describe('Laplace distribution', () => {
         expect(countDiffs).to.be.at.least(200);
     });
 });
+
+// Logistic distribution
+describe('Logistic distribution', () => {
+    let Logistic = require('../lib/methods/logistic');
+    it('requires two numerical arguments with scale > 0', () => {
+        let zeroParams = () => {
+            let logistic = new Logistic();
+            if(logistic.isError())
+                throw new Error(logistic.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let logistic = new Logistic(0.5);
+            if(logistic.isError())
+                throw new Error(logistic.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let logistic = new Logistic('a', 'b');
+            if(logistic.isError())
+                throw new Error(logistic.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmaller = () => {
+            let logistic = new Logistic(1, -1);
+            if(logistic.isError())
+                throw new Error(logistic.isError());
+        };
+        incorrectParamsSmaller.should.throw(Error);
+
+        let incorrectParamsLambdaToZero = () => {
+            let logistic = new Logistic(1, 0);
+            if(logistic.isError())
+                throw new Error(logistic.isError());
+        };
+        incorrectParamsLambdaToZero.should.throw(Error);
+
+        let twoParams = () => {
+            let logistic = new Logistic(1, 1);
+            if(logistic.isError())
+                throw new Error(logistic.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let logistic = new Logistic(1, 1);
+        expect(logistic).to.have.property('random');
+        expect(logistic).to.respondsTo('random');
+        expect(logistic).to.have.property('distribution');
+        expect(logistic).to.respondsTo('distribution');
+        expect(logistic).to.have.property('refresh');
+        expect(logistic).to.respondsTo('refresh');
+        expect(logistic).to.have.property('isError');
+        expect(logistic).to.respondsTo('isError');
+    });
+    it('should have "mu" and "scale" values for initial mu = 0.5 and scale = 0.5 equals to 1 and 1 after .refresh(1, 1) method',() => {
+        let logistic = new Logistic(0.5, 0.5);
+        logistic.location.should.equal(0.5);
+        logistic.scale.should.equal(0.5);
+        logistic.refresh(1, 1);
+        logistic.location.should.equal(1);
+        logistic.scale.should.equal(1);
+    });
+    it('should have mean, mode, median values equals to mu',() => {
+        let logistic = new Logistic(0.4, 1);
+        expect(logistic.mean).to.be.a('number');
+        expect(logistic.mean).to.be.closeTo(0.4, 0.001);
+        expect(logistic.mode).to.be.a('number');
+        expect(logistic.mode).to.be.closeTo(0.4, 0.001);
+        expect(logistic.median).to.be.a('number');
+        expect(logistic.median).to.be.closeTo(0.4, 0.001);
+        logistic.refresh(1, 2);
+        expect(logistic.mean).to.be.a('number');
+        expect(logistic.mean).to.be.closeTo(1.0, 0.001);
+        expect(logistic.mode).to.be.a('number');
+        expect(logistic.mode).to.be.closeTo(1.0, 0.001);
+        expect(logistic.median).to.be.a('number');
+        expect(logistic.median).to.be.closeTo(1.0, 0.001);
+    });
+    it('should return different values each time', () => {
+        let logistic = new Logistic(3, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = logistic.random();
+            expect(logistic.random()).to.be.a('number');
+            logistic.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let logistic = new Logistic(3, 2),
+            randomArray = logistic.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});
