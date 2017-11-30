@@ -246,11 +246,11 @@ describe('Bernoulli distribution', () => {
         bernoulli.refresh(0.7);
         bernoulli.mean.should.equal(0.7);
     });
-    it('should return few different values with 10 experiments', () => {
+    it('should return few different values with 20 experiments', () => {
         let bernoulli = new Bernoulli(0.6),
             value1,
             countRandoms = {};
-        for(let i = 0; i < 10; i += 1){
+        for(let i = 0; i < 20; i += 1){
             value1 = bernoulli.random();
             expect(bernoulli.random()).to.be.a('number');
             countRandoms[value1] = 1;
@@ -1827,6 +1827,99 @@ describe('Logistic distribution', () => {
     it('should generate an array with random values with length of 500', () => {
         let logistic = new Logistic(3, 2),
             randomArray = logistic.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});
+
+// Lognormal distribution
+describe('Lognormal distribution', () => {
+    let Lognormal = require('../lib/methods/lognormal');
+    it('requires two numerical arguments with sigma > 0', () => {
+        let zeroParams = () => {
+            let lognormal = new Lognormal();
+            if(lognormal.isError())
+                throw new Error(lognormal.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let lognormal = new Lognormal(0.5);
+            if(lognormal.isError())
+                throw new Error(lognormal.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let lognormal = new Lognormal('a', 'b');
+            if(lognormal.isError())
+                throw new Error(lognormal.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmaller = () => {
+            let lognormal = new Lognormal(1, -1);
+            if(lognormal.isError())
+                throw new Error(lognormal.isError());
+        };
+        incorrectParamsSmaller.should.throw(Error);
+
+        let incorrectParamsLambdaToZero = () => {
+            let lognormal = new Lognormal(1, 0);
+            if(lognormal.isError())
+                throw new Error(lognormal.isError());
+        };
+        incorrectParamsLambdaToZero.should.throw(Error);
+
+        let twoParams = () => {
+            let lognormal = new Lognormal(1, 1);
+            if(lognormal.isError())
+                throw new Error(lognormal.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let lognormal = new Lognormal(1, 1);
+        expect(lognormal).to.have.property('random');
+        expect(lognormal).to.respondsTo('random');
+        expect(lognormal).to.have.property('distribution');
+        expect(lognormal).to.respondsTo('distribution');
+        expect(lognormal).to.have.property('refresh');
+        expect(lognormal).to.respondsTo('refresh');
+        expect(lognormal).to.have.property('isError');
+        expect(lognormal).to.respondsTo('isError');
+    });
+    it('should have "mu" and "sigma" values for initial mu = 0.5 and sigma = 0.5 equals to 1 and 1 after .refresh(1, 1) method',() => {
+        let lognormal = new Lognormal(0.5, 0.5);
+        lognormal.mu.should.equal(0.5);
+        lognormal.sigma.should.equal(0.5);
+        lognormal.refresh(1, 1);
+        lognormal.mu.should.equal(1);
+        lognormal.sigma.should.equal(1);
+    });
+    it('should return different values each time', () => {
+        let lognormal = new Lognormal(3, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = lognormal.random();
+            expect(lognormal.random()).to.be.a('number');
+            lognormal.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let lognormal = new Lognormal(3, 2),
+            randomArray = lognormal.distribution(500),
             countDiffs = 0,
             last,
             delta = 0.2;

@@ -2,8 +2,8 @@
 /**
  * Normal Gaussian Distribution
  * https://en.wikipedia.org/wiki/Normal_distribution
- * @param mu: number - Mu value of Normal Distribution
- * @param sigma: number - Sigma value of Normal Distribution
+ * @param mu: number - Mu value of Normal Distribution, any value
+ * @param sigma: number - Sigma value of Normal Distribution, sigma > 0
  * @returns Normal Distributed value based on parameters
  * Created by Alexey S. Kiselev
  */
@@ -11,6 +11,10 @@
 let Uniform = require('./uniform');
 
 class Normal {
+    mu: number;
+    sigma: number;
+    uniform: Uniform;
+
     constructor(mu: number, sigma: number): void {
         this.mu = Number(mu);
         this.sigma = Number(sigma);
@@ -85,6 +89,10 @@ class Normal {
     isError(): boolean | {error: string} {
         if((!this.mu && this.mu !== 0) || (!this.sigma && this.sigma !== 0)) {
             return {error: 'Normal distribution: you should point "mu" and "sigma" numerical values'};
+        }
+
+        if(this.sigma <= 0) {
+            return {error: 'Normal distribution: parameter "sigma" must be a positive value'};
         }
 
         return false;

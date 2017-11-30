@@ -60,7 +60,7 @@ class Laplace {
     /**
      * Refresh method
      * @param newMu: number - new parameter "mu"
-     * @param newB: number - new parameter "sigma"
+     * @param newB: number - new parameter "b"
      * This method does not return values
      */
     refresh(newMu: number, newB: number): void {
@@ -128,7 +128,7 @@ class Laplace {
     /**
      * Entropy value
      * Information only
-     * This formula esus Euler's number (base of natural logarithm)
+     * This formula uses Euler's number (base of natural logarithm)
      * For calculating real entropy value use analyzer
      */
     get entropy(): number {
