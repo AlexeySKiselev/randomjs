@@ -1935,3 +1935,110 @@ describe('Lognormal distribution', () => {
         expect(countDiffs).to.be.at.least(200);
     });
 });
+
+// Pareto distribution
+describe('Pareto distribution', () => {
+    let Pareto = require('../lib/methods/pareto');
+    it('requires two numerical arguments with sigma > 0', () => {
+        let zeroParams = () => {
+            let pareto = new Pareto();
+            if(pareto.isError())
+                throw new Error(pareto.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let pareto = new Pareto(0.5);
+            if(pareto.isError())
+                throw new Error(pareto.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let badParams = () => {
+            let pareto = new Pareto('a', 'b');
+            if(pareto.isError())
+                throw new Error(pareto.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmaller = () => {
+            let pareto = new Pareto(1, -1);
+            if(pareto.isError())
+                throw new Error(pareto.isError());
+        };
+        incorrectParamsSmaller.should.throw(Error);
+
+        let incorrectParamsLambdaToZero = () => {
+            let pareto = new Pareto(1, 0);
+            if(pareto.isError())
+                throw new Error(pareto.isError());
+        };
+        incorrectParamsLambdaToZero.should.throw(Error);
+
+        let incorrectParamsSmaller2 = () => {
+            let pareto = new Pareto(-1, 1);
+            if(pareto.isError())
+                throw new Error(pareto.isError());
+        };
+        incorrectParamsSmaller2.should.throw(Error);
+
+        let incorrectParamsLambdaToZero2 = () => {
+            let pareto = new Pareto(0, 1);
+            if(pareto.isError())
+                throw new Error(pareto.isError());
+        };
+        incorrectParamsLambdaToZero2.should.throw(Error);
+
+        let twoParams = () => {
+            let pareto = new Pareto(1, 1);
+            if(pareto.isError())
+                throw new Error(pareto.isError());
+        };
+        twoParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let pareto = new Pareto(1, 1);
+        expect(pareto).to.have.property('random');
+        expect(pareto).to.respondsTo('random');
+        expect(pareto).to.have.property('distribution');
+        expect(pareto).to.respondsTo('distribution');
+        expect(pareto).to.have.property('refresh');
+        expect(pareto).to.respondsTo('refresh');
+        expect(pareto).to.have.property('isError');
+        expect(pareto).to.respondsTo('isError');
+    });
+    it('should have "mu" and "sigma" values for initial mu = 0.5 and sigma = 0.5 equals to 1 and 1 after .refresh(1, 1) method',() => {
+        let pareto = new Pareto(0.5, 0.5);
+        pareto.xm.should.equal(0.5);
+        pareto.alpha.should.equal(0.5);
+        pareto.refresh(1, 1);
+        pareto.xm.should.equal(1);
+        pareto.alpha.should.equal(1);
+    });
+    it('should return different values each time', () => {
+        let pareto = new Pareto(3, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = pareto.random();
+            expect(pareto.random()).to.be.a('number');
+            pareto.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let pareto = new Pareto(3, 2),
+            randomArray = pareto.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});

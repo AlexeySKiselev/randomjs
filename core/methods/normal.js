@@ -29,7 +29,7 @@ class Normal {
     /**
      * Generates a random number
      * Uses Box-Muller transform and Marsaglia polar method
-     * This method generats two random numbers, but use one of it
+     * This method generates two random numbers, but use one of it
      * @returns a normal distributed number
      */
     random(): number {
