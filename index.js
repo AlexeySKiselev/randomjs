@@ -44,3 +44,4 @@ module.exports = new RandomJS();
 // TODO: Shuffle
 // TODO: Promise-like functions
 // TODO: Games
+// TODO: Pseudorandom generator

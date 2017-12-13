@@ -1939,7 +1939,7 @@ describe('Lognormal distribution', () => {
 // Pareto distribution
 describe('Pareto distribution', () => {
     let Pareto = require('../lib/methods/pareto');
-    it('requires two numerical arguments with sigma > 0', () => {
+    it('requires two numerical arguments with scale > 0 and shape > 0', () => {
         let zeroParams = () => {
             let pareto = new Pareto();
             if(pareto.isError())
@@ -2007,7 +2007,7 @@ describe('Pareto distribution', () => {
         expect(pareto).to.have.property('isError');
         expect(pareto).to.respondsTo('isError');
     });
-    it('should have "mu" and "sigma" values for initial mu = 0.5 and sigma = 0.5 equals to 1 and 1 after .refresh(1, 1) method',() => {
+    it('should have "xm" and "alpha" values for initial xm = 0.5 and alpha = 0.5 equals to 1 and 1 after .refresh(1, 1) method',() => {
         let pareto = new Pareto(0.5, 0.5);
         pareto.xm.should.equal(0.5);
         pareto.alpha.should.equal(0.5);
@@ -2027,6 +2027,90 @@ describe('Pareto distribution', () => {
     it('should generate an array with random values with length of 500', () => {
         let pareto = new Pareto(3, 2),
             randomArray = pareto.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});
+
+// Rayleigh distribution
+describe('Rayleigh distribution', () => {
+    let Rayleigh = require('../lib/methods/rayleigh');
+    it('requires one numerical argument with scale > 0', () => {
+        let zeroParams = () => {
+            let rayleigh = new Rayleigh();
+            if(rayleigh.isError())
+                throw new Error(rayleigh.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let rayleigh = new Rayleigh(0.5);
+            if(rayleigh.isError())
+                throw new Error(rayleigh.isError());
+        };
+        oneParam.should.not.throw(Error);
+
+        let badParams = () => {
+            let rayleigh = new Rayleigh('a');
+            if(rayleigh.isError())
+                throw new Error(rayleigh.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmaller = () => {
+            let rayleigh = new Rayleigh(-1);
+            if(rayleigh.isError())
+                throw new Error(rayleigh.isError());
+        };
+        incorrectParamsSmaller.should.throw(Error);
+
+        let incorrectParamsSigmaToZero = () => {
+            let rayleigh = new Rayleigh(0);
+            if(rayleigh.isError())
+                throw new Error(rayleigh.isError());
+        };
+        incorrectParamsSigmaToZero.should.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let rayleigh = new Rayleigh(1);
+        expect(rayleigh).to.have.property('random');
+        expect(rayleigh).to.respondsTo('random');
+        expect(rayleigh).to.have.property('distribution');
+        expect(rayleigh).to.respondsTo('distribution');
+        expect(rayleigh).to.have.property('refresh');
+        expect(rayleigh).to.respondsTo('refresh');
+        expect(rayleigh).to.have.property('isError');
+        expect(rayleigh).to.respondsTo('isError');
+    });
+    it('should have "sigma" value for initial sigma = 0.5 equals to 1 after .refresh(1) method',() => {
+        let rayleigh = new Rayleigh(0.5);
+        rayleigh.sigma.should.equal(0.5);
+        rayleigh.refresh(1);
+        rayleigh.sigma.should.equal(1);
+    });
+    it('should return different values each time', () => {
+        let rayleigh = new Rayleigh(1),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = rayleigh.random();
+            expect(rayleigh.random()).to.be.a('number');
+            rayleigh.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let rayleigh = new Rayleigh(2),
+            randomArray = rayleigh.distribution(500),
             countDiffs = 0,
             last,
             delta = 0.2;
