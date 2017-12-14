@@ -2210,3 +2210,112 @@ describe('Student\'s t-distribution', () => {
         expect(countDiffs).to.be.at.least(200);
     });
 });
+
+// Triangular distribution
+describe('Triangular distribution', () => {
+    let Triangular = require('../lib/methods/triangular');
+    it('requires three numerical argument with a any, b > a and a <= c <= b', () => {
+        let zeroParams = () => {
+            let triangular = new Triangular();
+            if(triangular.isError())
+                throw new Error(triangular.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let triangular = new Triangular(0.5);
+            if(triangular.isError())
+                throw new Error(triangular.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let twoParams =  () => {
+            let triangular = new Triangular(0.5, 2);
+            if(triangular.isError())
+                throw new Error(triangular.isError());
+        };
+        twoParams.should.throw(Error);
+
+        let badParams = () => {
+            let triangular = new Triangular('a', 'b', 'c');
+            if(triangular.isError())
+                throw new Error(triangular.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmallerB = () => {
+            let triangular = new Triangular(1, 0.5, 1);
+            if(triangular.isError())
+                throw new Error(triangular.isError());
+        };
+        incorrectParamsSmallerB.should.throw(Error);
+
+        let incorrectParamsSmallerCA = () => {
+            let triangular = new Triangular(1, 2, 0.5);
+            if(triangular.isError())
+                throw new Error(triangular.isError());
+        };
+        incorrectParamsSmallerCA.should.throw(Error);
+
+        let incorrectParamsGreaterCB = () => {
+            let triangular = new Triangular(1, 2, 2.5);
+            if(triangular.isError())
+                throw new Error(triangular.isError());
+        };
+        incorrectParamsGreaterCB.should.throw(Error);
+
+        let threeParams = () => {
+            let triangular = new Triangular(1, 2, 1.5);
+            if(triangular.isError())
+                throw new Error(triangular.isError());
+        };
+        threeParams.should.not.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let triangular = new Triangular(1, 3, 2);
+        expect(triangular).to.have.property('random');
+        expect(triangular).to.respondsTo('random');
+        expect(triangular).to.have.property('distribution');
+        expect(triangular).to.respondsTo('distribution');
+        expect(triangular).to.have.property('refresh');
+        expect(triangular).to.respondsTo('refresh');
+        expect(triangular).to.have.property('isError');
+        expect(triangular).to.respondsTo('isError');
+    });
+    it('should have "v" (degrees of freedom) value for initial v = 0.5 equals to 1 after .refresh(1) method',() => {
+        let triangular = new Triangular(1, 3, 2);
+        triangular.a.should.equal(1);
+        triangular.b.should.equal(3);
+        triangular.c.should.equal(2);
+        triangular.refresh(2, 4, 3);
+        triangular.a.should.equal(2);
+        triangular.b.should.equal(4);
+        triangular.c.should.equal(3);
+    });
+    it('should return different values each time', () => {
+        let triangular = new Triangular(1, 3, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = triangular.random();
+            expect(triangular.random()).to.be.a('number');
+            triangular.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let triangular = new Triangular(1, 3, 2),
+            randomArray = triangular.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});
