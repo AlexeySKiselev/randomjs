@@ -2214,7 +2214,7 @@ describe('Student\'s t-distribution', () => {
 // Triangular distribution
 describe('Triangular distribution', () => {
     let Triangular = require('../lib/methods/triangular');
-    it('requires three numerical argument with a any, b > a and a <= c <= b', () => {
+    it('requires three numerical arguments with a any, b > a and a <= c <= b', () => {
         let zeroParams = () => {
             let triangular = new Triangular();
             if(triangular.isError())
@@ -2304,6 +2304,113 @@ describe('Triangular distribution', () => {
     it('should generate an array with random values with length of 500', () => {
         let triangular = new Triangular(1, 3, 2),
             randomArray = triangular.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});
+
+// Weibull distribution
+describe('Weibull distribution', () => {
+    let Weibull = require('../lib/methods/weibull');
+    it('requires two numerical arguments with k > 0 and lambda > 0', () => {
+        let zeroParams = () => {
+            let weibull = new Weibull();
+            if(weibull.isError())
+                throw new Error(weibull.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let weibull = new Weibull(0.5);
+            if(weibull.isError())
+                throw new Error(weibull.isError());
+        };
+        oneParam.should.throw(Error);
+
+        let twoParams =  () => {
+            let weibull = new Weibull(0.5, 2);
+            if(weibull.isError())
+                throw new Error(weibull.isError());
+        };
+        twoParams.should.not.throw(Error);
+
+        let badParams = () => {
+            let weibull = new Weibull('a', 'b');
+            if(weibull.isError())
+                throw new Error(weibull.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmaller1 = () => {
+            let weibull = new Weibull(1, -1);
+            if(weibull.isError())
+                throw new Error(weibull.isError());
+        };
+        incorrectParamsSmaller1.should.throw(Error);
+
+        let incorrectParamsSmaller2 = () => {
+            let weibull = new Weibull(-1, 1);
+            if(weibull.isError())
+                throw new Error(weibull.isError());
+        };
+        incorrectParamsSmaller2.should.throw(Error);
+
+        let incorrectParamsZero1 = () => {
+            let weibull = new Weibull(1, 0);
+            if(weibull.isError())
+                throw new Error(weibull.isError());
+        };
+        incorrectParamsZero1.should.throw(Error);
+
+        let incorrectParamsZero2 = () => {
+            let weibull = new Weibull(0, 1);
+            if(weibull.isError())
+                throw new Error(weibull.isError());
+        };
+        incorrectParamsZero2.should.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let weibull = new Weibull(1, 2);
+        expect(weibull).to.have.property('random');
+        expect(weibull).to.respondsTo('random');
+        expect(weibull).to.have.property('distribution');
+        expect(weibull).to.respondsTo('distribution');
+        expect(weibull).to.have.property('refresh');
+        expect(weibull).to.respondsTo('refresh');
+        expect(weibull).to.have.property('isError');
+        expect(weibull).to.respondsTo('isError');
+    });
+    it('should have "k" and "lambda" values for initial k = 0.5 and lambda = 1 equals to 1 and 2 after .refresh(1, 2) method',() => {
+        let weibull = new Weibull(0.5, 1);
+        weibull.k.should.equal(0.5);
+        weibull.lambda.should.equal(1);
+        weibull.refresh(1, 2);
+        weibull.k.should.equal(1);
+        weibull.lambda.should.equal(2);
+    });
+    it('should return different values each time', () => {
+        let weibull = new Weibull(1, 2),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = weibull.random();
+            expect(weibull.random()).to.be.a('number');
+            weibull.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let weibull = new Weibull(1, 2),
+            randomArray = weibull.distribution(500),
             countDiffs = 0,
             last,
             delta = 0.2;
