@@ -2126,3 +2126,87 @@ describe('Rayleigh distribution', () => {
         expect(countDiffs).to.be.at.least(200);
     });
 });
+
+// Student's t-distribution
+describe('Student\'s t-distribution', () => {
+    let Student = require('../lib/methods/student');
+    it('requires one numerical argument with degrees of freedom > 0', () => {
+        let zeroParams = () => {
+            let student = new Student();
+            if(student.isError())
+                throw new Error(student.isError());
+        };
+        zeroParams.should.throw(Error);
+
+        let oneParam =  () => {
+            let student = new Student(0.5);
+            if(student.isError())
+                throw new Error(student.isError());
+        };
+        oneParam.should.not.throw(Error);
+
+        let badParams = () => {
+            let student = new Student('a');
+            if(student.isError())
+                throw new Error(student.isError());
+        };
+        badParams.should.throw(Error);
+
+        let incorrectParamsSmaller = () => {
+            let student = new Student(-1);
+            if(student.isError())
+                throw new Error(student.isError());
+        };
+        incorrectParamsSmaller.should.throw(Error);
+
+        let incorrectParamsVToZero = () => {
+            let student = new Student(0);
+            if(student.isError())
+                throw new Error(student.isError());
+        };
+        incorrectParamsVToZero.should.throw(Error);
+    });
+    it('should has methods: .random, .distribution, .refresh, .isError', () => {
+        let student = new Student(1);
+        expect(student).to.have.property('random');
+        expect(student).to.respondsTo('random');
+        expect(student).to.have.property('distribution');
+        expect(student).to.respondsTo('distribution');
+        expect(student).to.have.property('refresh');
+        expect(student).to.respondsTo('refresh');
+        expect(student).to.have.property('isError');
+        expect(student).to.respondsTo('isError');
+    });
+    it('should have "v" (degrees of freedom) value for initial v = 0.5 equals to 1 after .refresh(1) method',() => {
+        let student = new Student(0.5);
+        student.degrees.should.equal(0.5);
+        student.refresh(1);
+        student.degrees.should.equal(1);
+    });
+    it('should return different values each time', () => {
+        let student = new Student(1),
+            value1;
+        for(let i = 0; i < 10; i += 1){
+            value1 = student.random();
+            expect(student.random()).to.be.a('number');
+            student.random().should.not.equal(value1);
+        }
+    });
+    it('should generate an array with random values with length of 500', () => {
+        let student = new Student(2),
+            randomArray = student.distribution(500),
+            countDiffs = 0,
+            last,
+            delta = 0.2;
+        // Check all values
+        randomArray.map(rand => {
+            if(last && Math.abs(rand - last) > delta){
+                countDiffs += 1;
+            }
+            last = rand;
+        });
+        expect(randomArray).to.be.an('array');
+        expect(randomArray).to.have.lengthOf(500);
+        expect(countDiffs).to.be.at.least(200);
+    });
+});

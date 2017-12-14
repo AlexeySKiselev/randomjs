@@ -49,7 +49,7 @@ class Rayleigh {
             return {error: 'Rayleigh distribution: you should point "sigma" (scale) numerical value'};
         }
         if(this.sigma <= 0) {
-            return {error: 'Rayleigh distribution: parameters "sigma" (scale) must be a positive value'};
+            return {error: 'Rayleigh distribution: parameter "sigma" (scale) must be a positive value'};
         }
         return false;
     }

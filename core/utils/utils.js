@@ -79,3 +79,5 @@ class Utils {
 }
 
 module.exports = Utils;
+
+// TODO: implement Beta function
