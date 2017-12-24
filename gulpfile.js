@@ -18,7 +18,8 @@ gulp.task('build:node',function(){
             this.emit('end');
         }).
         pipe(babel({
-            presets: ['es2015', 'flow']
+            presets: ['es2015', 'flow'],
+            plugins: ['transform-decorators-legacy']
         })).
         pipe(replace(/(\/core)/g,'')).
         pipe(gulp.dest('./lib/'));

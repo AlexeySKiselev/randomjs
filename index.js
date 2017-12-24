@@ -5,6 +5,7 @@
 
 import fs from 'fs';
 import Factory from './core/factory';
+import AnalyzerFactory from './core/analyzerFactory';
 
 class RandomJS {
     constructor(): void {
@@ -22,6 +23,17 @@ class RandomJS {
                     };
                 }
             });
+        });
+
+        /**
+         * Add random array analyser
+         * Use Analyzer factory to create method
+         */
+        Object.defineProperty(this, 'analyze', {
+            __proto__: null,
+            value: (randomArray: Array<number>) => {
+                return new AnalyzerFactory(randomArray);
+            }
         });
     }
 
@@ -45,3 +57,5 @@ module.exports = new RandomJS();
 // TODO: Promise-like functions
 // TODO: Games
 // TODO: Pseudorandom generator
+// TODO: Singletons
+// TODO: add Proxy to random generators

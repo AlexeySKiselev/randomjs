@@ -1,33 +1,36 @@
 // @flow
 /**
- * Factory method for creation random distributed methods
+ * Project Interfaces
  * Created by Alexey S. Kiselev
  */
 
-import { IRandomFactory} from './interfaces';
+/**
+ * Analyzer methods interface
+ */
+export interface IAnalyzerMethods {
+    /**
+     * Analyzer must contains randomArray property, which represents input Array
+     */
+    randomArray: Array<number>;
 
-class RandomFactory implements IRandomFactory {
-    constructor(method: string, ...params): void {
-        let Method = require(__dirname + '/methods/' + method);
-        this.method = new Method(...params);
-        /**
-         * Add methods to this Factory class form the "Method" class
-         * Add only that methods which is not in RandomFactory class
-         * Because in this class we are re-define existing methods from "Method" class
-         * All names of created methods will be the same as in the "Method" class
-         */
-        Object.getOwnPropertyNames(Object.getPrototypeOf(this.method)).map(method => {
-            if(!this[method]){
-                Object.defineProperty(this, method, {
-                    __proto__: null,
-                    get: () => {
-                        return this.method[method];
-                    }
-                });
-            }
-        });
-    }
+    /**
+     * This list will contains methods, which AnalyzerFactory is going to copy
+     * List contains names of methods to copy
+     * Then copy this methods via defineProperty method
+     */
+    publicMethods: { [method: string]: number | boolean };
 
+    /**
+     * This list will contains only properties, not functions
+     * I need it for returning an object of properties, when calling analyzer like a function
+     */
+    publicProperties: { [property: string]: any };
+}
+
+/**
+ * Random Distributions Factory Interface
+ */
+export interface IRandomFactory {
     /**
      * Required method
      * Method .random(): Promise<number> generates a random number due to distribution
@@ -36,15 +39,7 @@ class RandomFactory implements IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns a random number on each call, can be integer or float
      */
-    random(): number {
-        return new Promise((resolve, reject) => {
-            if(this.isError()){
-                reject(this.isError());
-            } else {
-                resolve(this.method.random());
-            }
-        });
-    }
+    random() : Promise<number>;
 
     /**
      * Required method
@@ -54,12 +49,7 @@ class RandomFactory implements IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns a random number on each call, can be integer or float
      */
-    randomSync(): number {
-        if(this.isError()){
-            throw new Error(this.isError().error);
-        } else
-            return this.method.random();
-    }
+    randomSync(): number;
 
     /**
      * Required method
@@ -71,18 +61,7 @@ class RandomFactory implements IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns an array of random numbers on each call, numbers can be integer or float
      */
-    distribution(n: number = 10, ...distParams): Array<number> {
-        if(n < 1) {
-            n = 1;
-        }
-        return new Promise((resolve, reject) => {
-            if(this.isError()){
-                reject(this.isError());
-            } else {
-                resolve(this.method.distribution(n, ...distParams));
-            }
-        });
-    }
+    distribution(n: number): Promise<Array<number>>;
 
     /**
      * Required method
@@ -93,15 +72,7 @@ class RandomFactory implements IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns an array of random numbers on each call, numbers can be integer or float
      */
-    distributionSync(n: number = 10, ...distParams): Array<number> {
-        if(n < 1) {
-            n = 1;
-        }
-        if(this.isError()){
-            throw new Error(this.isError().error);
-        } else
-            return this.method.distribution(n, ...distParams);
-    }
+    distributionSync(n: number): Array<number>;
 
     /**
      * Required method
@@ -110,9 +81,7 @@ class RandomFactory implements IRandomFactory {
      * @returns "false" if no error occurred
      * or {error: string} object with error message if error occurred
      */
-    isError(): boolean | {error: string} {
-        return this.method.isError();
-    }
+    isError(): boolean | {error: string};
 
     /**
      * Required method
@@ -125,17 +94,11 @@ class RandomFactory implements IRandomFactory {
      * normal.refresh(3, 4);
      * normal.random() // will generate random numbers with Gaussian distribution with mu = 3 and sigma = 4
      */
-    refresh(...newParams): void {
-        this.method.refresh(...newParams);
-    }
+    refresh(): void;
 
     /**
      * class .toString() method, which will output information about distribution
      * @returns string
      */
-    toString(): string {
-        return this.method.toString();
-    }
+    toString(): string;
 }
-
-export default RandomFactory;
