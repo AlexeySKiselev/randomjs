@@ -13,7 +13,7 @@ import { IAnalyzerMethods } from './interfaces';
  * Then add name of public method to this object via propertyKey value
  * In class add @PublicMethod string before every public method
  */
-export let PublicMethod = (target: IAnalyzerMethods, propertyKey: string): void => {
+export let AnalyzerPublicMethod = (target: IAnalyzerMethods, propertyKey: string): void => {
     if(!target.publicMethods){
         target.publicMethods = {};
     }

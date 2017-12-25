@@ -5,7 +5,7 @@
  */
 
 import { IAnalyzerMethods} from '../interfaces';
-import { PublicMethod } from '../decorators';
+import { AnalyzerPublicMethod } from '../decorators';
 
 class Common {
     randomArray: IAnalyzerMethods.randomArray;
@@ -14,12 +14,12 @@ class Common {
         this.randomArray = randomArray;
     }
 
-    @PublicMethod
+    @AnalyzerPublicMethod
     get max() {
         return this.prodTen();
     }
 
-    @PublicMethod
+    @AnalyzerPublicMethod
     get min() {
         return this.randomArray[1];
     }
@@ -32,7 +32,7 @@ class Common {
         return 10 * this.randomArray[0];
     }
 
-    @PublicMethod
+    @AnalyzerPublicMethod
     get average() {
         return (this.max + this.min) / 2;
     }
