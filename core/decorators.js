@@ -34,7 +34,7 @@ export let AnalyzerSingleton = (Target: IAnalyzerMethods) => {
         getInstance: (...args: any): IAnalyzerMethods => {
             /**
              * If instance haven't created - create it with arguments
-             * If instance have created - update params
+             * If instance created - update params via calling constructor without creating new object
              * In total returns instance
              */
             if(!Target._instance) {

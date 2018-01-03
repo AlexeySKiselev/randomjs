@@ -36,7 +36,7 @@ export interface IAnalyzerMethods {
      * This method I use to create singleton instance of imported class
      * I add this method to class in SingletonDecorator
      */
-    static getInstance(...args: any): IAnalyzerMethods;
+    getInstance(...args: any): IAnalyzerMethods;
 }
 
 /**

@@ -32,6 +32,15 @@ class Common {
     _minimum: number;
 
     constructor(randomArray: Array<number>): void {
+        /**
+         * Check if randomArray is array
+         * if not - throw Error
+         * @type {Array.<number>}
+         */
+        if(!Array.isArray(randomArray)) {
+            throw new Error('Analyzer.Common: input randomArray must be an array');
+        }
+
         this.randomArray = randomArray;
         this._maximum = -Infinity;
         this._minimum = Infinity;
