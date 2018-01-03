@@ -48,7 +48,8 @@ class AnalyzerFactory implements IAnalyzerMethods {
 
         fs.readdirSync(__dirname + '/core/analyzer').forEach((file: string) => {
             let Methods: IAnalyzerMethods = require(__dirname + '/core/analyzer/' + file),
-                methods: IAnalyzerMethods = new Methods(this.randomArray);
+                methods: IAnalyzerMethods = Methods.getInstance(this.randomArray);
+
             Object.keys(methods.publicMethods).map((method: string) => {
                 /**
                  * If different classes contain the same public methods

@@ -11,20 +11,32 @@ export interface IAnalyzerMethods {
     /**
      * Analyzer must contains randomArray property, which represents input Array
      */
-    randomArray: Array<number>;
+    -randomArray: Array<number>;
 
     /**
      * This list will contains methods, which AnalyzerFactory is going to copy
      * List contains names of methods to copy
      * Then copy this methods via defineProperty method
      */
-    publicMethods: { [method: string]: number | boolean };
+    +publicMethods: { [method: string]: number | boolean };
 
     /**
      * This list will contains only properties, not functions
      * I need it for returning an object of properties, when calling analyzer like a function
      */
-    publicProperties: { [property: string]: any };
+    +publicProperties: { [property: string]: any };
+
+    /**
+     * Read only instance of Analyzer imported class
+     * I use this object in Singleton decorator to memorize instance
+     */
+    +_instance: any;
+
+    /**
+     * This method I use to create singleton instance of imported class
+     * I add this method to class in SingletonDecorator
+     */
+    static getInstance(...args: any): IAnalyzerMethods;
 }
 
 /**

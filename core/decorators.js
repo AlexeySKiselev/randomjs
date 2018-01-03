@@ -19,3 +19,31 @@ export let AnalyzerPublicMethod = (target: IAnalyzerMethods, propertyKey: string
     }
     target.publicMethods[propertyKey] = 1;
 };
+
+export let AnalyzerSingleton = (Target: IAnalyzerMethods) => {
+    /**
+     * Create instance object initially assigned to null
+     */
+    Target._instance = null;
+
+    /**
+     * Add static method getInstance to target
+     * Instead of using "new" keyword I use getInstance method
+     */
+    Object.assign(Target, {
+        getInstance: (...args: any): IAnalyzerMethods => {
+            /**
+             * If instance haven't created - create it with arguments
+             * If instance have created - update params
+             * In total returns instance
+             */
+            if(!Target._instance) {
+                Target._instance = new Target(...args);
+            } else {
+                Target._instance.constructor.apply(Target._instance, args);
+            }
+
+            return Target._instance;
+        }
+    });
+};

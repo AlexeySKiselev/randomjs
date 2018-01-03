@@ -10,3 +10,4 @@ console.log(randomjs.normal(3, 3).variance);
 console.log(randomjs.normal(2, 2).variance);
 console.log('Analyzer');
 console.log(randomjs.analyze([3, 4]));
+console.log(randomjs.analyze([5, 6]));
