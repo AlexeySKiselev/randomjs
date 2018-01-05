@@ -3,7 +3,7 @@
  * Created by Alexey S. Kiselev on 23.12.2017.
  */
 
-import randomjs from '../lib';
+let randomjs = require('../lib');
 
 console.log('Normal random number');
 console.log(randomjs.normal(3, 3).variance);

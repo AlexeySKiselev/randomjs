@@ -103,7 +103,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Normal Distribution
+    // Normal Distribution
     describe('Normal distribution', () => {
         let Normal = require('../lib/methods/normal');
         it('requires two numerical arguments', () => {
@@ -187,7 +187,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Bernoulli distribution
+    // Bernoulli distribution
     describe('Bernoulli distribution', () => {
         let Bernoulli = require('../lib/methods/bernoulli');
         it('requires one numerical argument', () => {
@@ -290,7 +290,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Beta distribution
+    // Beta distribution
     describe('Beta distribution', () => {
         let Beta = require('../lib/methods/beta');
         it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
@@ -391,7 +391,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Beta Prime distribution
+    // Beta Prime distribution
     describe('Beta Prime distribution', () => {
         let BetaPrime = require('../lib/methods/betaprime');
         it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
@@ -495,7 +495,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Binomial distribution
+    // Binomial distribution
     describe('Binomial distribution', () => {
         let Binomial = require('../lib/methods/binomial');
         it('requires two numerical arguments with n > 0 and 0 <= p <= 1', () => {
@@ -617,7 +617,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Cauchy distribution
+    // Cauchy distribution
     describe('Cauchy distribution', () => {
         let Cauchy = require('../lib/methods/cauchy');
         it('requires two numerical arguments with gamma > 0', () => {
@@ -710,7 +710,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Chi distribution
+    // Chi distribution
     describe('Chi distribution', () => {
         let Chi = require('../lib/methods/chi');
         it('requires one numerical argument with k > 0', () => {
@@ -794,7 +794,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Chi Square distribution
+    // Chi Square distribution
     describe('Chi Square distribution', () => {
         let ChiSquare = require('../lib/methods/chisquare');
         it('requires one numerical argument with k > 0', () => {
@@ -878,7 +878,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Erlang distribution
+    // Erlang distribution
     describe('Erlang distribution', () => {
         let Erlang = require('../lib/methods/erlang');
         it('requires two numerical arguments with mu > 0 and k > 0', () => {
@@ -993,7 +993,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Gamma distribution
+    // Gamma distribution
     describe('Gamma distribution', () => {
         let Gamma = require('../lib/methods/gamma');
         it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
@@ -1108,7 +1108,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Geometric distribution
+    // Geometric distribution
     describe('Geometric distribution', () => {
         let Geometric = require('../lib/methods/geometric');
         it('requires one numerical argument with 0 <= p <= 1', () => {
@@ -1214,7 +1214,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Negative Binomial distribution
+    // Negative Binomial distribution
     describe('Negative Binomial distribution', () => {
         let NegativeBinomial = require('../lib/methods/negativebinomial');
         it('requires two numerical arguments with n > 0 and 0 <= p <= 1', () => {
@@ -1336,7 +1336,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Poisson distribution
+    // Poisson distribution
     describe('Poisson distribution', () => {
         let Poisson = require('../lib/methods/poisson');
         it('requires one numerical argument with lambda > 0', () => {
@@ -1442,7 +1442,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Exponential distribution
+    // Exponential distribution
     describe('Exponential distribution', () => {
         let Exponential = require('../lib/methods/exponential');
         it('requires one numerical argument', () => {
@@ -1534,7 +1534,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Extreme Value (Gumbel-type) distribution
+    // Extreme Value (Gumbel-type) distribution
     describe('Extreme Value (Gumbel-type) distribution', () => {
         let ExtremeValue = require('../lib/methods/extremevalue');
         it('requires two numerical arguments with sigma > 0', () => {
@@ -1627,7 +1627,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Laplace distribution
+    // Laplace distribution
     describe('Laplace distribution', () => {
         let Laplace = require('../lib/methods/laplace');
         it('requires two numerical arguments with scale > 0', () => {
@@ -1736,7 +1736,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Logistic distribution
+    // Logistic distribution
     describe('Logistic distribution', () => {
         let Logistic = require('../lib/methods/logistic');
         it('requires two numerical arguments with scale > 0', () => {
@@ -1845,7 +1845,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Lognormal distribution
+    // Lognormal distribution
     describe('Lognormal distribution', () => {
         let Lognormal = require('../lib/methods/lognormal');
         it('requires two numerical arguments with sigma > 0', () => {
@@ -1938,7 +1938,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Pareto distribution
+    // Pareto distribution
     describe('Pareto distribution', () => {
         let Pareto = require('../lib/methods/pareto');
         it('requires two numerical arguments with scale > 0 and shape > 0', () => {
@@ -2045,7 +2045,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Rayleigh distribution
+    // Rayleigh distribution
     describe('Rayleigh distribution', () => {
         let Rayleigh = require('../lib/methods/rayleigh');
         it('requires one numerical argument with scale > 0', () => {
@@ -2129,7 +2129,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Student's t-distribution
+    // Student's t-distribution
     describe('Student\'s t-distribution', () => {
         let Student = require('../lib/methods/student');
         it('requires one numerical argument with degrees of freedom > 0', () => {
@@ -2213,7 +2213,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Triangular distribution
+    // Triangular distribution
     describe('Triangular distribution', () => {
         let Triangular = require('../lib/methods/triangular');
         it('requires three numerical arguments with a any, b > a and a <= c <= b', () => {
@@ -2322,7 +2322,7 @@ describe('Random distributions', () => {
         });
     });
 
-// Weibull distribution
+    // Weibull distribution
     describe('Weibull distribution', () => {
         let Weibull = require('../lib/methods/weibull');
         it('requires two numerical arguments with k > 0 and lambda > 0', () => {
@@ -2450,12 +2450,12 @@ describe('Analyzer', () => {
         });
         it('should receive for input data only array', () => {
             let receiveNotArray = () => {
-                let common = Common.getInstance(3);
+                Common.getInstance(3);
             };
             receiveNotArray.should.throw(Error);
 
             let receiveArray = () => {
-                let common = Common.getInstance([1, 2, 3]);
+                Common.getInstance([1, 2, 3]);
             };
             receiveArray.should.not.throw(Error);
         });
