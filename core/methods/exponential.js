@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Exponential distribution
  * This is continuous distribution
@@ -8,8 +9,11 @@
  * Created by Alexey S. Kiselev
  */
 
+import type {MethodError, RandomArray} from '../types';
+
 class Exponential {
     lambda: number;
+
     constructor(lambda: number): void {
         this.lambda = Number(lambda);
     }
@@ -27,8 +31,8 @@ class Exponential {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - exponential distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let exponentialArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let exponentialArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             exponentialArray[i] = this.random();
         }
@@ -39,14 +43,14 @@ class Exponential {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.lambda) {
             return {error: 'Exponential distribution: you should point parameter "lambda" with numerical value'};
         }
         if(this.lambda <= 0){
             return {error: 'Exponential distribution: parameter "lambda" must be a positive number'};
         }
-        return false;
+        return { error: false };
     }
 
     /**
@@ -128,7 +132,7 @@ class Exponential {
      * Fisher information matrix
      * Information only
      */
-    get fisher(): Array<Array<number>> {
+    get fisher(): number {
         return this.variance;
     }
 

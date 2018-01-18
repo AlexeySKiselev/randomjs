@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Weibull distribution
  * This is continuous distribution
@@ -9,12 +10,13 @@
  * Created by Alexey S. Kiselev
  */
 
+import type {MethodError, RandomArray} from '../types';
 let Utils = require('../utils/utils');
 
 class Weibull {
     k: number;
     lambda: number;
-    gamma: number;
+    gamma: Function;
 
     constructor(k: number, lambda: number): void {
         this.k = Number(k);
@@ -35,8 +37,8 @@ class Weibull {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Weibull distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let weibullArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let weibullArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             weibullArray[i] = this.random();
         }
@@ -47,7 +49,7 @@ class Weibull {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.k || !this.lambda) {
             return {error: 'Weibull distribution: you should point "k", "lambda" numerical values'};
         }
@@ -58,7 +60,7 @@ class Weibull {
         if(this.lambda <= 0) {
             return {error: 'Weibull distribution: parameters "lambda" must be greater then zero'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

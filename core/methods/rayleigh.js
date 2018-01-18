@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Rayleigh distribution
  * This is continuous distribution
@@ -7,6 +8,8 @@
  * @returns Rayleigh distributed value
  * Created by Alexey S. Kiselev
  */
+
+import type { MethodError, RandomArray } from '../types';
 
 class Rayleigh {
     sigma: number;
@@ -32,8 +35,8 @@ class Rayleigh {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Pareto distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let rayleighArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let rayleighArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             rayleighArray[i] = this.random();
         }
@@ -44,14 +47,14 @@ class Rayleigh {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.sigma) {
             return {error: 'Rayleigh distribution: you should point "sigma" (scale) numerical value'};
         }
         if(this.sigma <= 0) {
             return {error: 'Rayleigh distribution: parameter "sigma" (scale) must be a positive value'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

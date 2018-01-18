@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Beta Distribution
  * This is continuous distribution
@@ -9,10 +10,17 @@
  * Created by Alexey S. Kiselev
  */
 
+import type { MethodError, RandomArray } from '../types';
+
 let Gamma = require('./gamma'),
     Utils = require('../utils/utils');
 
 class Beta {
+    alpha: number;
+    beta: number;
+    gammaA: Gamma;
+    gammaB: Gamma;
+
     constructor(alpha: number, beta: number): void {
         this.alpha = Number(alpha);
         this.beta = Number(beta);
@@ -48,8 +56,8 @@ class Beta {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Beta distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let betaArray: Array<number> = [],
+    distribution(n: number): RandomArray {
+        let betaArray: RandomArray = [],
             gammaA: number,
             gammaB: number;
 
@@ -70,7 +78,7 @@ class Beta {
      * Parameter "beta" must be positive
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.alpha || !this.beta) {
             return {error: 'Beta distribution: you should point "alpha" and "beta" positive numerical values'};
         }
@@ -80,7 +88,7 @@ class Beta {
         if(this.beta <= 0){
             return {error: 'Beta distribution: Parameter "beta" must be positive'};
         }
-        return false;
+        return { error: false };
     }
 
     /**
@@ -150,7 +158,7 @@ class Beta {
      */
     get entropy(): number {
         let B: number = Utils.gamma(this.alpha) * Utils.gamma(this.beta) / Utils.gamma(this.alpha + this.beta);
-        return Math.log(B) - (this.alpha - 1) * Utils.digamma(this.alpha) - (this.bate - 1) * Utils.digamma(this.beta) + (this.alpha + this.beta - 2) * Utils.digamma(this.alpha + this.beta);
+        return Math.log(B) - (this.alpha - 1) * Utils.digamma(this.alpha) - (this.beta - 1) * Utils.digamma(this.beta) + (this.alpha + this.beta - 2) * Utils.digamma(this.alpha + this.beta);
     }
 
     /**

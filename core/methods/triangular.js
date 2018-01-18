@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Triangular distribution
  * This is continuous distribution
@@ -9,6 +10,8 @@
  * @returns Triangular distributed value
  * Created by Alexey S. Kiselev
  */
+
+import type {MethodError, RandomArray} from '../types';
 
 class Triangular {
     a: number;
@@ -39,8 +42,8 @@ class Triangular {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Triangular distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let triangularArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let triangularArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             triangularArray[i] = this.random();
         }
@@ -51,7 +54,7 @@ class Triangular {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if((!this.a && this.a !== 0) || (!this.b && this.b !== 0) || (!this.c && this.c !== 0)) {
             return {error: 'Triangular distribution: you should point "a", "b" and "c" numerical values'};
         }
@@ -62,7 +65,7 @@ class Triangular {
         if(this.c < this.a || this.c > this.b) {
             return {error: 'Triangular distribution: parameters "c" must be greater then or equal to parameter "a" and lower then or equal to parameter "b"'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

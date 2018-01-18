@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Binomial Distribution
  * This is discreet distribution
@@ -9,7 +10,12 @@
  * Created by Alexey S. Kiselev
  */
 
+import type {MethodError, RandomArray} from '../types';
+
 class Binomial {
+    trials: number;
+    successProb: number;
+
     constructor(n: number, p: number) {
         this.trials = Number(n);
         this.successProb = Number(p);
@@ -34,8 +40,8 @@ class Binomial {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Binomial distributed numbers
      */
-    distribution(n: number) {
-        let binomialArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let binomialArray: RandomArray = [];
         for(let i:number = 0; i < n; i += 1){
             binomialArray[i] = this.random();
         }
@@ -48,7 +54,7 @@ class Binomial {
      * Parameter "p" must be 0 <= p <= 1
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.trials|| (!this.successProb && this.successProb !== 0)) {
             return {error: 'Binomial distribution: you should point parameter "n" like a positive integer and parameter "p" like a numerical value'};
         }
@@ -58,7 +64,7 @@ class Binomial {
         if(this.successProb < 0 || this.successProb > 1) {
             return {error: 'Binomial distribution: parameter "p" (probability of success) must be 0 <= p <= 1'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

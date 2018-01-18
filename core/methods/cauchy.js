@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Cauchy Distribution (also called Lorenz distribution)
  * This is continuous distribution
@@ -9,7 +10,12 @@
  * Created by Alexey S. Kiselev
  */
 
+import type { MethodError, RandomArray } from '../types';
+
 class Cauchy {
+    location: number;
+    scale: number;
+
     constructor(x: number, gamma: number): void {
         this.location = Number(x);
         this.scale = Number(gamma);
@@ -28,8 +34,8 @@ class Cauchy {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Cauchy distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let cauchyArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let cauchyArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             cauchyArray[i] = this.random();
         }
@@ -41,14 +47,14 @@ class Cauchy {
      * Parameter "gamma" must be positive
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.location || (!this.scale && this.scale !== 0)){
             return {error: 'Cauchy distribution: you should point "x" and "gamma" numerical values'};
         }
         if(this.scale <= 0) {
             return {error: 'Cauchy distribution: parameter "gamma" must be positive'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

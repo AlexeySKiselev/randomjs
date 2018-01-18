@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Extreme (Gumbel-type) Value distribution
  * This is continuous distribution
@@ -9,11 +10,14 @@
  * Created by Alexey S. Kiselev on 27.11.2017.
  */
 
+import type {MethodError, RandomArray} from '../types';
+
 // TODO: implement skewness value
 
 class ExtremeValue {
     mu: number;
     sigma: number;
+
     constructor(mu: number,sigma: number): void {
         this.mu = Number(mu);
         this.sigma = Number(sigma);
@@ -32,8 +36,8 @@ class ExtremeValue {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - extreme value distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let extremeValueArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let extremeValueArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             extremeValueArray[i] = this.random();
         }
@@ -44,14 +48,14 @@ class ExtremeValue {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if((!this.mu && this.mu !== 0) || !this.sigma) {
             return {error: 'Extreme Value (Gumbel type) distribution: you should point parameters "mu" and "sigma" with numerical values'};
         }
         if(this.sigma <= 0){
             return {error: 'Extreme Value (Gumbel type) distribution: parameter "sigma" must be a positive number'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

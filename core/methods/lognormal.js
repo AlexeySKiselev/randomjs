@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Lognormal distribution
  * This is continuous distribution
@@ -9,6 +10,7 @@
  * Created by Alexey S. Kiselev
  */
 
+import type { MethodError, RandomArray } from '../types';
 // Import Normal Distribution class
 let Normal = require('./normal');
 
@@ -39,7 +41,7 @@ class Lognormal {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - lognormal distributed numbers
      */
-    distribution(n: number): Array<number> {
+    distribution(n: number): RandomArray {
         return this.normal.distribution(n).map(num => {
             return Math.exp(this.mu + this.sigma * num);
         });
@@ -49,14 +51,14 @@ class Lognormal {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if((!this.mu && this.mu !== 0) || !this.sigma) {
             return {error: 'Lognormal distribution: you should point parameters "mu" and "sigma" with numerical values'};
         }
         if(this.sigma <= 0){
             return {error: 'Lognormal distribution: parameter "sigma" must be a positive number'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

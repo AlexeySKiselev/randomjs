@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Geometric Distribution
  * This is discreet distribution
@@ -8,7 +9,11 @@
  * Created by Alexey S. Kiselev
  */
 
+import type {MethodError, RandomArray} from '../types';
+
 class Geometric {
+    successProb: number;
+
     constructor(p: number): void {
         this.successProb = Number(p);
     }
@@ -30,8 +35,8 @@ class Geometric {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Geometric distributed numbers
      */
-    distribution(n: number) {
-        let geometricArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let geometricArray: RandomArray = [];
         for(let i:number = 0; i < n; i += 1){
             geometricArray[i] = this.random();
         }
@@ -43,14 +48,14 @@ class Geometric {
      * Parameter "p" must be 0 <= p <= 1
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.successProb && this.successProb !== 0){
             return {error: 'Geometric distribution: you should specify parameter "p" with numerical value'};
         }
         if(this.successProb < 0 || this.successProb > 1) {
             return {error: 'Geometric distribution: parameter "p" (probability of success) must be 0 <= p <= 1'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

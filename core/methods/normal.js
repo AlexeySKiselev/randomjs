@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Normal Gaussian Distribution
  * https://en.wikipedia.org/wiki/Normal_distribution
@@ -8,6 +9,7 @@
  * Created by Alexey S. Kiselev
  */
 
+import type { MethodError, RandomArray } from '../types';
 let Uniform = require('./uniform');
 
 class Normal {
@@ -55,8 +57,8 @@ class Normal {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - normal distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let normalArray: Array<number> = [],
+    distribution(n: number): RandomArray {
+        let normalArray: RandomArray = [],
             U1: number,
             U2: number,
             W: number,
@@ -86,7 +88,7 @@ class Normal {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if((!this.mu && this.mu !== 0) || (!this.sigma && this.sigma !== 0)) {
             return {error: 'Normal distribution: you should point "mu" and "sigma" numerical values'};
         }
@@ -95,7 +97,7 @@ class Normal {
             return {error: 'Normal distribution: parameter "sigma" must be a positive value'};
         }
 
-        return false;
+        return { error: false };
     }
 
     /**

@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Pareto distribution
  * This is continuous distribution
@@ -8,6 +9,8 @@
  * @returns Pareto distributed value
  * Created by Alexey S. Kiselev
  */
+
+import type {MethodError, RandomArray} from '../types';
 
 class Pareto {
     xm: number;
@@ -31,8 +34,8 @@ class Pareto {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Pareto distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let paretoArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let paretoArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             paretoArray[i] = this.random();
         }
@@ -43,14 +46,14 @@ class Pareto {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if((!this.xm && this.xm !== 0) || (!this.alpha && this.alpha !== 0)) {
             return {error: 'Pareto distribution: you should point "xm" (scale) and "alpha" (shape) numerical values'};
         }
         if(this.xm <= 0 || this.alpha <= 0) {
             return {error: 'Pareto distribution: parameters "xm" (scale) and "alpha" (shape) must be a positive values'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

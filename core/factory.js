@@ -4,24 +4,27 @@
  * Created by Alexey S. Kiselev
  */
 
-import { IRandomFactory} from './interfaces';
+import { IRandomFactory } from './interfaces';
+import type { MethodError, RandomArray } from './types';
 
-class RandomFactory implements IRandomFactory {
-    constructor(method: string, ...params): void {
+class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArray>> {
+    _method: any;
+
+    constructor(method: string, ...params: any): void {
         let Method = require(__dirname + '/methods/' + method);
-        this.method = new Method(...params);
+        this._method = new Method(...params);
         /**
          * Add methods to this Factory class form the "Method" class
          * Add only that methods which is not in RandomFactory class
          * Because in this class we are re-define existing methods from "Method" class
          * All names of created methods will be the same as in the "Method" class
          */
-        Object.getOwnPropertyNames(Object.getPrototypeOf(this.method)).map(method => {
-            if(!this[method]){
+        Object.getOwnPropertyNames(Object.getPrototypeOf(this._method)).map((method: string) => {
+            if(!this.hasOwnProperty(method)){
                 Object.defineProperty(this, method, {
                     __proto__: null,
                     get: () => {
-                        return this.method[method];
+                        return this._method[method];
                     }
                 });
             }
@@ -36,12 +39,12 @@ class RandomFactory implements IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns a random number on each call, can be integer or float
      */
-    random(): number {
+    random(): Promise<number> {
         return new Promise((resolve, reject) => {
-            if(this.isError()){
+            if(this.isError().error){
                 reject(this.isError());
             } else {
-                resolve(this.method.random());
+                resolve(this._method.random());
             }
         });
     }
@@ -55,10 +58,10 @@ class RandomFactory implements IRandomFactory {
      * @returns a random number on each call, can be integer or float
      */
     randomSync(): number {
-        if(this.isError()){
+        if(this.isError().error){
             throw new Error(this.isError().error);
         } else
-            return this.method.random();
+            return this._method.random();
     }
 
     /**
@@ -71,15 +74,15 @@ class RandomFactory implements IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns an array of random numbers on each call, numbers can be integer or float
      */
-    distribution(n: number = 10, ...distParams): Array<number> {
+    distribution(n: number = 10, ...distParams: any): Promise<RandomArray> {
         if(n < 1) {
             n = 1;
         }
         return new Promise((resolve, reject) => {
-            if(this.isError()){
+            if(this.isError().error){
                 reject(this.isError());
             } else {
-                resolve(this.method.distribution(n, ...distParams));
+                resolve(this._method.distribution(n, ...distParams));
             }
         });
     }
@@ -93,14 +96,14 @@ class RandomFactory implements IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns an array of random numbers on each call, numbers can be integer or float
      */
-    distributionSync(n: number = 10, ...distParams): Array<number> {
+    distributionSync(n: number = 10, ...distParams: any): RandomArray {
         if(n < 1) {
             n = 1;
         }
-        if(this.isError()){
+        if(this.isError().error){
             throw new Error(this.isError().error);
         } else
-            return this.method.distribution(n, ...distParams);
+            return this._method.distribution(n, ...distParams);
     }
 
     /**
@@ -110,8 +113,8 @@ class RandomFactory implements IRandomFactory {
      * @returns "false" if no error occurred
      * or {error: string} object with error message if error occurred
      */
-    isError(): boolean | {error: string} {
-        return this.method.isError();
+    isError(): MethodError {
+        return this._method.isError();
     }
 
     /**
@@ -125,8 +128,8 @@ class RandomFactory implements IRandomFactory {
      * normal.refresh(3, 4);
      * normal.random() // will generate random numbers with Gaussian distribution with mu = 3 and sigma = 4
      */
-    refresh(...newParams): void {
-        this.method.refresh(...newParams);
+    refresh(...newParams: any): void {
+        this._method.refresh(...newParams);
     }
 
     /**
@@ -134,7 +137,7 @@ class RandomFactory implements IRandomFactory {
      * @returns string
      */
     toString(): string {
-        return this.method.toString();
+        return this._method.toString();
     }
 }
 

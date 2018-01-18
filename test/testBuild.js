@@ -9,5 +9,6 @@ console.log('Normal random number');
 console.log(randomjs.normal(3, 3).variance);
 console.log(randomjs.normal(2, 2).variance);
 console.log('Analyzer');
-console.log(randomjs.analyze([3, 4]));
-console.log(randomjs.analyze([5, 6]));
+let analyzer = randomjs.analyze([1, 5, 3, 4, 6, 7, 8, 10, 11, 12, 9, 4, 3]);
+//console.log(analyzer);
+console.log('Sync');

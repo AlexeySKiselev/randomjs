@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Chi Distribution
  * This is continuous distribution
@@ -8,10 +9,14 @@
  * Created by Alexey S. Kiselev
  */
 
+import type { MethodError, RandomArray } from '../types';
 let ChiSquare = require('./chisquare'),
     Utils = require('../utils/utils');
 
 class Chi {
+    degrees: number;
+    chiSquare: ChiSquare;
+
     constructor(k: number): void {
         this.degrees = Number(k);
         this.chiSquare = new ChiSquare(this.degrees);
@@ -30,8 +35,8 @@ class Chi {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Chi distributed numbers
      */
-    distribution(n: number) {
-        let chiArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let chiArray: RandomArray = [];
         for(let i:number = 0; i < n; i += 1){
             chiArray[i] = this.random();
         }
@@ -43,14 +48,14 @@ class Chi {
      * Parameter "k" must be positive
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.degrees){
             return {error: 'Chi distribution: you should point parameter "k" positive numerical value'};
         }
         if(this.degrees <= 0){
             return {error: 'Chi distribution: parameter "k" must be positive integer'};
         }
-        return false;
+        return { error: false };
     }
 
     /**
@@ -92,7 +97,7 @@ class Chi {
      * Information only
      * For calculating real mode value use analyzer
      */
-    get mode(): number {
+    get mode(): any {
         if(this.degrees >= 1){
             return Math.sqrt(this.degrees - 1);
         }

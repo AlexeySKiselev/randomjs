@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Beta Distribution
  * This is continuous distribution
@@ -9,9 +10,14 @@
  * Created by Alexey S. Kiselev
  */
 
+import type { MethodError, RandomArray } from '../types';
 let Beta = require('./beta');
 
 class BetaPrime {
+    alpha: number;
+    beta: number;
+    betaRandom: Beta;
+
     constructor(alpha: number, beta: number): void {
         this.alpha = Number(alpha);
         this.beta = Number(beta);
@@ -37,8 +43,8 @@ class BetaPrime {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Beta Prime distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let betaPrimeArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let betaPrimeArray: RandomArray = [];
 
         for(let i: number = 0; i < n; i += 1){
             betaPrimeArray[i] = this.random();
@@ -52,7 +58,7 @@ class BetaPrime {
      * Parameter "beta" must be positive
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.alpha || !this.beta) {
             return {error: 'Beta Prime distribution: you should point "alpha" and "beta" positive numerical values'};
         }
@@ -62,7 +68,7 @@ class BetaPrime {
         if(this.beta <= 0){
             return {error: 'Beta Prime distribution: Parameter "beta" must be positive'};
         }
-        return false;
+        return { error: false };
     }
 
     /**
@@ -117,7 +123,7 @@ class BetaPrime {
      * Information only
      * For calculating real variance value use analyzer
      */
-    get variance(): number {
+    get variance(): ?number {
         if(this.beta > 2){
             return this.alpha * (this.alpha + this.beta - 1) / ((this.beta - 1) * (this.beta - 1) * (this.beta - 2));
         }

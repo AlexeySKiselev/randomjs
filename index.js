@@ -6,9 +6,14 @@
 import fs from 'fs';
 import Factory from './core/factory';
 import AnalyzerFactory from './core/analyzerFactory';
+import type { RandomArray } from './core/types';
 
 class RandomJS {
+    analyze: any;
+
     constructor(): void {
+        this.analyze = null;
+
         fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
             /**
              *  Add a "random" method which contains different distribution methods
@@ -27,14 +32,16 @@ class RandomJS {
 
         /**
          * Add random array analyser
+         * This method is long in constructor and short in methods
+         * TODO: implement method short in constructor and long in methods
          * Use Analyzer factory to create method
          */
-        Object.defineProperty(this, 'analyze', {
+        Object.defineProperty(this, 'analyze', ({
             __proto__: null,
-            value: (randomArray: Array<number>) => {
+            value: (randomArray: RandomArray) => {
                 return new AnalyzerFactory(randomArray);
             }
-        });
+        }: Object));
     }
 
     help(): void {

@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Erlang Distribution
  * This is continuous distribution
@@ -9,9 +10,13 @@
  * Created by Alexey S. Kiselev
  */
 
+import type {MethodError, RandomArray} from '../types';
 let Utils = require('../utils/utils');
 
 class Erlang {
+    shape: number;
+    scale: number;
+
     constructor(k: number, mu: number) {
         this.shape = Number(k);
         this.scale = Number(mu);
@@ -34,8 +39,8 @@ class Erlang {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Erlang distributed numbers
      */
-    distribution(n: number) {
-        let erlangArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let erlangArray: RandomArray = [];
         for(let i:number = 0; i < n; i += 1){
             erlangArray[i] = this.random();
         }
@@ -48,7 +53,7 @@ class Erlang {
      * Parameter "mu" must be positive
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.scale || !this.shape){
             return {error: 'Erlang distribution: you should point "mu" and "k" positive numerical values'};
         }
@@ -58,7 +63,7 @@ class Erlang {
         if(this.scale <= 0) {
             return {error: 'Erlang distribution: parameter "mu" must be positive'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

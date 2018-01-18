@@ -4,6 +4,8 @@
  * Created by Alexey S. Kiselev
  */
 
+import type { RandomArray, AnalyzerPublicMethods, AnalyzerPublicProperties, MethodError } from './types';
+
 /**
  * Analyzer methods interface
  */
@@ -11,26 +13,32 @@ export interface IAnalyzerMethods {
     /**
      * Analyzer must contains randomArray property, which represents input Array
      */
-    -randomArray: Array<number>;
+    -randomArray: RandomArray;
 
     /**
      * This list will contains methods, which AnalyzerFactory is going to copy
      * List contains names of methods to copy
      * Then copy this methods via defineProperty method
      */
-    +publicMethods: { [method: string]: number | boolean };
+    +publicMethods: AnalyzerPublicMethods;
 
     /**
      * This list will contains only properties, not functions
      * I need it for returning an object of properties, when calling analyzer like a function
      */
-    +publicProperties: { [property: string]: any };
+    +publicProperties: AnalyzerPublicProperties;
+}
 
+/**
+ * Analyzer method singleton interface
+ */
+export interface IAnalyzerSingleton {
     /**
      * Read only instance of Analyzer imported class
      * I use this object in Singleton decorator to memorize instance
+     * @private
      */
-    +_instance: any;
+    _instance?: any;
 
     /**
      * This method I use to create singleton instance of imported class
@@ -42,7 +50,13 @@ export interface IAnalyzerMethods {
 /**
  * Random Distributions Factory Interface
  */
-export interface IRandomFactory {
+export interface IRandomFactory<R, D> {
+    /**
+     * Object for storing imported classes
+     * @private
+     */
+    _method?: IRandomFactory<number, RandomArray>;
+
     /**
      * Required method
      * Method .random(): Promise<number> generates a random number due to distribution
@@ -51,7 +65,7 @@ export interface IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns a random number on each call, can be integer or float
      */
-    random() : Promise<number>;
+    random(): R;
 
     /**
      * Required method
@@ -73,7 +87,7 @@ export interface IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns an array of random numbers on each call, numbers can be integer or float
      */
-    distribution(n: number): Promise<Array<number>>;
+    distribution(n: number): D;
 
     /**
      * Required method
@@ -84,7 +98,7 @@ export interface IRandomFactory {
      * Error can occurs with incorrect input values, served by .isError() method
      * @returns an array of random numbers on each call, numbers can be integer or float
      */
-    distributionSync(n: number): Array<number>;
+    distributionSync(n: number): RandomArray;
 
     /**
      * Required method
@@ -93,14 +107,14 @@ export interface IRandomFactory {
      * @returns "false" if no error occurred
      * or {error: string} object with error message if error occurred
      */
-    isError(): boolean | {error: string};
+    isError(): MethodError;
 
     /**
      * Required method
      * Method .refresh(..params): void change th input values in existing distribution without creating new instance
      * Input parameters must be the same as in constructor
      * In this method .isError will refreshes too
-     * Examle usage:
+     * Example usage:
      * let normal = randomjs.normal(1, 2);
      * normal.random() // will generate random numbers with Gaussian distribution with mu = 1 and sigma = 2
      * normal.refresh(3, 4);

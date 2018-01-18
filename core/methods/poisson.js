@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Poisson Distribution (Knuth algorithm)
  * This is discreet distribution
@@ -8,7 +9,11 @@
  * Created by Alexey S. Kiselev
  */
 
+import type { MethodError, RandomArray } from '../types';
+
 class Poisson {
+    lambda: number;
+
     constructor(lambda: number): void {
         this.lambda = Number(lambda);
     }
@@ -33,8 +38,8 @@ class Poisson {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Poisson distributed numbers
      */
-    distribution(n: number) {
-        let poissonArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let poissonArray: RandomArray = [];
         for(let i:number = 0; i < n; i += 1){
             poissonArray[i] = this.random();
         }
@@ -46,14 +51,14 @@ class Poisson {
      * Parameter "lambda" must be positive integer
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.lambda) {
             return {error: 'Poisson distribution: you should point parameter "lambda" with numerical value'};
         }
         if(this.lambda <= 0){
             return {error: 'Poisson distribution: parameter "lambda" must be positive integer'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

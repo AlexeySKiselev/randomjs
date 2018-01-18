@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Student's t-distribution
  * This is continuous distribution
@@ -7,6 +8,8 @@
  * @returns Student's t-distributed value
  * Created by Alexey S. Kiselev
  */
+
+import type { MethodError, RandomArray } from '../types';
 
 let Normal = require('./normal'),
     Chi = require('./chi');
@@ -40,8 +43,8 @@ class Student {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Student's t-distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let studentArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let studentArray: RandomArray = [];
         this.chi.refresh(this.degrees);
         for(let i: number = 0; i < n; i += 1){
             studentArray[i] = this.normal.random() / this.chi.random();
@@ -53,14 +56,14 @@ class Student {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.degrees) {
             return {error: 'Student\'s t-distribution: you should point "v" (degrees of freedom) numerical value'};
         }
         if(this.degrees < 0) {
             return {error: 'Student\'s t-distribution: parameter "v" (degrees of freedom) must be a positive value'};
         }
-        return false;
+        return { error: false };
     }
 
     /**
@@ -89,7 +92,7 @@ class Student {
      * Information only
      * For calculating real mean value use analyzer
      */
-    get mean(): number {
+    get mean(): ?number {
         if(this.degrees > 1) {
             return 0;
         }
@@ -119,7 +122,7 @@ class Student {
      * Information only
      * For calculating real variance value use analyzer
      */
-    get variance(): number {
+    get variance(): ?number {
         if(this.degrees > 2) {
             return this.degrees / (this.degrees - 2);
         } else if(this.degrees > 1 && this.degrees <= 2){
@@ -133,7 +136,7 @@ class Student {
      * Information only
      * For calculating real skewness value use analyzer
      */
-    get skewness(): number {
+    get skewness(): ?number {
         if(this.degrees > 3) {
             return 0;
         }

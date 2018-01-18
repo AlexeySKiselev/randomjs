@@ -5,6 +5,7 @@
  */
 
 import { IAnalyzerMethods } from './interfaces';
+import type { AnalyzerPublicProperties } from './types';
 
 /**
  * Decorator for making method public for AnalyzerFactory
@@ -13,14 +14,14 @@ import { IAnalyzerMethods } from './interfaces';
  * Then add name of public method to this object via propertyKey value
  * In class add @PublicMethod string before every public method
  */
-export let AnalyzerPublicMethod = (target: IAnalyzerMethods, propertyKey: string): void => {
-    if(!target.publicMethods){
-        target.publicMethods = {};
+export let AnalyzerPublicMethod = (Target: { [property: string ]: AnalyzerPublicProperties }, propertyKey: string): void => {
+    if(!Target.publicMethods){
+        Target.publicMethods = {};
     }
-    target.publicMethods[propertyKey] = 1;
+    Target.publicMethods[propertyKey] = 1;
 };
 
-export let AnalyzerSingleton = (Target: IAnalyzerMethods) => {
+export let AnalyzerSingleton = (Target: any): void => {
     /**
      * Create instance object initially assigned to null
      */

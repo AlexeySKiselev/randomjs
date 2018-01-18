@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Logistic distribution
  * This is continuous distribution
@@ -8,6 +9,8 @@
  * @returns Logistic distributed number
  * Created by Alexey S. Kiselev
  */
+
+import type { RandomArray, MethodError } from '../types';
 
 class Logistic {
     location: number;
@@ -32,8 +35,8 @@ class Logistic {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Logistic distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let logisticArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let logisticArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             logisticArray[i] = this.random();
         }
@@ -44,14 +47,14 @@ class Logistic {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if((!this.location && this.location !== 0) || !this.scale) {
             return {error: 'Logistic distribution: you should point parameters "mu" and "s" (scale) with numerical values'};
         }
         if(this.scale <= 0){
             return {error: 'Logistic distribution: parameter "s" (scale) must be a positive number'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

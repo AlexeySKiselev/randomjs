@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Bernoulli Distribution
  * https://en.wikipedia.org/wiki/Bernoulli_distribution
@@ -8,7 +9,11 @@
  * Created by Alexey S. Kiselev
  */
 
+import type { MethodError } from '../types';
+
 class Bernoulli {
+    p: number;
+
     constructor(p: number): void {
         this.p = Number(p);
     }
@@ -43,7 +48,7 @@ class Bernoulli {
      * For this distribution parameter "p" must be 0 <= p <= 1
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.p && this.p !== 0) {
             return {error: 'Bernoulli distribution: you should point "p" numerical value'};
         }
@@ -51,7 +56,7 @@ class Bernoulli {
         if(this.p < 0 || this.p > 1) {
             return {error: 'Bernoulli distribution: Parameter "p" must be from 0 to 1 inclusive'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

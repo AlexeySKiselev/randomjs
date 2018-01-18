@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Negative Binomial Distribution
  * This is discreet distribution
@@ -9,10 +10,16 @@
  * Created by Alexey S. Kiselev
  */
 
+import type {MethodError, RandomArray} from '../types';
 let Gamma = require('./gamma'),
     Poisson = require('./poisson');
 
 class NegativeBinomial {
+    numberFailures: number;
+    successProb: number;
+    gamma: Gamma;
+    poisson: Poisson;
+
     constructor(r: number, p: number): void {
         this.numberFailures = Number(r);
         this.successProb = Number(p);
@@ -36,8 +43,8 @@ class NegativeBinomial {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Negative Binomial distributed numbers
      */
-    distribution(n: number) {
-        let negativeBinomialArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let negativeBinomialArray: RandomArray = [];
         for(let i:number = 0; i < n; i += 1){
             negativeBinomialArray[i] = this.random();
         }
@@ -50,7 +57,7 @@ class NegativeBinomial {
      * Parameter "p" must be 0 <= p <= 1
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.numberFailures || (!this.successProb && this.successProb !== 0)){
             return {error: 'Negative Binomial distribution: you should point "r" and "p" parameters with numerical values'};
         }
@@ -60,7 +67,7 @@ class NegativeBinomial {
         if(this.successProb < 0 || this.successProb > 1) {
             return {error: 'Negative Binomial distribution: parameter "p" (probability of success) must be 0 <= p <= 1'};
         }
-        return false;
+        return { error: false };
     }
 
     /**

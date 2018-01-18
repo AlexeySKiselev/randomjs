@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Laplace distribution
  * This is continuous distribution
@@ -8,6 +9,8 @@
  * @returns Laplace distributed number
  * Created by Alexey S. Kiselev
  */
+
+import type {MethodError, RandomArray} from '../types';
 
 class Laplace {
     location: number;
@@ -35,8 +38,8 @@ class Laplace {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Laplace distributed numbers
      */
-    distribution(n: number): Array<number> {
-        let laplaceArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let laplaceArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             laplaceArray[i] = this.random();
         }
@@ -47,14 +50,14 @@ class Laplace {
      * Error handling
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if((!this.location && this.location !== 0) || !this.scale) {
             return {error: 'Laplace distribution: you should point parameters "mu" and "b" (scale) with numerical values'};
         }
         if(this.scale <= 0){
             return {error: 'Laplace distribution: parameter "b" (scale) must be a positive number'};
         }
-        return false;
+        return { error: false };
     }
 
     /**
@@ -132,7 +135,7 @@ class Laplace {
      * For calculating real entropy value use analyzer
      */
     get entropy(): number {
-        return Math.log(2 * this.scale * 2,71828182845904523536);
+        return Math.log(2 * this.scale * 2.71828182845904523536);
     }
 
     /**

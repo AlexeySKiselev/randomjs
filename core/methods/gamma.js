@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Gamma Distribution
  * Continuous distribution
@@ -10,10 +11,14 @@
  * Created by Alexey S. Kiselev
  */
 
+import type {MethodError, RandomArray} from '../types';
 let Utils = require('../utils/utils');
 
 class Gamma {
-    constructor(alpha: number, beta: number): number {
+    alpha: number;
+    beta: number;
+
+    constructor(alpha: number, beta: number): void {
         this.alpha = Number(alpha);
         this.beta = Number(beta);
     }
@@ -35,8 +40,8 @@ class Gamma {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - gamma distributed numbers
      */
-    distribution(n: number) {
-        let gammaArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let gammaArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1) {
             gammaArray[i] = this.random();
         }
@@ -49,7 +54,7 @@ class Gamma {
      * Parameter "beta" must be positive, beta > 0
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if(!this.alpha || !this.beta){
             return {error: 'Gamma distribution: you should point parameters "alpha" and "beta" like a positive numerical values'};
         }
@@ -62,7 +67,7 @@ class Gamma {
             return {error: 'Gamma distribution: parameter "beta" must be a positive'};
         }
 
-        return false;
+        return { error: false };
     }
 
     /**

@@ -1,4 +1,5 @@
 // @flow
+
 /**
  * Continuous Uniform Distribution
  * https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)
@@ -8,7 +9,12 @@
  * Created by Alexey S. Kiselev
  */
 
+import type {MethodError, RandomArray} from '../types';
+
 class Uniform {
+    min: number;
+    max: number;
+
     constructor(min: number, max: number): void {
         this.min = Math.min(min, max);
         this.max = Math.max(min, max);
@@ -26,8 +32,8 @@ class Uniform {
      * Generates an array of uniformly distributed numbers
      * @param n: number - number of elements in resulting array
      */
-    distribution(n: number): Array<number> {
-        let uniformArray: Array<number> = [];
+    distribution(n: number): RandomArray {
+        let uniformArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
             uniformArray[i] = this.random();
         }
@@ -39,14 +45,14 @@ class Uniform {
      * Check if min === max then throw Error
      * @returns {boolean}
      */
-    isError(): boolean | {error: string} {
+    isError(): MethodError {
         if((!this.min && this.min !== 0) || (!this.max && this.max !== 0)) {
             return {error: 'Uniform distribution: you should point "min" and "max" numerical values'};
         }
         if(this.min === this.max) {
             return {error: 'Uniform distribution: min and max values can\'t be the same'};
         }
-        return false;
+        return { error: false };
     }
 
     /**
