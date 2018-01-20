@@ -40,7 +40,7 @@ class AnalyzerFactory implements IAnalyzerMethods {
      * @param randomArray<number> - input array
      * @returns {Proxy}
      */
-    constructor(randomArray: Array<number>): void {
+    constructor(randomArray: Array<number>): any {
         this.randomArray = randomArray;
         this.publicMethods = {};
         this.publicProperties = {};
@@ -72,106 +72,107 @@ class AnalyzerFactory implements IAnalyzerMethods {
         });
 
         /**
-         * After calculating all parameters evaluate .then method from Promise
+         * Create an Promise object, which will wait all imported promise classes
+         * Then add properties and methods to analyzer
+         * Then return a list of public properties and methods object
          */
-        Promise.all(this._importedClasses)
+        const PromiseMethods: Promise<any> = Promise.all(this._importedClasses)
             .then((methods: Array<IAnalyzerMethods>) => {
                 /**
                  * Add methods to Factory and publicMethods
                  */
                 methods.forEach((methodsClass: AnalyzerPublicProperties) => {
-                    Object.keys(methodsClass.publicMethods).forEach((method: string) => {
+                    Object.keys(methodsClass.publicMethods).forEach((classMethod: string) => {
                         /**
-                        * If different classes contain the same public methods
-                        * Throw "Methods conflict error"
-                        */
-                        if(this.publicMethods[method]){
+                         * If different classes contain the same public methods
+                         * Throw "Methods conflict error"
+                         */
+                        if(this.publicMethods[classMethod]){
                             throw new Error('Analyzer: Methods conflict');
                         }
-                        this.publicMethods[method] = 1;
+                        this.publicMethods[classMethod] = 1;
 
                         /**
-                        * If method is NOT function
-                        * Store this method in publicProperties object
-                        * I don't need to check methods conflict, because I did it earlier
-                        */
-                        if(typeof methodsClass[method] !== 'function'){
-                            this.publicProperties[method] = methodsClass[method];
+                         * If method is NOT function
+                         * Store this method in publicProperties object
+                         * I don't need to check methods conflict, because I did it earlier
+                         */
+                        if(typeof methodsClass[classMethod] !== 'function'){
+                            this.publicProperties[classMethod] = methodsClass[classMethod];
                         }
 
                         /**
                          * Assign particular properties and methods to Analyzer
                          */
-                        Object.defineProperty(this, method, {
+                        Object.defineProperty(this, classMethod, {
                             __proto__: null,
                             get: () => {
-                                if(typeof methodsClass[method] === 'function'){
+                                if(typeof methodsClass[classMethod] === 'function'){
                                     return (...args) => {
-                                        return methodsClass[method](...args);
+                                        return methodsClass[classMethod](...args);
                                     };
                                 }
-                                return this.publicProperties[method];
+                                return this.publicProperties[classMethod];
                             }
                         });
                     });
-
-
                 });
+                return this.publicProperties;
+            });
+
+        /**
+         * I return Proxy, because I need to return object contains all calculated values
+         * For this purpose create Proxy. If I call method - return method
+         * Else (where I call class as a function) - return object with all calculated values
+         * TODO: check this implementation in browser
+         */
+        return new Proxy(PromiseMethods, {
+            get: (obj: Promise<any>, method: any): any => {
+                /**
+                 * If input is not array:
+                 * @returns rejected Promise with error
+                 */
+                if(!Array.isArray(this.randomArray)) {
+                    return Promise.reject('Input must be an Array!');
+                }
 
                 /**
-                 * I return Proxy, because I need to return object contains all calculated values
-                 * For this purpose create Proxy. If I call method - return method
-                 * Else (where I call class as a function) - return object with all calculated values
-                 * TODO: check this implementation in browser
+                 * If method is in class methods:
+                 * @returns: resolved Promise with evaluated method
                  */
-                return new Proxy(this, {
-                    get: (obj: AnalyzerPublicMethods, method: string): any => {
-                        /**
-                         * If input is not array:
-                         * @returns rejected Promise with error
-                         */
-
-                        if(!Array.isArray(this.randomArray)) {
-                            return () => {
-                                return Promise.reject('Input must be an Array!');
-                            };
-                        }
-
-                        /**
-                         * If method is in class methods:
-                         * @returns: resolved Promise with evaluated method
-                         */
-                        if(method in obj) {
-                            return Promise.resolve(obj[method]);
-                        } else if(method === 'then') {
-                            return (cb) => {
-                                let promiseAnalyzer = Promise.resolve(obj.publicProperties);
-                                return promiseAnalyzer.then.bind(promiseAnalyzer, cb);
-                            };
-                        } else if(typeof method !== 'string'){
-                            /**
-                             * If we call class as a function (randomjs.analyze(<random_array>)):
-                             * @returns resolved Promise with object contains all methods
-                             */
-                            return () => {
-                                return Promise.resolve(obj.publicProperties);
-                            };
-                        } else {
-                            /**
-                             * If there no method in methods, but we call some method:
-                             * @returns rejected Promise with error
-                             */
-                            return () => {
-                                return Promise.reject('No such method in analyzer');
-                            };
-                        }
-                    }
-                });
-            });
-    }
-
-    getArray() {
-        return this.randomArray;
+                if(method === 'then') {
+                    return PromiseMethods.then.bind(obj);
+                } else if(typeof method !== 'string') {
+                    /**
+                     * If we call class as a function (randomjs.analyze(<random_array>)):
+                     * @returns resolved Promise with object contains all methods
+                     */
+                    return PromiseMethods
+                        .then((res): any => {
+                            return res;
+                        });
+                } else {
+                    return PromiseMethods
+                        .then((res): any => {
+                            return new Promise((resolve, reject) => {
+                                if(method in res) {
+                                    /**
+                                     * If method is in class methods:
+                                     * @returns: resolved Promise with evaluated method
+                                     */
+                                    resolve(res[method]);
+                                } else {
+                                    /**
+                                     * If there no method in methods, but we call some method:
+                                     * @returns rejected Promise with error
+                                     */
+                                    reject('No such method in analyzer');
+                                }
+                            });
+                        });
+                }
+            }
+        });
     }
 }
 

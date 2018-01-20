@@ -20,29 +20,29 @@ describe('Random distributions', () => {
         it('requires two numerical arguments', () => {
             let zeroParams = () => {
                 let uniform = new Uniform();
-                if(uniform.isError())
-                    throw new Error(uniform.isError());
+                if(uniform.isError().error)
+                    throw new Error(uniform.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let uniform = new Uniform(1);
-                if(uniform.isError())
-                    throw new Error(uniform.isError());
+                if(uniform.isError().error)
+                    throw new Error(uniform.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let uniform = new Uniform('a', 'b');
-                if(uniform.isError())
-                    throw new Error(uniform.isError());
+                if(uniform.isError().error)
+                    throw new Error(uniform.isError().error);
             };
             badParams.should.throw(Error);
 
             let goodParams = () => {
                 let uniform = new Uniform(0, 1);
-                if(uniform.isError())
-                    throw new Error(uniform.isError());
+                if(uniform.isError().error)
+                    throw new Error(uniform.isError().error);
             };
             goodParams.should.not.throw(Error);
         });
@@ -109,29 +109,29 @@ describe('Random distributions', () => {
         it('requires two numerical arguments', () => {
             let zeroParams = () => {
                 let normal = new Normal();
-                if(normal.isError())
-                    throw new Error(normal.isError());
+                if(normal.isError().error)
+                    throw new Error(normal.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let normal = new Normal(1);
-                if(normal.isError())
-                    throw new Error(normal.isError());
+                if(normal.isError().error)
+                    throw new Error(normal.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let normal = new Normal('a', 'b');
-                if(normal.isError())
-                    throw new Error(normal.isError());
+                if(normal.isError().error)
+                    throw new Error(normal.isError().error);
             };
             badParams.should.throw(Error);
 
             let goodParams = () => {
                 let normal = new Normal(1.5, 2);
-                if(normal.isError())
-                    throw new Error(normal.isError());
+                if(normal.isError().error)
+                    throw new Error(normal.isError().error);
             };
             goodParams.should.not.throw(Error);
         });
@@ -193,36 +193,36 @@ describe('Random distributions', () => {
         it('requires one numerical argument', () => {
             let zeroParams = () => {
                 let bernoulli = new Bernoulli();
-                if(bernoulli.isError())
-                    throw new Error(bernoulli.isError());
+                if(bernoulli.isError().error)
+                    throw new Error(bernoulli.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let bernoulli = new Bernoulli(0.5);
-                if(bernoulli.isError())
-                    throw new Error(bernoulli.isError());
+                if(bernoulli.isError().error)
+                    throw new Error(bernoulli.isError().error);
             };
             oneParam.should.not.throw(Error);
 
             let badParams = () => {
                 let bernoulli = new Bernoulli('a');
-                if(bernoulli.isError())
-                    throw new Error(bernoulli.isError());
+                if(bernoulli.isError().error)
+                    throw new Error(bernoulli.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsBigger = () => {
                 let bernoulli = new Bernoulli(2);
-                if(bernoulli.isError())
-                    throw new Error(bernoulli.isError());
+                if(bernoulli.isError().error)
+                    throw new Error(bernoulli.isError().error);
             };
             incorrectParamsBigger.should.throw(Error);
 
             let incorrectParamsSmaller = () => {
                 let bernoulli = new Bernoulli(-1);
-                if(bernoulli.isError())
-                    throw new Error(bernoulli.isError());
+                if(bernoulli.isError().error)
+                    throw new Error(bernoulli.isError().error);
             };
             incorrectParamsSmaller.should.throw(Error);
         });
@@ -296,43 +296,43 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
             let zeroParams = () => {
                 let beta = new Beta();
-                if(beta.isError())
-                    throw new Error(beta.isError());
+                if(beta.isError().error)
+                    throw new Error(beta.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let beta = new Beta(0.5);
-                if(beta.isError())
-                    throw new Error(beta.isError());
+                if(beta.isError().error)
+                    throw new Error(beta.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let beta = new Beta('a', 'b');
-                if(beta.isError())
-                    throw new Error(beta.isError());
+                if(beta.isError().error)
+                    throw new Error(beta.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let beta = new Beta(-1, 1);
-                if(beta.isError())
-                    throw new Error(beta.isError());
+                if(beta.isError().error)
+                    throw new Error(beta.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsLess2 = () => {
                 let beta = new Beta(1, -1);
-                if(beta.isError())
-                    throw new Error(beta.isError());
+                if(beta.isError().error)
+                    throw new Error(beta.isError().error);
             };
             badParamsLess2.should.throw(Error);
 
             let twoParams =  () => {
                 let beta = new Beta(0.5, 1);
-                if(beta.isError())
-                    throw new Error(beta.isError());
+                if(beta.isError().error)
+                    throw new Error(beta.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -397,43 +397,43 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
             let zeroParams = () => {
                 let betaPrime = new BetaPrime();
-                if(betaPrime.isError())
-                    throw new Error(betaPrime.isError());
+                if(betaPrime.isError().error)
+                    throw new Error(betaPrime.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let betaPrime = new BetaPrime(0.5);
-                if(betaPrime.isError())
-                    throw new Error(betaPrime.isError());
+                if(betaPrime.isError().error)
+                    throw new Error(betaPrime.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let betaPrime = new BetaPrime('a', 'b');
-                if(betaPrime.isError())
-                    throw new Error(betaPrime.isError());
+                if(betaPrime.isError().error)
+                    throw new Error(betaPrime.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let betaPrime = new BetaPrime(-1, 1);
-                if(betaPrime.isError())
-                    throw new Error(betaPrime.isError());
+                if(betaPrime.isError().error)
+                    throw new Error(betaPrime.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsLess2 = () => {
                 let betaPrime = new BetaPrime(1, -1);
-                if(betaPrime.isError())
-                    throw new Error(betaPrime.isError());
+                if(betaPrime.isError().error)
+                    throw new Error(betaPrime.isError().error);
             };
             badParamsLess2.should.throw(Error);
 
             let twoParams =  () => {
                 let betaPrime = new BetaPrime(0.5, 1);
-                if(betaPrime.isError())
-                    throw new Error(betaPrime.isError());
+                if(betaPrime.isError().error)
+                    throw new Error(betaPrime.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -501,50 +501,50 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with n > 0 and 0 <= p <= 1', () => {
             let zeroParams = () => {
                 let binomial = new Binomial();
-                if(binomial.isError())
-                    throw new Error(binomial.isError());
+                if(binomial.isError().error)
+                    throw new Error(binomial.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let binomial = new Binomial(0.5);
-                if(binomial.isError())
-                    throw new Error(binomial.isError());
+                if(binomial.isError().error)
+                    throw new Error(binomial.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let binomial = new Binomial('a', 'b');
-                if(binomial.isError())
-                    throw new Error(binomial.isError());
+                if(binomial.isError().error)
+                    throw new Error(binomial.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let binomial = new Binomial(-1, 0.5);
-                if(binomial.isError())
-                    throw new Error(binomial.isError());
+                if(binomial.isError().error)
+                    throw new Error(binomial.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsLess2 = () => {
                 let binomial = new Binomial(1, -1);
-                if(binomial.isError())
-                    throw new Error(binomial.isError());
+                if(binomial.isError().error)
+                    throw new Error(binomial.isError().error);
             };
             badParamsLess2.should.throw(Error);
 
             let badParamsGreat = () => {
                 let binomial = new Binomial(2, 2);
-                if(binomial.isError())
-                    throw new Error(binomial.isError());
+                if(binomial.isError().error)
+                    throw new Error(binomial.isError().error);
             };
             badParamsGreat.should.throw(Error);
 
             let twoParams =  () => {
                 let binomial = new Binomial(2, 0.5);
-                if(binomial.isError())
-                    throw new Error(binomial.isError());
+                if(binomial.isError().error)
+                    throw new Error(binomial.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -623,43 +623,43 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with gamma > 0', () => {
             let zeroParams = () => {
                 let cauchy = new Cauchy();
-                if(cauchy.isError())
-                    throw new Error(cauchy.isError());
+                if(cauchy.isError().error)
+                    throw new Error(cauchy.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let cauchy = new Cauchy(0.5);
-                if(cauchy.isError())
-                    throw new Error(cauchy.isError());
+                if(cauchy.isError().error)
+                    throw new Error(cauchy.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let cauchy = new Cauchy('a', 'b');
-                if(cauchy.isError())
-                    throw new Error(cauchy.isError());
+                if(cauchy.isError().error)
+                    throw new Error(cauchy.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let cauchy = new Cauchy(1, -1);
-                if(cauchy.isError())
-                    throw new Error(cauchy.isError());
+                if(cauchy.isError().error)
+                    throw new Error(cauchy.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsGammaToZero = () => {
                 let cauchy = new Cauchy(1, 0);
-                if(cauchy.isError())
-                    throw new Error(cauchy.isError());
+                if(cauchy.isError().error)
+                    throw new Error(cauchy.isError().error);
             };
             badParamsGammaToZero.should.throw(Error);
 
             let twoParams =  () => {
                 let cauchy = new Cauchy(2, 0.5);
-                if(cauchy.isError())
-                    throw new Error(cauchy.isError());
+                if(cauchy.isError().error)
+                    throw new Error(cauchy.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -716,36 +716,36 @@ describe('Random distributions', () => {
         it('requires one numerical argument with k > 0', () => {
             let zeroParams = () => {
                 let chi = new Chi();
-                if(chi.isError())
-                    throw new Error(chi.isError());
+                if(chi.isError().error)
+                    throw new Error(chi.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let chi = new Chi(0.5);
-                if(chi.isError())
-                    throw new Error(chi.isError());
+                if(chi.isError().error)
+                    throw new Error(chi.isError().error);
             };
             oneParam.should.not.throw(Error);
 
             let badParams = () => {
                 let chi = new Chi('a');
-                if(chi.isError())
-                    throw new Error(chi.isError());
+                if(chi.isError().error)
+                    throw new Error(chi.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let chi = new Chi(-1);
-                if(chi.isError())
-                    throw new Error(chi.isError());
+                if(chi.isError().error)
+                    throw new Error(chi.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsKToZero = () => {
                 let chi = new Chi(0);
-                if(chi.isError())
-                    throw new Error(chi.isError());
+                if(chi.isError().error)
+                    throw new Error(chi.isError().error);
             };
             badParamsKToZero.should.throw(Error);
         });
@@ -800,36 +800,36 @@ describe('Random distributions', () => {
         it('requires one numerical argument with k > 0', () => {
             let zeroParams = () => {
                 let chiSquare = new ChiSquare();
-                if(chiSquare.isError())
-                    throw new Error(chiSquare.isError());
+                if(chiSquare.isError().error)
+                    throw new Error(chiSquare.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let chiSquare = new ChiSquare(0.5);
-                if(chiSquare.isError())
-                    throw new Error(chiSquare.isError());
+                if(chiSquare.isError().error)
+                    throw new Error(chiSquare.isError().error);
             };
             oneParam.should.not.throw(Error);
 
             let badParams = () => {
                 let chiSquare = new ChiSquare('a');
-                if(chiSquare.isError())
-                    throw new Error(chiSquare.isError());
+                if(chiSquare.isError().error)
+                    throw new Error(chiSquare.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let chiSquare = new ChiSquare(-1);
-                if(chiSquare.isError())
-                    throw new Error(chiSquare.isError());
+                if(chiSquare.isError().error)
+                    throw new Error(chiSquare.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsKToZero = () => {
                 let chiSquare = new ChiSquare(0);
-                if(chiSquare.isError())
-                    throw new Error(chiSquare.isError());
+                if(chiSquare.isError().error)
+                    throw new Error(chiSquare.isError().error);
             };
             badParamsKToZero.should.throw(Error);
         });
@@ -884,57 +884,57 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with mu > 0 and k > 0', () => {
             let zeroParams = () => {
                 let erlang = new Erlang();
-                if(erlang.isError())
-                    throw new Error(erlang.isError());
+                if(erlang.isError().error)
+                    throw new Error(erlang.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let erlang = new Erlang(0.5);
-                if(erlang.isError())
-                    throw new Error(erlang.isError());
+                if(erlang.isError().error)
+                    throw new Error(erlang.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let erlang = new Erlang('a', 'b');
-                if(erlang.isError())
-                    throw new Error(erlang.isError());
+                if(erlang.isError().error)
+                    throw new Error(erlang.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let erlang = new Erlang(1, -1);
-                if(erlang.isError())
-                    throw new Error(erlang.isError());
+                if(erlang.isError().error)
+                    throw new Error(erlang.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsGammaToZero = () => {
                 let erlang = new Erlang(1, 0);
-                if(erlang.isError())
-                    throw new Error(erlang.isError());
+                if(erlang.isError().error)
+                    throw new Error(erlang.isError().error);
             };
             badParamsGammaToZero.should.throw(Error);
 
             let badParamsLess2 = () => {
                 let erlang = new Erlang(-1, 1);
-                if(erlang.isError())
-                    throw new Error(erlang.isError());
+                if(erlang.isError().error)
+                    throw new Error(erlang.isError().error);
             };
             badParamsLess2.should.throw(Error);
 
             let badParamsGammaToZero2 = () => {
                 let erlang = new Erlang(0, 1);
-                if(erlang.isError())
-                    throw new Error(erlang.isError());
+                if(erlang.isError().error)
+                    throw new Error(erlang.isError().error);
             };
             badParamsGammaToZero2.should.throw(Error);
 
             let twoParams =  () => {
                 let erlang = new Erlang(2, 0.5);
-                if(erlang.isError())
-                    throw new Error(erlang.isError());
+                if(erlang.isError().error)
+                    throw new Error(erlang.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -999,57 +999,57 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
             let zeroParams = () => {
                 let gamma = new Gamma();
-                if(gamma.isError())
-                    throw new Error(gamma.isError());
+                if(gamma.isError().error)
+                    throw new Error(gamma.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let gamma = new Gamma(0.5);
-                if(gamma.isError())
-                    throw new Error(gamma.isError());
+                if(gamma.isError().error)
+                    throw new Error(gamma.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let gamma = new Gamma('a', 'b');
-                if(gamma.isError())
-                    throw new Error(gamma.isError());
+                if(gamma.isError().error)
+                    throw new Error(gamma.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let gamma = new Gamma(1, -1);
-                if(gamma.isError())
-                    throw new Error(gamma.isError());
+                if(gamma.isError().error)
+                    throw new Error(gamma.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsGammaToZero = () => {
                 let gamma = new Gamma(1, 0);
-                if(gamma.isError())
-                    throw new Error(gamma.isError());
+                if(gamma.isError().error)
+                    throw new Error(gamma.isError().error);
             };
             badParamsGammaToZero.should.throw(Error);
 
             let badParamsLess2 = () => {
                 let gamma = new Gamma(-1, 1);
-                if(gamma.isError())
-                    throw new Error(gamma.isError());
+                if(gamma.isError().error)
+                    throw new Error(gamma.isError().error);
             };
             badParamsLess2.should.throw(Error);
 
             let badParamsGammaToZero2 = () => {
                 let gamma = new Gamma(0, 1);
-                if(gamma.isError())
-                    throw new Error(gamma.isError());
+                if(gamma.isError().error)
+                    throw new Error(gamma.isError().error);
             };
             badParamsGammaToZero2.should.throw(Error);
 
             let twoParams =  () => {
                 let gamma = new Gamma(2, 0.5);
-                if(gamma.isError())
-                    throw new Error(gamma.isError());
+                if(gamma.isError().error)
+                    throw new Error(gamma.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -1114,36 +1114,36 @@ describe('Random distributions', () => {
         it('requires one numerical argument with 0 <= p <= 1', () => {
             let zeroParams = () => {
                 let geometric = new Geometric();
-                if(geometric.isError())
-                    throw new Error(geometric.isError());
+                if(geometric.isError().error)
+                    throw new Error(geometric.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let geometric = new Geometric(0.5);
-                if(geometric.isError())
-                    throw new Error(geometric.isError());
+                if(geometric.isError().error)
+                    throw new Error(geometric.isError().error);
             };
             oneParam.should.not.throw(Error);
 
             let badParams = () => {
                 let geometric = new Geometric('a');
-                if(geometric.isError())
-                    throw new Error(geometric.isError());
+                if(geometric.isError().error)
+                    throw new Error(geometric.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let geometric = new Geometric(-1);
-                if(geometric.isError())
-                    throw new Error(geometric.isError());
+                if(geometric.isError().error)
+                    throw new Error(geometric.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsGreat = () => {
                 let geometric = new Geometric(1.1);
-                if(geometric.isError())
-                    throw new Error(geometric.isError());
+                if(geometric.isError().error)
+                    throw new Error(geometric.isError().error);
             };
             badParamsGreat.should.throw(Error);
         });
@@ -1220,50 +1220,50 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with n > 0 and 0 <= p <= 1', () => {
             let zeroParams = () => {
                 let negativeBinomial = new NegativeBinomial();
-                if(negativeBinomial.isError())
-                    throw new Error(negativeBinomial.isError());
+                if(negativeBinomial.isError().error)
+                    throw new Error(negativeBinomial.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let negativeBinomial = new NegativeBinomial(0.5);
-                if(negativeBinomial.isError())
-                    throw new Error(negativeBinomial.isError());
+                if(negativeBinomial.isError().error)
+                    throw new Error(negativeBinomial.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let negativeBinomial = new NegativeBinomial('a', 'b');
-                if(negativeBinomial.isError())
-                    throw new Error(negativeBinomial.isError());
+                if(negativeBinomial.isError().error)
+                    throw new Error(negativeBinomial.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let negativeBinomial = new NegativeBinomial(-1, 0.5);
-                if(negativeBinomial.isError())
-                    throw new Error(negativeBinomial.isError());
+                if(negativeBinomial.isError().error)
+                    throw new Error(negativeBinomial.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsLess2 = () => {
                 let negativeBinomial = new NegativeBinomial(1, -1);
-                if(negativeBinomial.isError())
-                    throw new Error(negativeBinomial.isError());
+                if(negativeBinomial.isError().error)
+                    throw new Error(negativeBinomial.isError().error);
             };
             badParamsLess2.should.throw(Error);
 
             let badParamsGreat = () => {
                 let negativeBinomial = new NegativeBinomial(2, 2);
-                if(negativeBinomial.isError())
-                    throw new Error(negativeBinomial.isError());
+                if(negativeBinomial.isError().error)
+                    throw new Error(negativeBinomial.isError().error);
             };
             badParamsGreat.should.throw(Error);
 
             let twoParams =  () => {
                 let negativeBinomial = new NegativeBinomial(2, 0.5);
-                if(negativeBinomial.isError())
-                    throw new Error(negativeBinomial.isError());
+                if(negativeBinomial.isError().error)
+                    throw new Error(negativeBinomial.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -1342,36 +1342,36 @@ describe('Random distributions', () => {
         it('requires one numerical argument with lambda > 0', () => {
             let zeroParams = () => {
                 let poisson = new Poisson();
-                if(poisson.isError())
-                    throw new Error(poisson.isError());
+                if(poisson.isError().error)
+                    throw new Error(poisson.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let poisson = new Poisson(0.5);
-                if(poisson.isError())
-                    throw new Error(poisson.isError());
+                if(poisson.isError().error)
+                    throw new Error(poisson.isError().error);
             };
             oneParam.should.not.throw(Error);
 
             let badParams = () => {
                 let poisson = new Poisson('a');
-                if(poisson.isError())
-                    throw new Error(poisson.isError());
+                if(poisson.isError().error)
+                    throw new Error(poisson.isError().error);
             };
             badParams.should.throw(Error);
 
             let badParamsLess1 = () => {
                 let poisson = new Poisson(-1);
-                if(poisson.isError())
-                    throw new Error(poisson.isError());
+                if(poisson.isError().error)
+                    throw new Error(poisson.isError().error);
             };
             badParamsLess1.should.throw(Error);
 
             let badParamsLambdaToZero = () => {
                 let poisson = new Poisson(0);
-                if(poisson.isError())
-                    throw new Error(poisson.isError());
+                if(poisson.isError().error)
+                    throw new Error(poisson.isError().error);
             };
             badParamsLambdaToZero.should.throw(Error);
         });
@@ -1448,36 +1448,36 @@ describe('Random distributions', () => {
         it('requires one numerical argument', () => {
             let zeroParams = () => {
                 let exponential = new Exponential();
-                if(exponential.isError())
-                    throw new Error(exponential.isError());
+                if(exponential.isError().error)
+                    throw new Error(exponential.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let exponential = new Exponential(0.5);
-                if(exponential.isError())
-                    throw new Error(exponential.isError());
+                if(exponential.isError().error)
+                    throw new Error(exponential.isError().error);
             };
             oneParam.should.not.throw(Error);
 
             let badParams = () => {
                 let exponential = new Exponential('a');
-                if(exponential.isError())
-                    throw new Error(exponential.isError());
+                if(exponential.isError().error)
+                    throw new Error(exponential.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmaller = () => {
                 let exponential = new Exponential(-1);
-                if(exponential.isError())
-                    throw new Error(exponential.isError());
+                if(exponential.isError().error)
+                    throw new Error(exponential.isError().error);
             };
             incorrectParamsSmaller.should.throw(Error);
 
             let incorrectParamsLambdaToZero = () => {
                 let exponential = new Exponential(0);
-                if(exponential.isError())
-                    throw new Error(exponential.isError());
+                if(exponential.isError().error)
+                    throw new Error(exponential.isError().error);
             };
             incorrectParamsLambdaToZero.should.throw(Error);
         });
@@ -1540,43 +1540,43 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with sigma > 0', () => {
             let zeroParams = () => {
                 let extremevalue = new ExtremeValue();
-                if(extremevalue.isError())
-                    throw new Error(extremevalue.isError());
+                if(extremevalue.isError().error)
+                    throw new Error(extremevalue.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let extremevalue = new ExtremeValue(0.5);
-                if(extremevalue.isError())
-                    throw new Error(extremevalue.isError());
+                if(extremevalue.isError().error)
+                    throw new Error(extremevalue.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let extremevalue = new ExtremeValue('a', 'b');
-                if(extremevalue.isError())
-                    throw new Error(extremevalue.isError());
+                if(extremevalue.isError().error)
+                    throw new Error(extremevalue.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmaller = () => {
                 let extremevalue = new ExtremeValue(1, -1);
-                if(extremevalue.isError())
-                    throw new Error(extremevalue.isError());
+                if(extremevalue.isError().error)
+                    throw new Error(extremevalue.isError().error);
             };
             incorrectParamsSmaller.should.throw(Error);
 
             let incorrectParamsLambdaToZero = () => {
                 let extremevalue = new ExtremeValue(1, 0);
-                if(extremevalue.isError())
-                    throw new Error(extremevalue.isError());
+                if(extremevalue.isError().error)
+                    throw new Error(extremevalue.isError().error);
             };
             incorrectParamsLambdaToZero.should.throw(Error);
 
             let twoParams = () => {
                 let extremevalue = new ExtremeValue(1, 1);
-                if(extremevalue.isError())
-                    throw new Error(extremevalue.isError());
+                if(extremevalue.isError().error)
+                    throw new Error(extremevalue.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -1633,43 +1633,43 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with scale > 0', () => {
             let zeroParams = () => {
                 let laplace = new Laplace();
-                if(laplace.isError())
-                    throw new Error(laplace.isError());
+                if(laplace.isError().error)
+                    throw new Error(laplace.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let laplace = new Laplace(0.5);
-                if(laplace.isError())
-                    throw new Error(laplace.isError());
+                if(laplace.isError().error)
+                    throw new Error(laplace.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let laplace = new Laplace('a', 'b');
-                if(laplace.isError())
-                    throw new Error(laplace.isError());
+                if(laplace.isError().error)
+                    throw new Error(laplace.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmaller = () => {
                 let laplace = new Laplace(1, -1);
-                if(laplace.isError())
-                    throw new Error(laplace.isError());
+                if(laplace.isError().error)
+                    throw new Error(laplace.isError().error);
             };
             incorrectParamsSmaller.should.throw(Error);
 
             let incorrectParamsLambdaToZero = () => {
                 let laplace = new Laplace(1, 0);
-                if(laplace.isError())
-                    throw new Error(laplace.isError());
+                if(laplace.isError().error)
+                    throw new Error(laplace.isError().error);
             };
             incorrectParamsLambdaToZero.should.throw(Error);
 
             let twoParams = () => {
                 let laplace = new Laplace(1, 1);
-                if(laplace.isError())
-                    throw new Error(laplace.isError());
+                if(laplace.isError().error)
+                    throw new Error(laplace.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -1742,43 +1742,43 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with scale > 0', () => {
             let zeroParams = () => {
                 let logistic = new Logistic();
-                if(logistic.isError())
-                    throw new Error(logistic.isError());
+                if(logistic.isError().error)
+                    throw new Error(logistic.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let logistic = new Logistic(0.5);
-                if(logistic.isError())
-                    throw new Error(logistic.isError());
+                if(logistic.isError().error)
+                    throw new Error(logistic.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let logistic = new Logistic('a', 'b');
-                if(logistic.isError())
-                    throw new Error(logistic.isError());
+                if(logistic.isError().error)
+                    throw new Error(logistic.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmaller = () => {
                 let logistic = new Logistic(1, -1);
-                if(logistic.isError())
-                    throw new Error(logistic.isError());
+                if(logistic.isError().error)
+                    throw new Error(logistic.isError().error);
             };
             incorrectParamsSmaller.should.throw(Error);
 
             let incorrectParamsLambdaToZero = () => {
                 let logistic = new Logistic(1, 0);
-                if(logistic.isError())
-                    throw new Error(logistic.isError());
+                if(logistic.isError().error)
+                    throw new Error(logistic.isError().error);
             };
             incorrectParamsLambdaToZero.should.throw(Error);
 
             let twoParams = () => {
                 let logistic = new Logistic(1, 1);
-                if(logistic.isError())
-                    throw new Error(logistic.isError());
+                if(logistic.isError().error)
+                    throw new Error(logistic.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -1851,43 +1851,43 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with sigma > 0', () => {
             let zeroParams = () => {
                 let lognormal = new Lognormal();
-                if(lognormal.isError())
-                    throw new Error(lognormal.isError());
+                if(lognormal.isError().error)
+                    throw new Error(lognormal.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let lognormal = new Lognormal(0.5);
-                if(lognormal.isError())
-                    throw new Error(lognormal.isError());
+                if(lognormal.isError().error)
+                    throw new Error(lognormal.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let lognormal = new Lognormal('a', 'b');
-                if(lognormal.isError())
-                    throw new Error(lognormal.isError());
+                if(lognormal.isError().error)
+                    throw new Error(lognormal.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmaller = () => {
                 let lognormal = new Lognormal(1, -1);
-                if(lognormal.isError())
-                    throw new Error(lognormal.isError());
+                if(lognormal.isError().error)
+                    throw new Error(lognormal.isError().error);
             };
             incorrectParamsSmaller.should.throw(Error);
 
             let incorrectParamsLambdaToZero = () => {
                 let lognormal = new Lognormal(1, 0);
-                if(lognormal.isError())
-                    throw new Error(lognormal.isError());
+                if(lognormal.isError().error)
+                    throw new Error(lognormal.isError().error);
             };
             incorrectParamsLambdaToZero.should.throw(Error);
 
             let twoParams = () => {
                 let lognormal = new Lognormal(1, 1);
-                if(lognormal.isError())
-                    throw new Error(lognormal.isError());
+                if(lognormal.isError().error)
+                    throw new Error(lognormal.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -1944,57 +1944,57 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with scale > 0 and shape > 0', () => {
             let zeroParams = () => {
                 let pareto = new Pareto();
-                if(pareto.isError())
-                    throw new Error(pareto.isError());
+                if(pareto.isError().error)
+                    throw new Error(pareto.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let pareto = new Pareto(0.5);
-                if(pareto.isError())
-                    throw new Error(pareto.isError());
+                if(pareto.isError().error)
+                    throw new Error(pareto.isError().error);
             };
             oneParam.should.throw(Error);
 
             let badParams = () => {
                 let pareto = new Pareto('a', 'b');
-                if(pareto.isError())
-                    throw new Error(pareto.isError());
+                if(pareto.isError().error)
+                    throw new Error(pareto.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmaller = () => {
                 let pareto = new Pareto(1, -1);
-                if(pareto.isError())
-                    throw new Error(pareto.isError());
+                if(pareto.isError().error)
+                    throw new Error(pareto.isError().error);
             };
             incorrectParamsSmaller.should.throw(Error);
 
             let incorrectParamsLambdaToZero = () => {
                 let pareto = new Pareto(1, 0);
-                if(pareto.isError())
-                    throw new Error(pareto.isError());
+                if(pareto.isError().error)
+                    throw new Error(pareto.isError().error);
             };
             incorrectParamsLambdaToZero.should.throw(Error);
 
             let incorrectParamsSmaller2 = () => {
                 let pareto = new Pareto(-1, 1);
-                if(pareto.isError())
-                    throw new Error(pareto.isError());
+                if(pareto.isError().error)
+                    throw new Error(pareto.isError().error);
             };
             incorrectParamsSmaller2.should.throw(Error);
 
             let incorrectParamsLambdaToZero2 = () => {
                 let pareto = new Pareto(0, 1);
-                if(pareto.isError())
-                    throw new Error(pareto.isError());
+                if(pareto.isError().error)
+                    throw new Error(pareto.isError().error);
             };
             incorrectParamsLambdaToZero2.should.throw(Error);
 
             let twoParams = () => {
                 let pareto = new Pareto(1, 1);
-                if(pareto.isError())
-                    throw new Error(pareto.isError());
+                if(pareto.isError().error)
+                    throw new Error(pareto.isError().error);
             };
             twoParams.should.not.throw(Error);
         });
@@ -2051,36 +2051,36 @@ describe('Random distributions', () => {
         it('requires one numerical argument with scale > 0', () => {
             let zeroParams = () => {
                 let rayleigh = new Rayleigh();
-                if(rayleigh.isError())
-                    throw new Error(rayleigh.isError());
+                if(rayleigh.isError().error)
+                    throw new Error(rayleigh.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let rayleigh = new Rayleigh(0.5);
-                if(rayleigh.isError())
-                    throw new Error(rayleigh.isError());
+                if(rayleigh.isError().error)
+                    throw new Error(rayleigh.isError().error);
             };
             oneParam.should.not.throw(Error);
 
             let badParams = () => {
                 let rayleigh = new Rayleigh('a');
-                if(rayleigh.isError())
-                    throw new Error(rayleigh.isError());
+                if(rayleigh.isError().error)
+                    throw new Error(rayleigh.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmaller = () => {
                 let rayleigh = new Rayleigh(-1);
-                if(rayleigh.isError())
-                    throw new Error(rayleigh.isError());
+                if(rayleigh.isError().error)
+                    throw new Error(rayleigh.isError().error);
             };
             incorrectParamsSmaller.should.throw(Error);
 
             let incorrectParamsSigmaToZero = () => {
                 let rayleigh = new Rayleigh(0);
-                if(rayleigh.isError())
-                    throw new Error(rayleigh.isError());
+                if(rayleigh.isError().error)
+                    throw new Error(rayleigh.isError().error);
             };
             incorrectParamsSigmaToZero.should.throw(Error);
         });
@@ -2135,36 +2135,36 @@ describe('Random distributions', () => {
         it('requires one numerical argument with degrees of freedom > 0', () => {
             let zeroParams = () => {
                 let student = new Student();
-                if(student.isError())
-                    throw new Error(student.isError());
+                if(student.isError().error)
+                    throw new Error(student.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let student = new Student(0.5);
-                if(student.isError())
-                    throw new Error(student.isError());
+                if(student.isError().error)
+                    throw new Error(student.isError().error);
             };
             oneParam.should.not.throw(Error);
 
             let badParams = () => {
                 let student = new Student('a');
-                if(student.isError())
-                    throw new Error(student.isError());
+                if(student.isError().error)
+                    throw new Error(student.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmaller = () => {
                 let student = new Student(-1);
-                if(student.isError())
-                    throw new Error(student.isError());
+                if(student.isError().error)
+                    throw new Error(student.isError().error);
             };
             incorrectParamsSmaller.should.throw(Error);
 
             let incorrectParamsVToZero = () => {
                 let student = new Student(0);
-                if(student.isError())
-                    throw new Error(student.isError());
+                if(student.isError().error)
+                    throw new Error(student.isError().error);
             };
             incorrectParamsVToZero.should.throw(Error);
         });
@@ -2219,57 +2219,57 @@ describe('Random distributions', () => {
         it('requires three numerical arguments with a any, b > a and a <= c <= b', () => {
             let zeroParams = () => {
                 let triangular = new Triangular();
-                if(triangular.isError())
-                    throw new Error(triangular.isError());
+                if(triangular.isError().error)
+                    throw new Error(triangular.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let triangular = new Triangular(0.5);
-                if(triangular.isError())
-                    throw new Error(triangular.isError());
+                if(triangular.isError().error)
+                    throw new Error(triangular.isError().error);
             };
             oneParam.should.throw(Error);
 
             let twoParams =  () => {
                 let triangular = new Triangular(0.5, 2);
-                if(triangular.isError())
-                    throw new Error(triangular.isError());
+                if(triangular.isError().error)
+                    throw new Error(triangular.isError().error);
             };
             twoParams.should.throw(Error);
 
             let badParams = () => {
                 let triangular = new Triangular('a', 'b', 'c');
-                if(triangular.isError())
-                    throw new Error(triangular.isError());
+                if(triangular.isError().error)
+                    throw new Error(triangular.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmallerB = () => {
                 let triangular = new Triangular(1, 0.5, 1);
-                if(triangular.isError())
-                    throw new Error(triangular.isError());
+                if(triangular.isError().error)
+                    throw new Error(triangular.isError().error);
             };
             incorrectParamsSmallerB.should.throw(Error);
 
             let incorrectParamsSmallerCA = () => {
                 let triangular = new Triangular(1, 2, 0.5);
-                if(triangular.isError())
-                    throw new Error(triangular.isError());
+                if(triangular.isError().error)
+                    throw new Error(triangular.isError().error);
             };
             incorrectParamsSmallerCA.should.throw(Error);
 
             let incorrectParamsGreaterCB = () => {
                 let triangular = new Triangular(1, 2, 2.5);
-                if(triangular.isError())
-                    throw new Error(triangular.isError());
+                if(triangular.isError().error)
+                    throw new Error(triangular.isError().error);
             };
             incorrectParamsGreaterCB.should.throw(Error);
 
             let threeParams = () => {
                 let triangular = new Triangular(1, 2, 1.5);
-                if(triangular.isError())
-                    throw new Error(triangular.isError());
+                if(triangular.isError().error)
+                    throw new Error(triangular.isError().error);
             };
             threeParams.should.not.throw(Error);
         });
@@ -2328,57 +2328,57 @@ describe('Random distributions', () => {
         it('requires two numerical arguments with k > 0 and lambda > 0', () => {
             let zeroParams = () => {
                 let weibull = new Weibull();
-                if(weibull.isError())
-                    throw new Error(weibull.isError());
+                if(weibull.isError().error)
+                    throw new Error(weibull.isError().error);
             };
             zeroParams.should.throw(Error);
 
             let oneParam =  () => {
                 let weibull = new Weibull(0.5);
-                if(weibull.isError())
-                    throw new Error(weibull.isError());
+                if(weibull.isError().error)
+                    throw new Error(weibull.isError().error);
             };
             oneParam.should.throw(Error);
 
             let twoParams =  () => {
                 let weibull = new Weibull(0.5, 2);
-                if(weibull.isError())
-                    throw new Error(weibull.isError());
+                if(weibull.isError().error)
+                    throw new Error(weibull.isError().error);
             };
             twoParams.should.not.throw(Error);
 
             let badParams = () => {
                 let weibull = new Weibull('a', 'b');
-                if(weibull.isError())
-                    throw new Error(weibull.isError());
+                if(weibull.isError().error)
+                    throw new Error(weibull.isError().error);
             };
             badParams.should.throw(Error);
 
             let incorrectParamsSmaller1 = () => {
                 let weibull = new Weibull(1, -1);
-                if(weibull.isError())
-                    throw new Error(weibull.isError());
+                if(weibull.isError().error)
+                    throw new Error(weibull.isError().error);
             };
             incorrectParamsSmaller1.should.throw(Error);
 
             let incorrectParamsSmaller2 = () => {
                 let weibull = new Weibull(-1, 1);
-                if(weibull.isError())
-                    throw new Error(weibull.isError());
+                if(weibull.isError().error)
+                    throw new Error(weibull.isError().error);
             };
             incorrectParamsSmaller2.should.throw(Error);
 
             let incorrectParamsZero1 = () => {
                 let weibull = new Weibull(1, 0);
-                if(weibull.isError())
-                    throw new Error(weibull.isError());
+                if(weibull.isError().error)
+                    throw new Error(weibull.isError().error);
             };
             incorrectParamsZero1.should.throw(Error);
 
             let incorrectParamsZero2 = () => {
                 let weibull = new Weibull(0, 1);
-                if(weibull.isError())
-                    throw new Error(weibull.isError());
+                if(weibull.isError().error)
+                    throw new Error(weibull.isError().error);
             };
             incorrectParamsZero2.should.throw(Error);
         });

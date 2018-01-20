@@ -11,4 +11,10 @@ console.log(randomjs.normal(2, 2).variance);
 console.log('Analyzer');
 let analyzer = randomjs.analyze([1, 5, 3, 4, 6, 7, 8, 10, 11, 12, 9, 4, 3]);
 //console.log(analyzer);
+analyzer.min.then(res => {
+    console.log('Result', res);
+})
+    .catch((err) => {
+        console.error('Error', err);
+    });
 console.log('Sync');

@@ -69,12 +69,6 @@ class Common {
     _entropy: number;
 
     constructor(randomArray: RandomArray): void {
-        // long process
-        let sum: number = 0;
-        for(let i = 0; i < 3*1e9; i += 1){
-            sum += 1;
-        }
-
         /**
          * Check if randomArray is array
          * if not - throw Error

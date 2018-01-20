@@ -23,7 +23,7 @@ class RandomJS {
             Object.defineProperty(this, file.slice(0,-3),{
                 __proto__: null,
                 get: () => {
-                    return (...params) => {
+                    return (...params): Factory => {
                         return new Factory(file, ...params);
                     };
                 }
@@ -38,7 +38,7 @@ class RandomJS {
          */
         Object.defineProperty(this, 'analyze', ({
             __proto__: null,
-            value: (randomArray: RandomArray) => {
+            value: (randomArray: RandomArray): AnalyzerFactory => {
                 return new AnalyzerFactory(randomArray);
             }
         }: Object));
