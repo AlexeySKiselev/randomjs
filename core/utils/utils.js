@@ -53,28 +53,10 @@ class Utils {
     static digamma(z: number): number {
         if(z <= 0)
             throw new Error('Argument of Digamma function must be positive');
-        let coefs: Array<number> = [
-            0,
-            -1/2,
-            -1/12,
-            0,
-            1/120,
-            0,
-            -1/252,
-            0,
-            1/240,
-            0,
-            -5/660,
-            0,
-            691/32760,
-            0,
-            -1/12
-        ],
-            result: number = Math.log(z);
-        for(let i: number = 0; i < 15; i += 1){
-            result += coefs[i] / Math.pow(z, i);
+        if(z < 0.5) {
+            return Utils.digamma(1 - z) + Math.PI * Math.cos(Math.PI * (1 -z)) / Math.sin(Math.PI * (1 - z));
         }
-        return result;
+        return Math.log(z + 0.4849142940227510) - 1 / (z * 1.0271785180163817);
     }
 }
 

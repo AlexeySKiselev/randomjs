@@ -2502,4 +2502,30 @@ describe('Utils', () => {
             expect(Utils.gamma(23 / 3)).to.be.closeTo(2593.566177, 0.00001);
         });
     });
+
+    // Digamma function
+    describe('Digamma function', () => {
+        it('should be equal minus Euler\'s constant +-0.002 for argument 1', () => {
+            expect(Utils.digamma(1)).to.be.a('number');
+            expect(Utils.digamma(1)).to.be.closeTo(-0.5772156649, 0.002);
+        });
+        it('should be equal -1.96351002602+-0.002 for argument 1/2', () => {
+            expect(Utils.digamma(1/2)).to.be.a('number');
+            expect(Utils.digamma(1/2)).to.be.closeTo(-1.96351002602, 0.002);
+        });
+        it('should be equal -3.132033780019273+-0.002 for argument 1/3', () => {
+            expect(Utils.digamma(1/3)).to.be.a('number');
+            expect(Utils.digamma(1/3)).to.be.closeTo(-3.132033780019273, 0.002);
+        });
+        it('should be equal -6.332127505373381+-0.002 for argument 1/6', () => {
+            expect(Utils.digamma(1/6)).to.be.a('number');
+            expect(Utils.digamma(1/6)).to.be.closeTo(-6.332127505373381, 0.002);
+        });
+        it('should be on "1 / (n-1)" bigger then previous Digamma(n-1)', () => {
+            for(let i = 1; i < 10; i += 1) {
+                expect(Utils.digamma(i)).to.be.a('number');
+                expect(Utils.digamma(i+1)).to.be.closeTo(Utils.digamma(i) + 1/i, 0.01);
+            }
+        });
+    });
 });
