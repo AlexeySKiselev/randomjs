@@ -9,7 +9,7 @@ class Utils {
      * Gamma function
      * Calculate function using polynomial approach
      * https://en.wikipedia.org/wiki/Gamma_function
-     * @param z: number
+     * @param z<number> - for this project purpose z > 0 and real value
      * @returns {number}
      */
     static gamma(z: number): number {

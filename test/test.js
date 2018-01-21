@@ -2461,3 +2461,45 @@ describe('Analyzer', () => {
         });
     });
 });
+
+// Utils
+describe('Utils', () => {
+    let Utils = require('../lib/utils/utils');
+    // Gamma function
+    describe('Gamma function', () => {
+        it('should return 1 for Gamma(1)', () => {
+            expect(Utils.gamma(1)).to.be.a('number');
+            expect(Utils.gamma(1)).to.be.closeTo(1, 0.00001);
+        });
+        it('should be "n-1" times bigger then previous Gamma(n-1)', () => {
+            for(let i = 1; i < 10; i += 1) {
+                expect(Utils.gamma(i)).to.be.a('number');
+                expect(Utils.gamma(i+1)).to.be.closeTo(i * Utils.gamma(i), 0.00001);
+            }
+        });
+        it('should return sqrt(PI)+-0.00001 for non-integer 0.5 value', () => {
+            expect(Utils.gamma(0.5)).to.be.a('number');
+            expect(Utils.gamma(0.5)).to.be.closeTo(Math.sqrt(Math.PI), 0.00001);
+        });
+        it('should return 0.886227+-0.00001 for Gamma(1.5)', () => {
+            expect(Utils.gamma(1.5)).to.be.a('number');
+            expect(Utils.gamma(1.5)).to.be.closeTo(0.886227, 0.00001);
+        });
+        it('should return 3.323351+-0.00001 for Gamma(3.5)', () => {
+            expect(Utils.gamma(3.5)).to.be.a('number');
+            expect(Utils.gamma(3.5)).to.be.closeTo(3.323351, 0.00001);
+        });
+        it('should return 0.902745+-0.00001 for Gamma(5/3)', () => {
+            expect(Utils.gamma(5 / 3)).to.be.a('number');
+            expect(Utils.gamma(5 / 3)).to.be.closeTo(0.902745, 0.00001);
+        });
+        it('should return 2.678939+-0.00001 for Gamma(1/3)', () => {
+            expect(Utils.gamma(1 / 3)).to.be.a('number');
+            expect(Utils.gamma(1 / 3)).to.be.closeTo(2.678939, 0.00001);
+        });
+        it('should return 2593.566177+-0.00001 for Gamma(23/3)', () => {
+            expect(Utils.gamma(23 / 3)).to.be.a('number');
+            expect(Utils.gamma(23 / 3)).to.be.closeTo(2593.566177, 0.00001);
+        });
+    });
+});
