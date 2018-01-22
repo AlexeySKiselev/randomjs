@@ -2464,7 +2464,16 @@ describe('Analyzer', () => {
 
 // Utils
 describe('Utils', () => {
-    let Utils = require('../lib/utils/utils');
+    let Utils = require('../lib/utils/utils'),
+        methods = Object.getOwnPropertyNames(Utils);
+
+    it('should has static method "gamma"', () => {
+        expect(methods).to.include.members(['gamma']);
+    });
+    it('should has static method "digamma"', () => {
+        expect(methods).to.include.members(['digamma']);
+    });
+
     // Gamma function
     describe('Gamma function', () => {
         it('should return 1 for Gamma(1)', () => {
@@ -2535,6 +2544,13 @@ describe('Utils', () => {
             expect(Utils.gamma(z)).to.be.a('number');
             expect(Math.log(Utils.gamma(z))).to.be.closeTo(Math.log(Utils.gamma(z + 1)) - Math.log(z), 0.0001);
         });
+        it('should receive only positive values', () => {
+            let badParam = () => {
+                let gamma = Utils.gamma(-1);
+                return gamma;
+            };
+            badParam.should.throw(Error);
+        });
     });
 
     // Digamma function
@@ -2582,6 +2598,13 @@ describe('Utils', () => {
                 expect(digammaSum).to.be.a('number');
                 expect(digammaSum).to.be.closeTo(Math.PI * (2 * k - m) / 2, 0.01);
             }
+        });
+        it('should receive only positive values', () => {
+            let badParam = () => {
+                let digamma = Utils.digamma(-1);
+                return digamma;
+            };
+            badParam.should.throw(Error);
         });
     });
 });
