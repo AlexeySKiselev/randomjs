@@ -2501,6 +2501,40 @@ describe('Utils', () => {
             expect(Utils.gamma(23 / 3)).to.be.a('number');
             expect(Utils.gamma(23 / 3)).to.be.closeTo(2593.566177, 0.00001);
         });
+        it('should satisfy Euler reflection formula for z = 0.4 and z = 0.6', () => {
+            expect(Utils.gamma(0.4)).to.be.a('number');
+            expect(Utils.gamma(0.6)).to.be.a('number');
+            expect(Utils.gamma(0.4) * Utils.gamma(0.6)).to.be.closeTo(Math.PI / Math.sin(Math.PI * 0.4), 0.00001);
+            expect(Utils.gamma(0.4) * Utils.gamma(0.6)).to.be.closeTo(Math.PI / Math.sin(Math.PI * 0.6), 0.00001);
+        });
+        it('should satisfy duplication formula', () => {
+            let z = 0.4;
+            expect(Utils.gamma(z)).to.be.a('number');
+            expect(Utils.gamma(z) * Utils.gamma(z + 0.5)).to.be.closeTo(Math.pow(2, 1 - 2 * z) * Math.sqrt(Math.PI) * Utils.gamma(2 * z), 0.00001);
+            z = 0.9;
+            expect(Utils.gamma(z)).to.be.a('number');
+            expect(Utils.gamma(z) * Utils.gamma(z + 0.5)).to.be.closeTo(Math.pow(2, 1 - 2 * z) * Math.sqrt(Math.PI) * Utils.gamma(2 * z), 0.00001);
+            z = 1.1;
+            expect(Utils.gamma(z)).to.be.a('number');
+            expect(Utils.gamma(z) * Utils.gamma(z + 0.5)).to.be.closeTo(Math.pow(2, 1 - 2 * z) * Math.sqrt(Math.PI) * Utils.gamma(2 * z), 0.00001);
+            z = 2;
+            expect(Utils.gamma(z)).to.be.a('number');
+            expect(Utils.gamma(z) * Utils.gamma(z + 0.5)).to.be.closeTo(Math.pow(2, 1 - 2 * z) * Math.sqrt(Math.PI) * Utils.gamma(2 * z), 0.00001);
+        });
+        it('should satisfy log equation', () => {
+            let z = 0.4;
+            expect(Utils.gamma(z)).to.be.a('number');
+            expect(Math.log(Utils.gamma(z))).to.be.closeTo(Math.log(Utils.gamma(z + 1)) - Math.log(z), 0.0001);
+            z = 0.8;
+            expect(Utils.gamma(z)).to.be.a('number');
+            expect(Math.log(Utils.gamma(z))).to.be.closeTo(Math.log(Utils.gamma(z + 1)) - Math.log(z), 0.0001);
+            z = 1;
+            expect(Utils.gamma(z)).to.be.a('number');
+            expect(Math.log(Utils.gamma(z))).to.be.closeTo(Math.log(Utils.gamma(z + 1)) - Math.log(z), 0.0001);
+            z = 1.5;
+            expect(Utils.gamma(z)).to.be.a('number');
+            expect(Math.log(Utils.gamma(z))).to.be.closeTo(Math.log(Utils.gamma(z + 1)) - Math.log(z), 0.0001);
+        });
     });
 
     // Digamma function
@@ -2525,6 +2559,28 @@ describe('Utils', () => {
             for(let i = 1; i < 10; i += 1) {
                 expect(Utils.digamma(i)).to.be.a('number');
                 expect(Utils.digamma(i+1)).to.be.closeTo(Utils.digamma(i) + 1/i, 0.01);
+            }
+        });
+        it('for sum of Digamma of values < 1 from 1/m to 1 should returns -m(<Euler constant> + ln(m))', () => {
+            let digammaSum = 0,
+                m = 10;
+            for(let i = 1; i <= m; i += 1 ) {
+                digammaSum += Utils.digamma(i / m);
+            }
+            expect(digammaSum).to.be.a('number');
+            expect(digammaSum).to.be.closeTo(-m * (0.5772156649 + Math.log(m)), 0.01);
+        });
+        it('for sum of (Digamma of values < 1 from 1/(m-1) to 1)*sin(2Pirk)/n should returns Pi(2k - m)/ 2 for every k from 1 to m-1', () => {
+            let m = 10,
+                digammaSum;
+            for(let k = 1; k <= m-1; k+= 1) {
+                digammaSum = 0;
+                for(let i = 1; i <= m-1; i += 1) {
+                    digammaSum += Utils.digamma(i / m) * Math.sin(2 * Math.PI * i * k / m);
+                }
+
+                expect(digammaSum).to.be.a('number');
+                expect(digammaSum).to.be.closeTo(Math.PI * (2 * k - m) / 2, 0.01);
             }
         });
     });
