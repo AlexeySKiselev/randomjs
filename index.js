@@ -4,7 +4,7 @@
  */
 
 import fs from 'fs';
-import Factory from './core/factory';
+import DistributionFactory from './core/distributionFactory';
 import AnalyzerFactory from './core/analyzerFactory';
 import type { RandomArray } from './core/types';
 
@@ -23,8 +23,8 @@ class RandomJS {
             Object.defineProperty(this, file.slice(0,-3),{
                 __proto__: null,
                 get: () => {
-                    return (...params): Factory => {
-                        return new Factory(file, ...params);
+                    return (...params): DistributionFactory => {
+                        return new DistributionFactory(file, ...params);
                     };
                 }
             });

@@ -23,3 +23,11 @@ export type AnalyzerPublicProperties = { [property: string]: any };
  * In-method error type
  */
 export type MethodError = { error: string | boolean };
+
+/**
+ * Analyzer PDF type
+ */
+export type AnalyzerPDF = {
+    values: RandomArray,
+    probabilities: RandomArray
+};

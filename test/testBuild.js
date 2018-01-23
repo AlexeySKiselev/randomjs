@@ -9,9 +9,9 @@ console.log('Normal random number');
 console.log(randomjs.normal(3, 3).variance);
 console.log(randomjs.normal(2, 2).variance);
 console.log('Analyzer');
-let analyzer = randomjs.analyze([1, 5, 3, 4, 6, 7, 8, 10, 11, 12, 9, 4, 3]);
+let analyzer = randomjs.analyze([1, 5, 3, 4, 6, 7, 8, 10, 11, 12, 9, 4, 3, 5, 9, 12, 1, 1, 3, 4, 6, 2, 8]);
 //console.log(analyzer);
-analyzer.min.then(res => {
+analyzer.then(res => {
     console.log('Result', res);
 })
     .catch((err) => {

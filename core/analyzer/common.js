@@ -5,7 +5,7 @@
  * Created by Alexey S. Kiselev
  */
 
-import type { RandomArray } from '../types';
+import type { RandomArray, AnalyzerPDF } from '../types';
 import { AnalyzerPublicMethod, AnalyzerSingleton } from '../decorators';
 
 @AnalyzerSingleton
@@ -44,6 +44,12 @@ class Common {
     _variance: number;
 
     /**
+     * Median value
+     * @private
+     */
+    _median: number;
+
+    /**
      * Number of values in PDF and CDF functions
      * TODO: implement "options" mechanism for this parameter
      * @private
@@ -79,12 +85,19 @@ class Common {
         }
 
         /**
+         * Check if array is too small
+         */
+        if(randomArray.length <= 10) {
+            throw new Error('Analyzer.Common: input randomArray is too small, that is no reason to analyze');
+        }
+
+        /**
          * Create inner variables
          */
         this.randomArray = randomArray;
         this._maximum = -Infinity;
         this._minimum = Infinity;
-        this._values_in_pdf = 5; //200;
+        this._values_in_pdf = 200;
         this._entropy = 0;
 
         /**
@@ -142,10 +155,13 @@ class Common {
          * Also I am going to use this results to calculate other parameters like entropy
          * If the size of input array is less then <_values_in_pdf> - use dynamic range length
          */
-        let values_step: number = (this._maximum - this._minimum) / this._values_in_pdf,
-            rvLength = this.randomArray.length,
-            pdf: Array<number> = new Array(this._values_in_pdf),
-            pdf_values: Array<number> = new Array(this._values_in_pdf),
+        let rvLength = this.randomArray.length,
+            values_in_pdf: number = (rvLength < 2 * this._values_in_pdf)
+                ?Math.floor(rvLength / 2)
+                :this._values_in_pdf,
+            pdf: Array<number> = new Array(values_in_pdf),
+            pdf_values: Array<number> = new Array(values_in_pdf),
+            values_step: number = (this._maximum - this._minimum) / values_in_pdf,
             tempIndex;
 
         // Create PDF array with initial zeros
@@ -159,10 +175,32 @@ class Common {
             pdf[tempIndex - 1] += 1;
         }
 
+        /**
+         * Add special variables for calculating median
+         * Increase pdf_low until it achieves 0.5
+         * At 0.5 assign median_low and median_high
+         * For saving calculating time add variable catch_median (false in initial)
+         * Then calculate average value
+         */
+        let pdf_low: number = 0,
+            catch_median: boolean = false;
+
         // Convert pdf to probability
         for(let i = 0; i < pdf.length; i += 1) {
             pdf[i] /= rvLength;
-            pdf_values[i] = this._minimum + i * values_step;
+            // I move values by 0.5 for centering approximation bar
+            pdf_values[i] = this._minimum + (i + 0.5) * values_step;
+
+            // Increase pdf_low and pdf_high
+            if(!catch_median) {
+                if(pdf_low < 0.5) {
+                    pdf_low += pdf[i];
+                } else {
+                    // Assign median value and stop calculation median
+                    this._median = (pdf_low === 0.5)?pdf_values[i]:((pdf_values[i] + pdf_values[i - 1]) / 2);
+                    catch_median = true;
+                }
+            }
 
             // Calculate entropy
             this._entropy -= pdf[i] * Math.log(pdf[i]);
@@ -201,12 +239,16 @@ class Common {
 
     @AnalyzerPublicMethod
     get mode(): number {
-        return 1;//this.randomArray;
+        return 1;
     }
 
+    /**
+     * For calculating median I use Median-of-Medians Algorithm with O(n) complexity
+     * @returns {number} - median of random array
+     */
     @AnalyzerPublicMethod
-    get median(): void {
-
+    get median(): number {
+        return this._median;
     }
 
     /**
@@ -234,10 +276,10 @@ class Common {
 
     /**
      * Public method for Analyzer
-     * @returns {Object} - PDF function
+     * @returns {AnalyzerPDF} - object with PDF function and its values
      */
     @AnalyzerPublicMethod
-    get pdf(): { 'values': Array<number>, 'probabilities': Array<number> } {
+    get pdf(): AnalyzerPDF {
         return {
             values: this._pdf_values,
             probabilities: this._pdf
