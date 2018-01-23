@@ -2435,27 +2435,32 @@ describe('Analyzer', () => {
     describe('Imported Common class', () => {
         let Common = require('../lib/analyzer/common');
         it('should be a Singleton', () => {
-            let methods1 = Common.getInstance([1, 2, 3]),
-                methods2 = Common.getInstance([4, 5, 6]),
-                methods3 = new Common([1, 2, 3]),
-                methods4 = new Common([4, 5, 6]);
+            let methods1 = Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+                methods2 = Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+                methods3 = new Common([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+                methods4 = new Common([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
             expect(methods1).to.equal(methods2);
             expect(methods3).to.not.equal(methods4);
         });
         it('should has "publicMethods" property for instances', () => {
-            let common = Common.getInstance([1, 2, 3]),
-                common2 = new Common([4, 5, 6]);
+            let common = Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+                common2 = new Common([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
             expect(common).to.have.property('publicMethods');
             expect(common2).to.have.property('publicMethods');
         });
-        it('should receive for input data only array', () => {
+        it('should receive for input data only array with length > 10', () => {
             let receiveNotArray = () => {
                 Common.getInstance(3);
             };
             receiveNotArray.should.throw(Error);
 
-            let receiveArray = () => {
+            let receiveSmallArray = () => {
                 Common.getInstance([1, 2, 3]);
+            };
+            receiveSmallArray.should.throw(Error);
+
+            let receiveArray = () => {
+                Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
             };
             receiveArray.should.not.throw(Error);
         });
