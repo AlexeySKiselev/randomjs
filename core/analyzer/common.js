@@ -50,6 +50,24 @@ class Common {
     _median: number;
 
     /**
+     * Mode value
+     * @private
+     */
+    _mode: ?number;
+
+    /**
+     * Skewness value
+     * @private
+     */
+    _skewness: number;
+
+    /**
+     * Kurtosis value
+     * @private
+     */
+    _kurtosis: number;
+
+    /**
      * Number of values in PDF and CDF functions
      * TODO: implement "options" mechanism for this parameter
      * @private
@@ -61,6 +79,12 @@ class Common {
      * @private
      */
     _pdf: RandomArray;
+
+    /**
+     * CDF object contains CDF function values
+     * @private
+     */
+    _cdf: RandomArray;
 
     /**
      * PDF Values object contains PDF function x-values
@@ -149,7 +173,7 @@ class Common {
         this._variance = M2 / n;
 
         /**
-         * Calculating PDF
+         * Calculating PDF and CDF
          * I am going to cut the range to <_values_in_pdf> values, then calculate range hit of random value
          * Then store this results to Analyzer public method "pdf"
          * Also I am going to use this results to calculate other parameters like entropy
@@ -159,13 +183,21 @@ class Common {
             values_in_pdf: number = (rvLength < 2 * this._values_in_pdf)
                 ?Math.floor(rvLength / 2)
                 :this._values_in_pdf,
-            pdf: Array<number> = new Array(values_in_pdf),
-            pdf_values: Array<number> = new Array(values_in_pdf),
+            pdf: RandomArray = new Array(values_in_pdf),
+            cdf: RandomArray = new Array(values_in_pdf),
+            pdf_values: RandomArray = new Array(values_in_pdf),
             values_step: number = (this._maximum - this._minimum) / values_in_pdf,
             tempIndex;
 
-        // Create PDF array with initial zeros
+        // Variable for skewness
+        let sumOfCubes: number = 0;
+
+        // Variable for Kurtosis
+        let sumOfFourths: number = 0;
+
+        // Create PDF and CDF arrays with initial zeros
         pdf.fill(0);
+        cdf.fill(0);
 
         // Iterate over randomArray and add value to pdf
         for(let rv of this.randomArray) {
@@ -173,7 +205,22 @@ class Common {
                 ?1
                 :Math.ceil((rv - this._minimum) / values_step);
             pdf[tempIndex - 1] += 1;
+
+            // Calculate sum of cubes for skewness
+            sumOfCubes += Math.pow(rv, 3);
+
+            // Calculate sum of 4-powers for Kurtosis
+            sumOfFourths += Math.pow(rv - this._mean, 4) / Math.pow(this._variance, 2);
         }
+
+        // Calculate skewness
+        this._skewness = ((sumOfCubes / rvLength) - this._mean * (3 * this._variance + Math.pow(this._mean, 2))) / (this._variance * Math.sqrt(this._variance));
+
+        // Calculate Kurtosis
+        this._kurtosis = sumOfFourths / rvLength;
+
+        // Cumulative variable for CDF
+        let sumOfPDF: number = 0;
 
         /**
          * Add special variables for calculating median
@@ -185,11 +232,24 @@ class Common {
         let pdf_low: number = 0,
             catch_median: boolean = false;
 
+        /**
+         * Calculate mode value
+         * max_pdf - maximum value of pdf
+         * max_mode - value of max_pds
+         * I am going to compare value with delta = 0.1% due to accuracy
+         */
+        let max_pdf: number = pdf[0] / rvLength,
+            max_mode: ?number = this._minimum + 0.5 * values_step;
+
         // Convert pdf to probability
         for(let i = 0; i < pdf.length; i += 1) {
             pdf[i] /= rvLength;
             // I move values by 0.5 for centering approximation bar
             pdf_values[i] = this._minimum + (i + 0.5) * values_step;
+
+            // Calculate CDF
+            sumOfPDF += pdf[i];
+            cdf[i] = sumOfPDF;
 
             // Increase pdf_low and pdf_high
             if(!catch_median) {
@@ -202,21 +262,20 @@ class Common {
                 }
             }
 
+            // Calculate mode
+            if(pdf[i] - max_pdf > 0.001 * pdf[i]) {
+                max_pdf = pdf[i];
+                max_mode = pdf_values[i];
+            }
+
             // Calculate entropy
             this._entropy -= pdf[i] * Math.log(pdf[i]);
         }
 
+        this._mode = max_mode;
         this._pdf = pdf;
         this._pdf_values = pdf_values;
-    }
-
-    /**
-     * Public method for AnalyzerFactory
-     * @returns {number} - maximum value in array
-     */
-    @AnalyzerPublicMethod
-    get max(): number {
-        return this._maximum;
+        this._cdf = cdf;
     }
 
     /**
@@ -229,6 +288,15 @@ class Common {
     }
 
     /**
+     * Public method for AnalyzerFactory
+     * @returns {number} - maximum value in array
+     */
+    @AnalyzerPublicMethod
+    get max(): number {
+        return this._maximum;
+    }
+
+    /**
      * Public method for Analyzer
      * @returns {number} - mean value of random array
      */
@@ -238,12 +306,11 @@ class Common {
     }
 
     @AnalyzerPublicMethod
-    get mode(): number {
-        return 1;
+    get mode(): ?number {
+        return this._mode;
     }
 
     /**
-     * For calculating median I use Median-of-Medians Algorithm with O(n) complexity
      * @returns {number} - median of random array
      */
     @AnalyzerPublicMethod
@@ -262,6 +329,15 @@ class Common {
 
     /**
      * Public method for Analyzer
+     * @returns {number} - standard deviation
+     */
+    @AnalyzerPublicMethod
+    get standard_deviation(): number {
+        return Math.sqrt(this._variance);
+    }
+
+    /**
+     * Public method for Analyzer
      * @returns {number} - Entropy of random distribution
      */
     @AnalyzerPublicMethod
@@ -269,9 +345,35 @@ class Common {
         return this._entropy;
     }
 
+    /**
+     * Public method for Analyzer
+     * @returns {number} - Skewness of random distribution
+     */
     @AnalyzerPublicMethod
-    get skewness(): void {
+    get skewness(): number {
+        return this._skewness;
+    }
 
+    /**
+     * Pearson's skewness: mode and median
+     * Public method for Analyzer
+     * @returns {Object} - object with mean and median skewness
+     */
+    @AnalyzerPublicMethod
+    get pearson(): { skewness_mode: ?number, skewness_median: number } {
+        return {
+            skewness_mode: (this._mode)?((this._mean - this._mode) / this.standard_deviation):undefined,
+            skewness_median: (this._mean - this._median) / this.standard_deviation
+        };
+    }
+
+    /**
+     * Public method for Analyzer
+     * @returns {number} - Kurtosis value of random distribution
+     */
+    @AnalyzerPublicMethod
+    get kurtosis(): number {
+        return this._kurtosis;
     }
 
     /**
@@ -283,6 +385,18 @@ class Common {
         return {
             values: this._pdf_values,
             probabilities: this._pdf
+        };
+    }
+
+    /**
+     * Public method for Analyzer
+     * @returns {AnalyzerPDF} - object with CDF function and its values
+     */
+    @AnalyzerPublicMethod
+    get cdf(): AnalyzerPDF {
+        return {
+            values: this._pdf_values,
+            probabilities: this._cdf
         };
     }
 }
