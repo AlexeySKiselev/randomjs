@@ -2433,7 +2433,9 @@ describe('Random distributions', () => {
 // Analyzer
 describe('Analyzer', () => {
     describe('Imported Common class', () => {
-        let Common = require('../lib/analyzer/common');
+        let Common = require('../lib/analyzer/common'),
+            sampleArray = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], // Not random Array
+            sampleRandomArray = [1, 4, 5, 9, 6, 4, 2, 6, 2, 10, 11, 8, 7, 12, 1, 1, 8, 6, 4, 5, 9];
         it('should be a Singleton', () => {
             let methods1 = Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
                 methods2 = Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
@@ -2463,6 +2465,21 @@ describe('Analyzer', () => {
                 Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
             };
             receiveArray.should.not.throw(Error);
+        });
+        // Tests for
+        describe('With non-random input', () => {
+            it('should has mean value equals to 2', () => {
+                let commonNonRandom = Common.getInstance(sampleArray);
+                expect(commonNonRandom.mean).to.be.a('number');
+                expect(commonNonRandom.mean).to.be.closeTo(2, 0.001);
+            });
+            it('should has variance and standard deviation equal to zero', () => {
+                let commonNonRandom = Common.getInstance(sampleArray);
+                expect(commonNonRandom.variance).to.be.a('number');
+                expect(commonNonRandom.variance).to.be.closeTo(0, 0.001);
+                expect(commonNonRandom.standard_deviation).to.be.a('number');
+                expect(commonNonRandom.standard_deviation).to.be.closeTo(0, 0.001);
+            });
         });
     });
 });

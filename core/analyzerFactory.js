@@ -40,7 +40,7 @@ class AnalyzerFactory implements IAnalyzerMethods {
      * @param randomArray<number> - input array
      * @returns {Proxy}
      */
-    constructor(randomArray: Array<number>): any {
+    constructor(randomArray: RandomArray): any {
         this.randomArray = randomArray;
         this.publicMethods = {};
         this.publicProperties = {};

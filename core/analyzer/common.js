@@ -197,7 +197,6 @@ class Common {
 
         // Create PDF and CDF arrays with initial zeros
         pdf.fill(0);
-        cdf.fill(0);
 
         // Iterate over randomArray and add value to pdf
         for(let rv of this.randomArray) {
@@ -305,12 +304,17 @@ class Common {
         return this._mean;
     }
 
+    /**
+     * Public method for Analyzer
+     * @returns {number} - mode value for random distribution
+     */
     @AnalyzerPublicMethod
     get mode(): ?number {
         return this._mode;
     }
 
     /**
+     * Public method for Analyzer
      * @returns {number} - median of random array
      */
     @AnalyzerPublicMethod
