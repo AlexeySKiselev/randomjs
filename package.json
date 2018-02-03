@@ -4,7 +4,7 @@
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
-    "mocha": "node node_modules/mocha/bin/mocha test/test.js",
+    "mocha": "node node_modules/mocha/bin/mocha test/*.test.js",
     "lint": "eslint --config .eslintrc.json ./",
     "build:node": "gulp build:node --watch",
     "test": "node node_modules/npm-run-all/bin/run-s build:node mocha",

@@ -62,9 +62,19 @@ class AnalyzerFactory implements IAnalyzerMethods {
 
         fs.readdirSync(__dirname + '/core/analyzer').forEach((file: string) => {
             let Methods: IAnalyzerSingleton = require(__dirname + '/core/analyzer/' + file),
-                methodsClass: Promise<IAnalyzerMethods> = new Promise((resolve) => {
+                methodsClass: Promise<IAnalyzerMethods> = new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        resolve(Methods.getInstance(this.randomArray));
+                        /**
+                         * If input is not array:
+                         * @returns rejected Promise with error
+                         */
+                        if(!Array.isArray(this.randomArray)) {
+                            reject('Input must be an Array!');
+                        } else if(randomArray.length <= 10) {
+                            reject('Analyzer.Common: input randomArray is too small, that is no reason to analyze');
+                        } else  {
+                            resolve(Methods.getInstance(this.randomArray));
+                        }
                     }, 0);
                 });
 
@@ -118,6 +128,9 @@ class AnalyzerFactory implements IAnalyzerMethods {
                     });
                 });
                 return this.publicProperties;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
             });
 
         /**
@@ -129,19 +142,13 @@ class AnalyzerFactory implements IAnalyzerMethods {
         return new Proxy(PromiseMethods, {
             get: (obj: Promise<any>, method: any): any => {
                 /**
-                 * If input is not array:
-                 * @returns rejected Promise with error
-                 */
-                if(!Array.isArray(this.randomArray)) {
-                    return Promise.reject('Input must be an Array!');
-                }
-
-                /**
                  * If method is in class methods:
                  * @returns: resolved Promise with evaluated method
                  */
                 if(method === 'then') {
                     return PromiseMethods.then.bind(obj);
+                } else if(method === 'catch') {
+                    return PromiseMethods.catch.bind(obj);
                 } else if(typeof method !== 'string') {
                     /**
                      * If we call class as a function (randomjs.analyze(<random_array>)):

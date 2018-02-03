@@ -170,7 +170,7 @@ class Common {
 
         // Assign mean and variance values
         this._mean = M;
-        this._variance = M2 / n;
+        this._variance = M2 / (n - 1);
 
         /**
          * Calculating PDF and CDF
@@ -206,17 +206,17 @@ class Common {
             pdf[tempIndex - 1] += 1;
 
             // Calculate sum of cubes for skewness
-            sumOfCubes += Math.pow(rv, 3);
+            sumOfCubes += Math.pow(rv - this._mean, 3);
 
             // Calculate sum of 4-powers for Kurtosis
             sumOfFourths += Math.pow(rv - this._mean, 4) / Math.pow(this._variance, 2);
         }
 
         // Calculate skewness
-        this._skewness = ((sumOfCubes / rvLength) - this._mean * (3 * this._variance + Math.pow(this._mean, 2))) / (this._variance * Math.sqrt(this._variance));
+        this._skewness = sumOfCubes / ((rvLength - 1) * Math.pow(this._variance, 1.5));
 
         // Calculate Kurtosis
-        this._kurtosis = sumOfFourths / rvLength;
+        this._kurtosis = sumOfFourths / (rvLength - 1);
 
         // Cumulative variable for CDF
         let sumOfPDF: number = 0;
@@ -268,7 +268,7 @@ class Common {
             }
 
             // Calculate entropy
-            this._entropy -= pdf[i] * Math.log(pdf[i]);
+            this._entropy -= (pdf[i] === 0)?0:(pdf[i] * Math.log(pdf[i]));
         }
 
         this._mode = max_mode;
