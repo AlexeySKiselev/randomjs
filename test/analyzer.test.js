@@ -46,10 +46,27 @@ describe('Analyzer', () => {
             });
         expect(rejected).to.be.equal(false);
     });
+    it('should rejected with method, which does not exist', (done) => {
+        let randomjs = require('../lib'),
+            promise = randomjs.analyze([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]),
+            rejected = false;
+        promise.somemethod
+            .then((res) => {
+                expect(res).to.be.a('number');
+                done();
+            })
+            .catch((err) => {
+                rejected = true;
+                expect(err).to.be.equal('No such method in analyzer');
+                done();
+            });
+        expect(rejected).to.be.equal(false);
+    });
     describe('Imported Common class', () => {
         let Common = require('../lib/analyzer/common'),
             sampleArray = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], // Not random Array
-            sampleRandomArray = [1, 4, 5, 9, 6, 4, 2, 6, 2, 10, 11, 8, 7, 12, 1, 1, 8, 6, 4, 5, 9];
+            sampleRandomArray = [1, 4, 5, 9, 6, 4, 2, 6, 2, 10, 11, 8, 7, 12, 1, 1, 8, 6, 4, 5, 9],
+            sampleSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
         it('should be a Singleton', () => {
             let methods1 = Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
                 methods2 = Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
@@ -101,10 +118,10 @@ describe('Analyzer', () => {
                 expect(commonNonRandom.min).to.be.a('number');
                 expect(commonNonRandom.min).to.be.closeTo(2, 0.001);
             });
-            it('should has mode value equals to 2', () => {
+            it('should has mode value equals to [2]', () => {
                 let commonNonRandom = Common.getInstance(sampleArray);
-                expect(commonNonRandom.mode).to.be.a('number');
-                expect(commonNonRandom.mode).to.be.closeTo(2, 0.001);
+                expect(commonNonRandom.mode).to.be.an('array');
+                expect(commonNonRandom.mode[0]).to.be.closeTo(2, 0.001);
             });
             it('should has entropy value equals to zero', () => {
                 let commonNonRandom = Common.getInstance(sampleArray);
@@ -119,22 +136,102 @@ describe('Analyzer', () => {
                 let commonNonRandom = Common.getInstance(sampleArray);
                 expect(commonNonRandom.kurtosis).to.be.NaN;
             });
-            it('for 12-elements array should has 6-elements pdf array with first element equals to 1 and others equal to zero', () => {
+            it('for 12-elements array should has 12-elements pdf array with first element equals to 1 and others equal to zero', () => {
                 let commonNonRandom = Common.getInstance(sampleArray);
                 expect(commonNonRandom.pdf.probabilities).to.be.an('array');
-                expect(commonNonRandom.pdf.probabilities.length).to.equal(6);
+                expect(commonNonRandom.pdf.probabilities.length).to.equal(12);
                 expect(commonNonRandom.pdf.probabilities[0]).to.equal(1);
-                for(let i = 1; i <= 5; i += 1){
+                for(let i = 1; i <= 11; i += 1){
                     expect(commonNonRandom.pdf.probabilities[i]).to.equal(0);
                 }
             });
-            it('for 12-elements array should has 6-elements cdf array with all elements equals to 1', () => {
+            it('for 12-elements array should has 12-elements cdf array with all elements equals to 1', () => {
                 let commonNonRandom = Common.getInstance(sampleArray);
                 expect(commonNonRandom.cdf.probabilities).to.be.an('array');
-                expect(commonNonRandom.cdf.probabilities.length).to.equal(6);
-                for(let i = 0; i <= 5; i += 1){
+                expect(commonNonRandom.cdf.probabilities.length).to.equal(12);
+                for(let i = 0; i <= 11; i += 1){
                     expect(commonNonRandom.cdf.probabilities[i]).to.equal(1);
                 }
+            });
+        });
+        // Tests for non-random sequence
+        describe('With non-random sequence [1, 2, 3, 4, 5, ...]', () => {
+            it('should has min value equals to 1', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.min).to.be.a('number');
+                expect(commonSequence.min).to.be.equal(1);
+            });
+            it('should has max value equals to 20', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.max).to.be.a('number');
+                expect(commonSequence.max).to.be.equal(20);
+            });
+            it('should has mean value equals to 10.5', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.mean).to.be.a('number');
+                expect(commonSequence.mean).to.be.equal(10.5);
+            });
+            it('should has median value equals to 10.5', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.median).to.be.a('number');
+                expect(commonSequence.median).to.be.equal(10.5);
+            });
+            it('should has variance value equals to 35', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.variance).to.be.a('number');
+                expect(commonSequence.variance).to.be.equal(35);
+            });
+            it('should has standard deviation value equals to 5,916079', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.standard_deviation).to.be.a('number');
+                expect(commonSequence.standard_deviation).to.be.closeTo(5.916079, 0.00001);
+            });
+            it('should has mode array equal to input', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.mode).to.be.an('array');
+                expect(commonSequence.mode.length).to.be.equal(sampleSequence.length);
+                for(let i in sampleSequence) {
+                    expect(commonSequence.mode[i]).to.be.equal(sampleSequence[i]);
+                }
+            });
+            it('should has entropy value equals to 2.9957322', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.entropy).to.be.a('number');
+                expect(commonSequence.entropy).to.be.closeTo(2.9957322, 0.00001);
+            });
+            it('should has skewness value equals to 0', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.skewness).to.be.a('number');
+                expect(commonSequence.skewness).to.be.closeTo(0, 0.00001);
+            });
+            it('should has kurtosis value equals to 1.704286', () => {
+                let commonSequence = Common.getInstance(sampleSequence);
+                expect(commonSequence.kurtosis).to.be.a('number');
+                expect(commonSequence.kurtosis).to.be.closeTo(1.704286, 0.00001);
+            });
+            it('should has pdf function with 20 elements and sum of them equals to 1', () => {
+                let commonRandom = Common.getInstance(sampleSequence),
+                    probSum = 0;
+                expect(commonRandom.pdf.probabilities).to.be.an('array');
+                expect(commonRandom.pdf.probabilities[0]).to.be.a('number');
+                expect(commonRandom.pdf.values).to.be.an('array');
+                expect(commonRandom.pdf.values[0]).to.be.a('number');
+                expect(commonRandom.pdf.probabilities.length).to.be.equal(20);
+                expect(commonRandom.pdf.probabilities.length).to.be.equal(commonRandom.pdf.values.length);
+                for(let i in commonRandom.pdf.probabilities) {
+                    probSum += commonRandom.pdf.probabilities[i];
+                }
+                expect(probSum).to.be.closeTo(1, 0.001);
+            });
+            it('should has cdf function with 20 elements and last element equals to 1', () => {
+                let commonRandom = Common.getInstance(sampleSequence);
+                expect(commonRandom.cdf.probabilities).to.be.an('array');
+                expect(commonRandom.cdf.probabilities[0]).to.be.a('number');
+                expect(commonRandom.cdf.values).to.be.an('array');
+                expect(commonRandom.cdf.values[0]).to.be.a('number');
+                expect(commonRandom.cdf.probabilities.length).to.be.equal(20);
+                expect(commonRandom.cdf.probabilities.length).to.be.equal(commonRandom.pdf.values.length);
+                expect(commonRandom.cdf.probabilities[19]).to.be.closeTo(1, 0.001);
             });
         });
         // Tests for random input, but not distribution
@@ -164,20 +261,22 @@ describe('Analyzer', () => {
                 expect(commonRandom.standard_deviation).to.be.a('number');
                 expect(commonRandom.standard_deviation).to.be.closeTo(3.345216884, 0.00001);
             });
-            it('should has correct mode value equals to 1 +/- accuracy', () => {
+            it('should has correct mode values equals to [1, 4, 6]', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray);
-                expect(commonRandom.mode).to.be.a('number');
-                expect(commonRandom.mode).to.be.closeTo(1, (commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length / 2));
+                expect(commonRandom.mode).to.be.an('array');
+                expect(commonRandom.mode[0]).to.be.closeTo(1, (1 + commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
+                expect(commonRandom.mode[1]).to.be.closeTo(4, (1 + commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
+                expect(commonRandom.mode[2]).to.be.closeTo(6, (1 + commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
             });
             it('should has correct median value equals to 6 +/- accuracy', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray);
                 expect(commonRandom.median).to.be.a('number');
-                expect(commonRandom.median).to.be.closeTo(6, (commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length / 2));
+                expect(commonRandom.median).to.be.closeTo(6, (1 + commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
             });
             it('should has correct entropy value equals to 2.30963253 +/- accuracy', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray);
                 expect(commonRandom.entropy).to.be.a('number');
-                expect(commonRandom.entropy).to.be.closeTo(2.30963253, (commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length / 2));
+                expect(commonRandom.entropy).to.be.closeTo(2.30963253, (1 + commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
             });
             it('should has correct skewness value equals to 0.1431', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray);
@@ -189,30 +288,38 @@ describe('Analyzer', () => {
                 expect(commonRandom.kurtosis).to.be.a('number');
                 expect(commonRandom.kurtosis).to.be.closeTo(1.931, 0.001);
             });
-            it('should has pdf function with 10 elements and sum of them equals to 1', () => {
+            it('should has pdf function with 21 elements and sum of them equals to 1', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray),
                     probSum = 0;
                 expect(commonRandom.pdf.probabilities).to.be.an('array');
                 expect(commonRandom.pdf.probabilities[0]).to.be.a('number');
                 expect(commonRandom.pdf.values).to.be.an('array');
                 expect(commonRandom.pdf.values[0]).to.be.a('number');
-                expect(commonRandom.pdf.probabilities.length).to.be.equal(10);
+                expect(commonRandom.pdf.probabilities.length).to.be.equal(21);
                 expect(commonRandom.pdf.probabilities.length).to.be.equal(commonRandom.pdf.values.length);
                 for(let i in commonRandom.pdf.probabilities) {
                     probSum += commonRandom.pdf.probabilities[i];
                 }
                 expect(probSum).to.be.closeTo(1, 0.001);
             });
-            it('should has cdf function with 10 elements and last element equals to 1', () => {
+            it('should has cdf function with 21 elements and last element equals to 1', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray);
                 expect(commonRandom.cdf.probabilities).to.be.an('array');
                 expect(commonRandom.cdf.probabilities[0]).to.be.a('number');
                 expect(commonRandom.cdf.values).to.be.an('array');
                 expect(commonRandom.cdf.values[0]).to.be.a('number');
-                expect(commonRandom.cdf.probabilities.length).to.be.equal(10);
+                expect(commonRandom.cdf.probabilities.length).to.be.equal(21);
                 expect(commonRandom.cdf.probabilities.length).to.be.equal(commonRandom.pdf.values.length);
-                expect(commonRandom.cdf.probabilities[9]).to.be.closeTo(1, 0.001);
+                expect(commonRandom.cdf.probabilities[20]).to.be.closeTo(1, 0.001);
             });
+        });
+        // Tests for uniform distribution
+        describe('With uniform distribution', () => {
+
+        });
+        // Tests for non-uniform distribution
+        describe('With non-uniform distribution', () => {
+
         });
     });
 });

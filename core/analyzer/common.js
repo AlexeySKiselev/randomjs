@@ -50,12 +50,6 @@ class Common {
     _median: number;
 
     /**
-     * Mode value
-     * @private
-     */
-    _mode: ?number;
-
-    /**
      * Skewness value
      * @private
      */
@@ -98,6 +92,12 @@ class Common {
      */
     _entropy: number;
 
+    /**
+     * Modes array
+     * @private
+     */
+    _modes: RandomArray;
+
     constructor(randomArray: RandomArray): void {
         /**
          * Check if randomArray is array
@@ -123,6 +123,7 @@ class Common {
         this._minimum = Infinity;
         this._values_in_pdf = 200;
         this._entropy = 0;
+        this._modes = [];
 
         /**
          * I am going to run calculateParams for calculate all parameters
@@ -180,13 +181,13 @@ class Common {
          * If the size of input array is less then <_values_in_pdf> - use dynamic range length
          */
         let rvLength = this.randomArray.length,
-            values_in_pdf: number = (rvLength < 2 * this._values_in_pdf)
-                ?Math.floor(rvLength / 2)
-                :this._values_in_pdf,
+            values_in_pdf: number = (rvLength < this._values_in_pdf)
+                ? rvLength
+                : this._values_in_pdf,
             pdf: RandomArray = new Array(values_in_pdf),
             cdf: RandomArray = new Array(values_in_pdf),
             pdf_values: RandomArray = new Array(values_in_pdf),
-            values_step: number = (this._maximum - this._minimum) / values_in_pdf,
+            values_step: number = (1 + this._maximum - this._minimum) / values_in_pdf,
             tempIndex;
 
         // Variable for skewness
@@ -201,8 +202,8 @@ class Common {
         // Iterate over randomArray and add value to pdf
         for(let rv of this.randomArray) {
             tempIndex = (rv === this._minimum)
-                ?1
-                :Math.ceil((rv - this._minimum) / values_step);
+                ? 1
+                : Math.floor((rv + 1 - this._minimum) / values_step);
             pdf[tempIndex - 1] += 1;
 
             // Calculate sum of cubes for skewness
@@ -237,41 +238,41 @@ class Common {
          * max_mode - value of max_pds
          * I am going to compare value with delta = 0.1% due to accuracy
          */
-        let max_pdf: number = pdf[0] / rvLength,
-            max_mode: ?number = this._minimum + 0.5 * values_step;
+        let max_pdf: number = pdf[0] / rvLength;
 
         // Convert pdf to probability
         for(let i = 0; i < pdf.length; i += 1) {
             pdf[i] /= rvLength;
             // I move values by 0.5 for centering approximation bar
-            pdf_values[i] = this._minimum + (i + 0.5) * values_step;
+            pdf_values[i] = this._minimum + i * values_step;
 
             // Calculate CDF
             sumOfPDF += pdf[i];
             cdf[i] = sumOfPDF;
 
-            // Increase pdf_low and pdf_high
+            // Increase pdf_low
             if(!catch_median) {
-                if(pdf_low < 0.5) {
+                if(pdf_low < 0.499999) {
                     pdf_low += pdf[i];
                 } else {
                     // Assign median value and stop calculation median
-                    this._median = (pdf_low === 0.5)?pdf_values[i]:((pdf_values[i] + pdf_values[i - 1]) / 2);
+                    this._median = (pdf_values[i] + pdf_values[i - 1]) / 2;
                     catch_median = true;
                 }
             }
 
             // Calculate mode
-            if(pdf[i] - max_pdf > 0.001 * pdf[i]) {
+            if(pdf[i] - max_pdf > 0.05 * pdf[i]) {
                 max_pdf = pdf[i];
-                max_mode = pdf_values[i];
+                this._modes = [pdf_values[i]];
+            } else if(pdf[i] - max_pdf > -0.05 * pdf[i]) {
+                this._modes.push(pdf_values[i]);
             }
 
             // Calculate entropy
             this._entropy -= (pdf[i] === 0)?0:(pdf[i] * Math.log(pdf[i]));
         }
 
-        this._mode = max_mode;
         this._pdf = pdf;
         this._pdf_values = pdf_values;
         this._cdf = cdf;
@@ -309,8 +310,8 @@ class Common {
      * @returns {number} - mode value for random distribution
      */
     @AnalyzerPublicMethod
-    get mode(): ?number {
-        return this._mode;
+    get mode(): RandomArray {
+        return this._modes;
     }
 
     /**
@@ -366,7 +367,7 @@ class Common {
     @AnalyzerPublicMethod
     get pearson(): { skewness_mode: ?number, skewness_median: number } {
         return {
-            skewness_mode: (this._mode)?((this._mean - this._mode) / this.standard_deviation):undefined,
+            skewness_mode: (this._modes.length === 1)?((this._mean - this._modes[0]) / this.standard_deviation):undefined,
             skewness_median: (this._mean - this._median) / this.standard_deviation
         };
     }
