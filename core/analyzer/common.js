@@ -187,7 +187,7 @@ class Common {
             pdf: RandomArray = new Array(values_in_pdf),
             cdf: RandomArray = new Array(values_in_pdf),
             pdf_values: RandomArray = new Array(values_in_pdf),
-            values_step: number = (1 + this._maximum - this._minimum) / values_in_pdf,
+            values_step: number = (this._maximum - this._minimum) / values_in_pdf,
             tempIndex;
 
         // Variable for skewness
@@ -203,7 +203,7 @@ class Common {
         for(let rv of this.randomArray) {
             tempIndex = (rv === this._minimum)
                 ? 1
-                : Math.floor((rv + 1 - this._minimum) / values_step);
+                : Math.ceil((rv - this._minimum) / values_step);
             pdf[tempIndex - 1] += 1;
 
             // Calculate sum of cubes for skewness
@@ -270,7 +270,7 @@ class Common {
             }
 
             // Calculate entropy
-            this._entropy -= (pdf[i] === 0)?0:(pdf[i] * Math.log(pdf[i]));
+            this._entropy -= (pdf[i] === 0 || values_step === 0)?0:(pdf[i] * Math.log(pdf[i] / values_step));
         }
 
         this._pdf = pdf;
