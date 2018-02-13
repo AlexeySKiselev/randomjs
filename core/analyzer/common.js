@@ -121,7 +121,7 @@ class Common {
         this.randomArray = randomArray;
         this._maximum = -Infinity;
         this._minimum = Infinity;
-        this._values_in_pdf = 200;
+        this._values_in_pdf = 199;
         this._entropy = 0;
         this._modes = [];
 
@@ -184,10 +184,12 @@ class Common {
             values_in_pdf: number = (rvLength < this._values_in_pdf)
                 ? rvLength
                 : this._values_in_pdf,
-            pdf: RandomArray = new Array(values_in_pdf),
-            cdf: RandomArray = new Array(values_in_pdf),
-            pdf_values: RandomArray = new Array(values_in_pdf),
-            values_step: number = (this._maximum - this._minimum) / values_in_pdf,
+            pdf: RandomArray = new Array(values_in_pdf + 1),
+            cdf: RandomArray = new Array(values_in_pdf + 1),
+            pdf_values: RandomArray = new Array(values_in_pdf + 1),
+            values_step: number = (this._maximum === this._minimum)
+                ? 1
+                : (this._maximum - this._minimum) / (values_in_pdf - 1),
             tempIndex;
 
         // Variable for skewness
@@ -201,10 +203,8 @@ class Common {
 
         // Iterate over randomArray and add value to pdf
         for(let rv of this.randomArray) {
-            tempIndex = (rv === this._minimum)
-                ? 1
-                : Math.ceil((rv - this._minimum) / values_step);
-            pdf[tempIndex - 1] += 1;
+            tempIndex = Math.floor((rv - this._minimum) / values_step);
+            pdf[tempIndex] += 1;
 
             // Calculate sum of cubes for skewness
             sumOfCubes += Math.pow(rv - this._mean, 3);
