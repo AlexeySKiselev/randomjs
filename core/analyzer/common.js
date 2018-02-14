@@ -262,10 +262,10 @@ class Common {
             }
 
             // Calculate mode
-            if(pdf[i] - max_pdf > 0.05 * pdf[i]) {
+            if(pdf[i] - max_pdf > 0.005 * pdf[i]) {
                 max_pdf = pdf[i];
                 this._modes = [pdf_values[i]];
-            } else if(pdf[i] - max_pdf > -0.05 * pdf[i]) {
+            } else if(pdf[i] - max_pdf > -0.005 * pdf[i]) {
                 this._modes.push(pdf_values[i]);
             }
 

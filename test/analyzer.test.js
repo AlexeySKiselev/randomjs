@@ -6,7 +6,8 @@
 // Import Mocha tool for tests
 let chai = require('chai'),
     expect = chai.expect,
-    {describe, it} = require('mocha');
+    {describe, it} = require('mocha'),
+    fs = require('fs');
 
 chai.should();
 
@@ -342,7 +343,7 @@ describe('Analyzer', () => {
                 let uniformAnalyzer = Common.getInstance(uniformArray);
                 expect(uniformArray.length).to.be.equal(50000);
                 expect(uniformAnalyzer.median).to.be.a('number');
-                expect(uniformAnalyzer.median).to.be.closeTo(5, 0.05);
+                expect(uniformAnalyzer.median).to.be.closeTo(5, 0.1);
             });
             it('should has variance value close to 8.333', () => {
                 let uniformAnalyzer = Common.getInstance(uniformArray);
@@ -400,8 +401,116 @@ describe('Analyzer', () => {
             });
         });
         // Tests for non-uniform distribution
-        describe('With non-uniform distribution', () => {
-
+        describe('With non-uniform (normal mu = 1, sigma = 1) distribution', () => {
+            let normalData = fs.readFileSync(__dirname + '/sample_normal.array').toString().split('\n'),
+                normalArray = [],
+                mu = 1,
+                sigma = 1;
+            for(let data of normalData) {
+                normalArray.push(parseFloat(data.trim()));
+            }
+            it('should has minimum value less then mu - 3sigma', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.min).to.be.a('number');
+                expect(normalAnalyzer.min).to.be.at.most(mu - 3 * sigma);
+            });
+            it('should has maximum value more then mu + 3sigma', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.max).to.be.a('number');
+                expect(normalAnalyzer.max).to.be.at.least(mu + 3 * sigma);
+            });
+            it('should has mean value close to mu +/- accuracy', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.mean).to.be.a('number');
+                expect(normalAnalyzer.mean).to.be.closeTo(mu, 3 * sigma / normalAnalyzer.pdf.probabilities.length);
+            });
+            it('should has median value close to mu +/- accuracy', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.median).to.be.a('number');
+                expect(normalAnalyzer.median).to.be.closeTo(mu, 6 * sigma / normalAnalyzer.pdf.probabilities.length);
+            });
+            it('should has one mode value close to mu +/- accuracy', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.mode.length).to.be.equal(1);
+                expect(normalAnalyzer.mode[0]).to.be.a('number');
+                expect(normalAnalyzer.mode[0]).to.be.closeTo(mu, 0.05);
+            });
+            it('should has variance value close to sigma^2 +/- accuracy', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.variance).to.be.a('number');
+                expect(normalAnalyzer.variance).to.be.closeTo(Math.pow(sigma, 2), 3 * sigma / normalAnalyzer.pdf.probabilities.length);
+            });
+            it('should has skewness value close to 0 +/- accuracy', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.skewness).to.be.a('number');
+                expect(normalAnalyzer.skewness).to.be.closeTo(0, 6 * sigma / normalAnalyzer.pdf.probabilities.length);
+            });
+            it('should has entropy value close to 0.5log(2 pi e sigma^2) +/- accuracy', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.entropy).to.be.a('number');
+                expect(normalAnalyzer.entropy).to.be.closeTo(0.5 * Math.log(Math.PI * Math.E * 2 * normalAnalyzer.variance), 3 * sigma / normalAnalyzer.pdf.probabilities.length);
+            });
+            it('should has kurtosis value close to 0 +/- accuracy', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.kurtosis).to.be.a('number');
+                expect(normalAnalyzer.kurtosis).to.be.closeTo(3, 0.1);
+            });
+            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+                let normalAnalyzer = Common.getInstance(normalArray),
+                    sum = 0;
+                expect(normalAnalyzer.pdf.probabilities).to.be.an('array');
+                expect(normalAnalyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(normalAnalyzer.pdf.values).to.be.an('array');
+                expect(normalAnalyzer.pdf.values[0]).to.be.a('number');
+                expect(normalAnalyzer.pdf.probabilities.length).to.be.equal(200);
+                expect(normalAnalyzer.pdf.values.length).to.be.equal(200);
+                expect(normalAnalyzer.pdf.values.length).to.be.equal(normalAnalyzer.pdf.probabilities.length);
+                for(let el of normalAnalyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.05);
+            });
+            it('should has sum of pdf from mu-sigma to mu+sigma close to 0.68', () => {
+                let normalAnalyzer = Common.getInstance(normalArray),
+                    sum = 0;
+                for(let i in normalAnalyzer.pdf.values) {
+                    if((normalAnalyzer.pdf.values[i] >= mu - sigma) && (normalAnalyzer.pdf.values[i] <= mu + sigma)) {
+                        sum += normalAnalyzer.pdf.probabilities[i];
+                    }
+                }
+                expect(sum).to.be.closeTo(0.68, 0.02);
+            });
+            it('should has sum of pdf from mu-2sigma to mu+2sigma close to 0.95', () => {
+                let normalAnalyzer = Common.getInstance(normalArray),
+                    sum = 0;
+                for(let i in normalAnalyzer.pdf.values) {
+                    if((normalAnalyzer.pdf.values[i] >= mu - 2 * sigma) && (normalAnalyzer.pdf.values[i] <= mu + 2 * sigma)) {
+                        sum += normalAnalyzer.pdf.probabilities[i];
+                    }
+                }
+                expect(sum).to.be.closeTo(0.95, 0.02);
+            });
+            it('should has sum of pdf from mu-3sigma to mu+3sigma close to 0.98', () => {
+                let normalAnalyzer = Common.getInstance(normalArray),
+                    sum = 0;
+                for(let i in normalAnalyzer.pdf.values) {
+                    if((normalAnalyzer.pdf.values[i] >= mu - 3 * sigma) && (normalAnalyzer.pdf.values[i] <= mu + 3 * sigma)) {
+                        sum += normalAnalyzer.pdf.probabilities[i];
+                    }
+                }
+                expect(sum).to.be.closeTo(0.98, 0.02);
+            });
+            it('should has cdf array with 200 elements and last element close to 1', () => {
+                let normalAnalyzer = Common.getInstance(normalArray);
+                expect(normalAnalyzer.cdf.probabilities).to.be.an('array');
+                expect(normalAnalyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(normalAnalyzer.cdf.values).to.be.an('array');
+                expect(normalAnalyzer.cdf.values[0]).to.be.a('number');
+                expect(normalAnalyzer.cdf.probabilities.length).to.be.equal(200);
+                expect(normalAnalyzer.cdf.values.length).to.be.equal(200);
+                expect(normalAnalyzer.cdf.values.length).to.be.equal(normalAnalyzer.pdf.probabilities.length);
+                expect(normalAnalyzer.cdf.probabilities[199]).to.be.closeTo(1, 0.01);
+            });
         });
     });
 });
