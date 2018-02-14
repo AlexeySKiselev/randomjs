@@ -121,7 +121,7 @@ class Common {
         this.randomArray = randomArray;
         this._maximum = -Infinity;
         this._minimum = Infinity;
-        this._values_in_pdf = 199;
+        this._values_in_pdf = 200;
         this._entropy = 0;
         this._modes = [];
 
@@ -184,9 +184,9 @@ class Common {
             values_in_pdf: number = (rvLength < this._values_in_pdf)
                 ? rvLength
                 : this._values_in_pdf,
-            pdf: RandomArray = new Array(values_in_pdf + 1),
-            cdf: RandomArray = new Array(values_in_pdf + 1),
-            pdf_values: RandomArray = new Array(values_in_pdf + 1),
+            pdf: RandomArray = new Array(values_in_pdf),
+            cdf: RandomArray = new Array(values_in_pdf),
+            pdf_values: RandomArray = new Array(values_in_pdf),
             values_step: number = (this._maximum === this._minimum)
                 ? 1
                 : (this._maximum - this._minimum) / (values_in_pdf - 1),
