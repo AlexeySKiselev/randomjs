@@ -401,7 +401,7 @@ describe('Analyzer', () => {
             });
         });
         // Tests for non-uniform distribution
-        describe('With non-uniform (normal mu = 1, sigma = 1) distribution', () => {
+        describe('With non-uniform symmetric (normal mu = 1, sigma = 1) distribution', () => {
             let normalData = fs.readFileSync(__dirname + '/sample_normal.array').toString().split('\n'),
                 normalArray = [],
                 mu = 1,
@@ -453,7 +453,7 @@ describe('Analyzer', () => {
             it('should has kurtosis value close to 0 +/- accuracy', () => {
                 let normalAnalyzer = Common.getInstance(normalArray);
                 expect(normalAnalyzer.kurtosis).to.be.a('number');
-                expect(normalAnalyzer.kurtosis).to.be.closeTo(3, 0.1);
+                expect(normalAnalyzer.kurtosis - 3).to.be.closeTo(0, 0.1);
             });
             it('should has pdf array with 200 elements and sum of them close to 1', () => {
                 let normalAnalyzer = Common.getInstance(normalArray),
@@ -510,6 +510,108 @@ describe('Analyzer', () => {
                 expect(normalAnalyzer.cdf.values.length).to.be.equal(200);
                 expect(normalAnalyzer.cdf.values.length).to.be.equal(normalAnalyzer.pdf.probabilities.length);
                 expect(normalAnalyzer.cdf.probabilities[199]).to.be.closeTo(1, 0.01);
+            });
+        });
+        // Beta distribution
+        describe('With non-uniform asymmetric (beta alpha = 2, beta = 5) distribution', () => {
+            // prepare data
+            let betaData = fs.readFileSync(__dirname + '/sample_beta.array').toString(),
+                tempData = '',
+                alpha = 2,
+                beta = 5,
+                betaArray;
+
+            for(let i in betaData) {
+                if(betaData[i] !== '\n' && betaData[i] !== ' ') {
+                    tempData = tempData.concat(betaData[i]);
+                }
+            }
+            betaArray = tempData.split(',').map(Number);
+
+            it('should has minimum value close to zero', () => {
+                let betaAnalyzer = Common.getInstance(betaArray);
+                expect(betaAnalyzer.min).to.be.a('number');
+                expect(betaAnalyzer.min).to.be.closeTo(0, 0.005);
+            });
+            it('should has maximum value close to 0.9 +/- 0.1', () => {
+                let betaAnalyzer = Common.getInstance(betaArray);
+                expect(betaAnalyzer.max).to.be.a('number');
+                expect(betaAnalyzer.max).to.be.closeTo(0.9, 0.05);
+            });
+            it('should has mean value close to alpha / (alpha + beta)', () => {
+                let betaAnalyzer = Common.getInstance(betaArray);
+                expect(betaAnalyzer.mean).to.be.a('number');
+                expect(betaAnalyzer.mean).to.be.closeTo(alpha / (alpha + beta), 0.005);
+            });
+            it('should has median value close to (alpha - 1/3) / (alpha + beta - 2/3)', () => {
+                let betaAnalyzer = Common.getInstance(betaArray);
+                expect(betaAnalyzer.median).to.be.a('number');
+                expect(betaAnalyzer.median).to.be.closeTo((alpha - 0.33333) / (alpha + beta - 0.66667), 0.005);
+            });
+            it('should has one mode value close to (alpha - 1) / (alpha + beta - 2)', () => {
+                let betaAnalyzer = Common.getInstance(betaArray);
+                expect(betaAnalyzer.mode.length).to.be.equal(1);
+                expect(betaAnalyzer.mode[0]).to.be.a('number');
+                expect(betaAnalyzer.mode[0]).to.be.closeTo((alpha - 1) / (alpha + beta - 2), 0.02);
+            });
+            it('should has variance value close to 0.025510204', () => {
+                let betaAnalyzer = Common.getInstance(betaArray);
+                expect(betaAnalyzer.variance).to.be.a('number');
+                expect(betaAnalyzer.variance).to.be.closeTo(0.025510204, 0.001);
+            });
+            it('should has skewness value close to 0.596284794', () => {
+                let betaAnalyzer = Common.getInstance(betaArray);
+                expect(betaAnalyzer.skewness).to.be.a('number');
+                expect(betaAnalyzer.skewness).to.be.closeTo(0.596284794, 0.01);
+            });
+            it('should has entropy value close to -0.484777 +/- accuracy', () => {
+                let betaAnalyzer = Common.getInstance(betaArray),
+                    Utils = require('../lib/utils/utils'),
+                    B = Utils.gamma(alpha) * Utils.gamma(beta) / Utils.gamma(alpha + beta),
+                    entropyToCheck = Math.log(B) - (alpha - 1) * Utils.digamma(alpha) - (beta - 1) * Utils.digamma(beta) + (alpha + beta - 2) * Utils.digamma(alpha + beta);
+                expect(betaAnalyzer.entropy).to.be.a('number');
+                expect(betaAnalyzer.entropy).to.be.closeTo(entropyToCheck, 0.005);
+            });
+            it('should has kurtosis value close to 0 +/- accuracy', () => {
+                let betaAnalyzer = Common.getInstance(betaArray),
+                    alphaPBeta = alpha + beta,
+                    kurtosisToCheck = 6 * (Math.pow(alpha-beta, 2) * (alphaPBeta + 1) - alpha * beta * (alphaPBeta + 2)) / (alpha * beta * (alphaPBeta + 2) * (alphaPBeta + 3));
+                expect(betaAnalyzer.kurtosis).to.be.a('number');
+                expect(betaAnalyzer.kurtosis - 3).to.be.closeTo(kurtosisToCheck, 0.03);
+            });
+            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+                let betaAnalyzer = Common.getInstance(betaArray),
+                    sum = 0;
+                expect(betaAnalyzer.pdf.probabilities).to.be.an('array');
+                expect(betaAnalyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(betaAnalyzer.pdf.values).to.be.an('array');
+                expect(betaAnalyzer.pdf.values[0]).to.be.a('number');
+                expect(betaAnalyzer.pdf.probabilities.length).to.be.equal(200);
+                expect(betaAnalyzer.pdf.values.length).to.be.equal(200);
+                expect(betaAnalyzer.pdf.values.length).to.be.equal(betaAnalyzer.pdf.probabilities.length);
+                for(let el of betaAnalyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has pdf value close to zero on corners', () => {
+                let betaAnalyzer = Common.getInstance(betaArray);
+                expect(betaAnalyzer.pdf.probabilities).to.be.an('array');
+                expect(betaAnalyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(betaAnalyzer.pdf.probabilities[0]).to.be.closeTo(0, 0.01);
+                expect(betaAnalyzer.pdf.probabilities[199]).to.be.closeTo(0, 0.01);
+            });
+            it('should has cdf array with 200 elements and last element close to 1', () => {
+                let betaAnalyzer = Common.getInstance(betaArray);
+                expect(betaAnalyzer.cdf.probabilities).to.be.an('array');
+                expect(betaAnalyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(betaAnalyzer.cdf.values).to.be.an('array');
+                expect(betaAnalyzer.cdf.values[0]).to.be.a('number');
+                expect(betaAnalyzer.cdf.probabilities.length).to.be.equal(200);
+                expect(betaAnalyzer.cdf.values.length).to.be.equal(200);
+                expect(betaAnalyzer.cdf.values.length).to.be.equal(betaAnalyzer.pdf.probabilities.length);
+                expect(betaAnalyzer.cdf.probabilities[0]).to.be.closeTo(0, 0.01);
+                expect(betaAnalyzer.cdf.probabilities[199]).to.be.closeTo(1, 0.01);
             });
         });
     });
