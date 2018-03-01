@@ -148,7 +148,16 @@ class Beta {
      * For calculating real skewness value use analyzer
      */
     get skewness(): number {
-        return 2 * (this.beta - this.alpha) * Math.sqrt(this.alpha + this.beta + 1) / ((this.alpha + this.beta + 1) * Math.sqrt(this.alpha * this.beta));
+        return 2 * (this.beta - this.alpha) * Math.sqrt(this.alpha + this.beta + 1) / ((this.alpha + this.beta + 2) * Math.sqrt(this.alpha * this.beta));
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     */
+    get kurtosis(): number {
+        let a_plus_b = this.alpha + this.beta + 1;
+        return 6 * (Math.pow(this.alpha - this.beta, 2) * a_plus_b - this.alpha * this.beta * (a_plus_b + 1)) / (this.alpha * this.beta * (a_plus_b + 1) * (a_plus_b + 2));
     }
 
     /**
@@ -171,7 +180,8 @@ class Beta {
             mode: this.mode,
             variance: this.variance,
             skewness: this.skewness,
-            entropy: this.entropy
+            entropy: this.entropy,
+            kurtosis: this.kurtosis
         };
     }
 }

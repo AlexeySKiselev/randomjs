@@ -178,6 +178,14 @@ class Normal {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     */
+    get kurtosis(): number {
+        return 0;
+    }
+
+    /**
      * Fisher information matrix
      * Information only
      */

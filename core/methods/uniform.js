@@ -122,6 +122,14 @@ class Uniform {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     */
+    get kurtosis(): number {
+        return - 6 / 5;
+    }
+
+    /**
      * All parameters of distribution in one object
      * Information only
      */
@@ -131,7 +139,8 @@ class Uniform {
             median: this.median,
             variance: this.variance,
             skewness: this.skewness,
-            entropy: this.entropy
+            entropy: this.entropy,
+            kurtosis: this.kurtosis
         };
     }
 }
