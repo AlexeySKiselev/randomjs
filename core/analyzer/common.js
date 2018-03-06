@@ -240,6 +240,11 @@ class Common {
          */
         let max_pdf: number = pdf[0] / rvLength;
 
+        /**
+         * Calculate cumulative step for entropy for collect step for pdf equals to zero
+         */
+        let cumulative_step: number = 0;
+
         // Convert pdf to probability
         for(let i = 0; i < pdf.length; i += 1) {
             pdf[i] /= rvLength;
@@ -270,7 +275,11 @@ class Common {
             }
 
             // Calculate entropy
-            this._entropy -= (pdf[i] === 0 || values_step === 0)?0:(pdf[i] * Math.log(pdf[i] / values_step));
+            cumulative_step += values_step;
+            if(pdf[i] !== 0) {
+                this._entropy -= (pdf[i] === 0 || cumulative_step === 0)?0:(pdf[i] * Math.log(pdf[i] / cumulative_step));
+                cumulative_step = 0;
+            }
         }
 
         this._pdf = pdf;

@@ -274,10 +274,10 @@ describe('Analyzer', () => {
                 expect(commonRandom.median).to.be.a('number');
                 expect(commonRandom.median).to.be.closeTo(6, (commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
             });
-            it('should has correct entropy value equals to 2.30963253 +/- accuracy', () => {
+            it('should has correct entropy value equals to 2.30592168 +/- accuracy', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray);
                 expect(commonRandom.entropy).to.be.a('number');
-                expect(commonRandom.entropy).to.be.closeTo(1.66300536, (commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
+                expect(commonRandom.entropy).to.be.closeTo(2.30592168, (commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
             });
             it('should has correct skewness value equals to 0.1431', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray);

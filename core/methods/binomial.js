@@ -100,6 +100,15 @@ class Binomial {
     }
 
     /**
+     * Median value
+     * Information only
+     * For calculating real median value use analyzer
+     */
+    get median(): number {
+        return (Math.floor(this.trials * this.successProb) + Math.floor(this.trials * this.successProb)) / 2;
+    }
+
+    /**
      * There are no exact Mode and Median parameters
      */
 
@@ -121,7 +130,21 @@ class Binomial {
         return (1 - 2* this.successProb) / Math.sqrt(this.variance);
     }
 
-    // TODO: implement entropy formula (https://math.stackexchange.com/questions/244455/entropy-of-a-binomial-distribution)
+    /**
+     * Entropy value
+     * Information only
+     */
+    get entropy(): number {
+        return 0.5 * 0.693 * Math.log2(2* Math.PI * Math.E * this.trials * this.successProb * (1 - this.successProb));
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     */
+    get kurtosis(): number {
+        return (1 - 6 * this.successProb * (1 - this.successProb)) / (this.trials * this.successProb * (1 - this.successProb));
+    }
 
     /**
      * All parameters of distribution in one object
@@ -130,8 +153,11 @@ class Binomial {
     get parameters(): {} {
         return {
             mean: this.mean,
+            median: this.median,
             variance: this.variance,
-            skewness: this.skewness
+            skewness: this.skewness,
+            entropy: this.entropy,
+            kurtosis: this.kurtosis
         };
     }
 }
