@@ -93,8 +93,13 @@ class ChiSquare {
     }
 
     /**
-     * This distribution haven't exact Median value
+     * Median value (approximate value)
+     * Information only
+     * For calculating real median value use analyzer
      */
+    get median(): number {
+        return this.degrees * Math.pow(1 - 2 / (9 * this.degrees), 3);
+    }
 
     /**
      * Mode value
@@ -120,7 +125,16 @@ class ChiSquare {
      * For calculating real skewness value use analyzer
      */
     get skewness(): number {
-        return Math.sqrt(2 / this.degrees);
+        return Math.sqrt(8 / this.degrees);
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 12 / this.degrees;
     }
 
     /**
@@ -139,10 +153,12 @@ class ChiSquare {
     get parameters(): {} {
         return {
             mean: this.mean,
+            median: this.median,
             mode: this.mode,
             variance: this.variance,
             skewness: this.skewness,
-            entropy: this.entropy
+            entropy: this.entropy,
+            kurtosis: this.kurtosis
         };
     }
 }

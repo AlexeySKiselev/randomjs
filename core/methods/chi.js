@@ -27,7 +27,7 @@ class Chi {
      * @returns a Chi distributed number
      */
     random(): number {
-        return Math.sqrt(this.chiSquare.random() / this.degrees);
+        return Math.sqrt(this.chiSquare.random());
     }
 
     /**
@@ -89,8 +89,13 @@ class Chi {
     }
 
     /**
-     * This distribution haven't exact Median value
+     * Median value (approximate value)
+     * Information only
+     * For calculating real median value use analyzer
      */
+    get median(): number {
+        return Math.sqrt(this.degrees * Math.pow(1 - 2 / (9 * this.degrees), 3));
+    }
 
     /**
      * Mode value
@@ -109,7 +114,7 @@ class Chi {
      * For calculating real variance value use analyzer
      */
     get variance(): number {
-        return Math.pow(this.degrees, 2) - Math.pow(this.mean, 2);
+        return this.degrees - Math.pow(this.mean, 2);
     }
 
     /**
@@ -119,6 +124,15 @@ class Chi {
      */
     get skewness(): number {
         return this.mean * (1 - 2 * this.variance) / (this.variance * Math.sqrt(this.variance));
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 2 * (1 - this.mean * Math.sqrt(this.variance) * this.skewness - this.variance) / this.variance;
     }
 
     /**
@@ -138,9 +152,11 @@ class Chi {
         return {
             mean: this.mean,
             mode: this.mode,
+            median: this.median,
             variance: this.variance,
             skewness: this.skewness,
-            entropy: this.entropy
+            entropy: this.entropy,
+            kurtosis: this.kurtosis
         };
     }
 }
