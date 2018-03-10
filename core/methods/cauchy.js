@@ -23,10 +23,17 @@ class Cauchy {
 
     /**
      * Generates a random number
+     * So, Math.tan can be huge, and it make analysis very hard (because value can be Infinity)
+     * I am going to limit values by 12gamma
+     * I implement recursive approach
      * @returns a normal distributed number
      */
     random(): number {
-        return this.location + this.scale * (Math.tan(Math.PI * Math.random() - 0.5));
+        let randomTan: number = Math.tan(Math.PI * (Math.random() - 0.5));
+        if(Math.abs(randomTan) > 12) {
+            return this.random();
+        }
+        return this.location + this.scale * randomTan;
     }
 
     /**
