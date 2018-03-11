@@ -134,6 +134,15 @@ class Gamma {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     * For calculating real Kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 6 / this.alpha;
+    }
+
+    /**
      * Entropy value
      * Information only
      * For calculating real entropy value use analyzer
