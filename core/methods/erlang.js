@@ -139,6 +139,15 @@ class Erlang {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 6 / this.shape;
+    }
+
+    /**
      * All parameters of distribution in one object
      * Information only
      */
@@ -148,7 +157,8 @@ class Erlang {
             mode: this.mode,
             variance: this.variance,
             skewness: this.skewness,
-            entropy: this.entropy
+            entropy: this.entropy,
+            kurtosis: this.kurtosis
         };
     }
 }
