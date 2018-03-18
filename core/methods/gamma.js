@@ -161,7 +161,8 @@ class Gamma {
             mode: this.mode,
             variance: this.variance,
             skewness: this.skewness,
-            entropy: this.entropy
+            entropy: this.entropy,
+            kurtosis: this.kurtosis
         };
     }
 }

@@ -242,8 +242,15 @@ class Common {
 
         /**
          * Calculate cumulative step for entropy for collect step for pdf equals to zero
+         * Iterate over PDF to find first non zero value (except with index 0)
+         * I need it to calculate correct entropy for index 0
          */
-        let cumulative_step: number = 0;
+        let cumulative_step: number = values_step;
+        for(let i = 1; i < pdf.length; i += 1) {
+            if(pdf[i] !== 0)
+                break;
+            cumulative_step += values_step;
+        }
 
         // Convert pdf to probability
         for(let i = 0; i < pdf.length; i += 1) {
@@ -276,8 +283,8 @@ class Common {
 
             // Calculate entropy
             cumulative_step += values_step;
-            if(pdf[i] !== 0) {
-                this._entropy -= (pdf[i] === 0 || cumulative_step === 0)?0:(pdf[i] * Math.log(pdf[i] / cumulative_step));
+            if(pdf[i] !== 0 && pdf[i] !== 1) {
+                this._entropy -= (cumulative_step === 0)?0:(pdf[i] * Math.log(pdf[i] / cumulative_step));
                 cumulative_step = 0;
             }
         }

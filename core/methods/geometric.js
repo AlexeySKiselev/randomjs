@@ -120,12 +120,21 @@ class Geometric {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 6 + Math.pow(this.successProb, 2) / (1 - this.successProb);
+    }
+
+    /**
      * Entropy value
      * Information only
      * For calculating real entropy value use analyzer
      */
     get entropy(): number {
-        return (-(1 - this.successProb) * Math.log2(1 - this.successProb) - this.successProb * Math.log2(this.successProb)) / this.successProb;
+        return (- (1 - this.successProb) * Math.log(1 - this.successProb) - this.successProb * Math.log(this.successProb)) / this.successProb;
     }
 
     /**
@@ -138,7 +147,8 @@ class Geometric {
             mode: this.mode,
             variance: this.variance,
             skewness: this.skewness,
-            entropy: this.entropy
+            entropy: this.entropy,
+            kurtosis: this.kurtosis
         };
     }
 }

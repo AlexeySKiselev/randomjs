@@ -1,6 +1,6 @@
 {
   "name": "randomjs",
-  "version": "2.1.13",
+  "version": "2.1.14",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
