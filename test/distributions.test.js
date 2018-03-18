@@ -941,7 +941,7 @@ describe('Random distributions', () => {
             it('should has correct variance value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.variance).to.be.a('number');
-                expect(analyzer.variance).to.be.closeTo(binomial.variance, 0.07);
+                expect(analyzer.variance).to.be.closeTo(binomial.variance, 0.1);
             });
             it('should has correct skewness value', () => {
                 let analyzer = Common.getInstance(distribution);
@@ -1759,7 +1759,7 @@ describe('Random distributions', () => {
             it('should has min value close to zero', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.min).to.be.a('number');
-                expect(analyzer.min).to.be.closeTo(0, 0.02);
+                expect(analyzer.min).to.be.closeTo(0, 0.03);
             });
             it('should has max value greater then 12', () => {
                 let analyzer = Common.getInstance(distribution);
