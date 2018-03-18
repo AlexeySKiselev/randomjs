@@ -1254,7 +1254,7 @@ describe('Random distributions', () => {
             it('should has correct kurtosis value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.kurtosis).to.be.a('number');
-                expect(analyzer.kurtosis - 3).to.be.closeTo(chi.kurtosis, 0.05);
+                expect(analyzer.kurtosis - 3).to.be.closeTo(chi.kurtosis, 0.1);
             });
             it('should has correct entropy value', () => {
                 let analyzer = Common.getInstance(distribution);
@@ -1400,7 +1400,7 @@ describe('Random distributions', () => {
             it('should has correct variance value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.variance).to.be.a('number');
-                expect(analyzer.variance).to.be.closeTo(chiSquare.variance, 0.1);
+                expect(analyzer.variance).to.be.closeTo(chiSquare.variance, 0.15);
             });
             it('should has correct skewness value', () => {
                 let analyzer = Common.getInstance(distribution);
@@ -1415,7 +1415,7 @@ describe('Random distributions', () => {
             it('should has correct entropy value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.entropy).to.be.a('number');
-                expect(analyzer.entropy).to.be.closeTo(chiSquare.entropy, 0.05);
+                expect(analyzer.entropy).to.be.closeTo(chiSquare.entropy, 0.07);
             });
             it('should has pdf array with 200 elements and sum of them close to 1', () => {
                 let analyzer = Common.getInstance(distribution),
@@ -1784,7 +1784,7 @@ describe('Random distributions', () => {
             it('should has correct kurtosis value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.kurtosis).to.be.a('number');
-                expect(analyzer.kurtosis - 3).to.be.closeTo(gamma.kurtosis, 0.25);
+                expect(analyzer.kurtosis - 3).to.be.closeTo(gamma.kurtosis, 0.5);
             });
             it('should has correct entropy value', () => {
                 let analyzer = Common.getInstance(distribution);
@@ -1951,7 +1951,7 @@ describe('Random distributions', () => {
             it('should has correct kurtosis value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.kurtosis).to.be.a('number');
-                expect(analyzer.kurtosis - 3).to.be.closeTo(geometric.kurtosis, 0.5);
+                expect(analyzer.kurtosis - 3).to.be.closeTo(geometric.kurtosis, 0.7);
             });
             it('should has correct entropy value', () => {
                 let analyzer = Common.getInstance(distribution);
