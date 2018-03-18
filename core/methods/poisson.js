@@ -92,7 +92,16 @@ class Poisson {
     }
 
     /**
-     * There are no exact Mode and Median values
+     * Median (approximate value)
+     * Information only
+     * For calculating real median value use analyzer
+     */
+    get median(): number {
+        return Math.floor(this.lambda + 0.33333333 - 0.02 * this.lambda);
+    }
+
+    /**
+     * There are no exact Mode value
      */
 
     /**
@@ -114,6 +123,15 @@ class Poisson {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 1 / this.lambda;
+    }
+
+    /**
      * Fisher information
      * Information only
      * For calculating real fisher information value use analyzer
@@ -122,7 +140,15 @@ class Poisson {
         return 1 / this.lambda;
     }
 
-    // TODO: implement entropy method
+    /**
+     * Entropy value (result agrees with C. Knessl, “Integral representations and asymptotic
+     * expansions for Shannon and Renyi entropies,”)
+     * Information only
+     * For calculating real value use analyzer
+     */
+    get entropy(): number {
+        return 0.5 * Math.log(2 * Math.PI * this.lambda) + 0.5 - 1 / (12 * this.lambda) - 1 / (24 * Math.pow(this.lambda, 2));
+    }
 
     /**
      * All parameters of distribution in one object
@@ -131,9 +157,12 @@ class Poisson {
     get parameters(): {} {
         return {
             mean: this.mean,
+            median: this.median,
             variance: this.variance,
             skewness: this.skewness,
-            fisher: this.fisher
+            fisher: this.fisher,
+            kurtosis: this.kurtosis,
+            entropy: this.entropy
         };
     }
 }
