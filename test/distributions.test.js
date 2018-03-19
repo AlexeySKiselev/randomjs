@@ -1390,7 +1390,7 @@ describe('Random distributions', () => {
             it('should has correct mean value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.mean).to.be.a('number');
-                expect(analyzer.mean).to.be.closeTo(chiSquare.mean, 0.02);
+                expect(analyzer.mean).to.be.closeTo(chiSquare.mean, 0.03);
             });
             it('should has correct median value', () => {
                 let analyzer = Common.getInstance(distribution);
@@ -2069,19 +2069,19 @@ describe('Random distributions', () => {
         });
         it('should have values for initial r = 1 and p = 0.6 equals to r = 2 and p = 0.7 after .refresh(2, 0.7) method',() => {
             let negativeBinomial = new NegativeBinomial(1, 0.6);
-            negativeBinomial.numberFailures.should.equal(1);
+            negativeBinomial.numberSuccess.should.equal(1);
             negativeBinomial.successProb.should.equal(0.6);
             negativeBinomial.refresh(2, 0.7);
-            negativeBinomial.numberFailures.should.equal(2);
+            negativeBinomial.numberSuccess.should.equal(2);
             negativeBinomial.successProb.should.equal(0.7);
         });
-        it('should have mean value for r = 1 and p = 0.6 equals to 1.5, but for r = 2 and p = 0.4 equals to 1.33333...',() => {
+        it('should have mean value for r = 1 and p = 0.6 equals to 0.66667, but for r = 2 and p = 0.4 equals to 3',() => {
             let negativeBinomial = new NegativeBinomial(1, 0.6);
             expect(negativeBinomial.mean).to.be.a('number');
-            expect(negativeBinomial.mean).to.be.closeTo(1.5, 0.002);
+            expect(negativeBinomial.mean).to.be.closeTo(0.666667, 0.002);
             negativeBinomial.refresh(2, 0.4);
             expect(negativeBinomial.mean).to.be.a('number');
-            expect(negativeBinomial.mean).to.be.closeTo(1.333, 0.002);
+            expect(negativeBinomial.mean).to.be.closeTo(3, 0.002);
         });
         it('should return few different values with 10 experiments', () => {
             let negativeBinomial = new NegativeBinomial(2, 0.6),
@@ -2123,7 +2123,7 @@ describe('Random distributions', () => {
             }
             expect(correct).to.be.equal(true);
         });
-        describe('With real generated data (p = 0.6)', () => {
+        describe('With real generated data (r = 3, p = 0.6)', () => {
             let nbinomial = new NegativeBinomial(3, 0.6),
                 distribution = nbinomial.distribution(50000);
             it('should has min value equals to 0', () => {
@@ -2131,10 +2131,10 @@ describe('Random distributions', () => {
                 expect(analyzer.min).to.be.a('number');
                 expect(analyzer.min).to.be.equal(0);
             });
-            it('should has max value greater then 20', () => {
+            it('should has max value greater then 15', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.max).to.be.a('number');
-                expect(analyzer.max).to.be.at.least(20);
+                expect(analyzer.max).to.be.at.least(15);
             });
             it('should has correct mean value', () => {
                 let analyzer = Common.getInstance(distribution);
@@ -2144,22 +2144,17 @@ describe('Random distributions', () => {
             it('should has correct variance value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.variance).to.be.a('number');
-                expect(analyzer.variance).to.be.closeTo(geometric.variance, 0.05);
+                expect(analyzer.variance).to.be.closeTo(nbinomial.variance, 0.05);
             });
             it('should has correct skewness value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.skewness).to.be.a('number');
-                expect(analyzer.skewness).to.be.closeTo(geometric.skewness, 0.05);
+                expect(analyzer.skewness).to.be.closeTo(nbinomial.skewness, 0.05);
             });
             it('should has correct kurtosis value', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.kurtosis).to.be.a('number');
-                expect(analyzer.kurtosis - 3).to.be.closeTo(geometric.kurtosis, 0.7);
-            });
-            it('should has correct entropy value', () => {
-                let analyzer = Common.getInstance(distribution);
-                expect(analyzer.entropy).to.be.a('number');
-                expect(analyzer.entropy).to.be.closeTo(geometric.entropy, 0.05);
+                expect(analyzer.kurtosis - 3).to.be.closeTo(nbinomial.kurtosis, 0.3);
             });
             it('should has pdf array with 200 elements and sum of them close to 1', () => {
                 let analyzer = Common.getInstance(distribution),
@@ -2175,21 +2170,6 @@ describe('Random distributions', () => {
                     sum += el;
                 }
                 expect(sum).to.be.closeTo(1, 0.005);
-            });
-            it('should has correct pdf curve', () => {
-                let analyzer = Common.getInstance(distribution),
-                    values = [0.6, 0.24, 0.096],
-                    j = 0;
-                for(let i of values) {
-                    while(j < analyzer.pdf.probabilities.length) {
-                        if(analyzer.pdf.probabilities[j] !== 0) {
-                            expect(analyzer.pdf.probabilities[j]).to.be.closeTo(i, 0.02);
-                            j += 1;
-                            break;
-                        }
-                        j += 1;
-                    }
-                }
             });
             it('should has cdf array with 200 elements and last element close to 1', () => {
                 let analyzer = Common.getInstance(distribution);

@@ -15,15 +15,15 @@ let Gamma = require('./gamma'),
     Poisson = require('./poisson');
 
 class NegativeBinomial {
-    numberFailures: number;
+    numberSuccess: number;
     successProb: number;
     gamma: Gamma;
     poisson: Poisson;
 
     constructor(r: number, p: number): void {
-        this.numberFailures = Number(r);
+        this.numberSuccess = Number(r);
         this.successProb = Number(p);
-        this.gamma = new Gamma(this.numberFailures, this.successProb / (1 - this.successProb));
+        this.gamma = new Gamma(this.numberSuccess, this.successProb / (1 - this.successProb));
         this.poisson = new Poisson(1);
     }
 
@@ -32,7 +32,7 @@ class NegativeBinomial {
      * @returns a Negative Binomial distributed number
      */
     random(): number {
-        this.gamma.refresh(this.numberFailures, this.successProb / (1 - this.successProb));
+        this.gamma.refresh(this.numberSuccess, this.successProb / (1 - this.successProb));
         let temp: number = this.gamma.random();
         this.poisson.refresh(temp);
         return this.poisson.random();
@@ -58,10 +58,10 @@ class NegativeBinomial {
      * @returns {boolean}
      */
     isError(): MethodError {
-        if(!this.numberFailures || (!this.successProb && this.successProb !== 0)){
+        if(!this.numberSuccess || (!this.successProb && this.successProb !== 0)){
             return {error: 'Negative Binomial distribution: you should point "r" and "p" parameters with numerical values'};
         }
-        if(this.numberFailures <= 0){
+        if(this.numberSuccess <= 0){
             return {error: 'Negative Binomial distribution: parameter "r" must be positive integer'};
         }
         if(this.successProb < 0 || this.successProb > 1) {
@@ -77,7 +77,7 @@ class NegativeBinomial {
      * This method does not return values
      */
     refresh(newR: number, newP: number): void {
-        this.numberFailures = Number(newR);
+        this.numberSuccess = Number(newR);
         this.successProb = Number(newP);
     }
 
@@ -88,7 +88,7 @@ class NegativeBinomial {
     toString(): string {
         let info = [
             'Negative Binomial Distribution',
-            `Usage: randomjs.negativebinomial(${this.numberFailures}, ${this.successProb}).random()`
+            `Usage: randomjs.negativebinomial(${this.numberSuccess}, ${this.successProb}).random()`
         ];
         return info.join('\n');
     }
@@ -99,7 +99,7 @@ class NegativeBinomial {
      * For calculating real mean value use analyzer
      */
     get mean(): number {
-        return this.numberFailures * this.successProb / (1 - this.successProb);
+        return this.numberSuccess * (1 - this.successProb) / this.successProb;
     }
 
     /**
@@ -108,8 +108,8 @@ class NegativeBinomial {
      * For calculating real mode value use analyzer
      */
     get mode(): number {
-        if(this.numberFailures > 1){
-            return Math.floor((this.numberFailures - 1)* this.successProb / (1 - this.successProb));
+        if(this.numberSuccess > 1){
+            return Math.floor((this.numberSuccess - 1) * (1 - this.successProb) / this.successProb);
         }
         return 0;
     }
@@ -120,7 +120,7 @@ class NegativeBinomial {
      * For calculating real variance value use analyzer
      */
     get variance(): number {
-        return this.mean / (1 - this.successProb);
+        return this.mean / this.successProb;
     }
 
     /**
@@ -129,7 +129,16 @@ class NegativeBinomial {
      * For calculating real skewness value use analyzer
      */
     get skewness(): number {
-        return (1 + this.successProb) / Math.sqrt(this.numberFailures * this.successProb);
+        return (2 - this.successProb) / Math.sqrt(this.numberSuccess * (1 - this.successProb));
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 6 / this.numberSuccess + 1 / this.variance;
     }
 
     /**
@@ -141,7 +150,8 @@ class NegativeBinomial {
             mean: this.mean,
             mode: this.mode,
             variance: this.variance,
-            skewness: this.skewness
+            skewness: this.skewness,
+            kurtosis: this.kurtosis
         };
     }
 }
