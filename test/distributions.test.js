@@ -2171,6 +2171,21 @@ describe('Random distributions', () => {
                 }
                 expect(sum).to.be.closeTo(1, 0.005);
             });
+            it('should has correct pdf curve', () => {
+                let analyzer = Common.getInstance(distribution),
+                    values = [0.216, 0.2592, 0.20736, 0.13824, 0.082944, 0.04644864, 0.024772608],
+                    j = 0;
+                for(let i of values) {
+                    while(j < analyzer.pdf.probabilities.length) {
+                        if(analyzer.pdf.probabilities[j] !== 0) {
+                            expect(analyzer.pdf.probabilities[j]).to.be.closeTo(i, 0.02);
+                            j += 1;
+                            break;
+                        }
+                        j += 1;
+                    }
+                }
+            });
             it('should has cdf array with 200 elements and last element close to 1', () => {
                 let analyzer = Common.getInstance(distribution);
                 expect(analyzer.cdf.probabilities).to.be.an('array');
