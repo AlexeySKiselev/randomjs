@@ -120,6 +120,15 @@ class Exponential {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 6;
+    }
+
+    /**
      * Entropy value
      * Information only
      * For calculating real entropy value use analyzer
