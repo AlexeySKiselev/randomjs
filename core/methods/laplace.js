@@ -29,8 +29,8 @@ class Laplace {
         let u: number = Math.random();
         if(u <= 0.5){
             return this.location + this.scale * Math.log(2 * u);
-        } else
-            return this.location - this.scale * Math.log(2 * (1 - u));
+        }
+        return this.location - this.scale * Math.log(2 * (1 - u));
     }
 
     /**
@@ -129,6 +129,15 @@ class Laplace {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 3;
+    }
+
+    /**
      * Entropy value
      * Information only
      * This formula uses Euler's number (base of natural logarithm)
@@ -149,7 +158,8 @@ class Laplace {
             mode: this.mode,
             variance: this.variance,
             skewness: this.skewness,
-            entropy: this.entropy
+            entropy: this.entropy,
+            kurtosis: this.kurtosis
         };
     }
 }
