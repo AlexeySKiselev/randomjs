@@ -12,8 +12,6 @@
 
 import type {MethodError, RandomArray} from '../types';
 
-// TODO: implement skewness value
-
 class ExtremeValue {
     mu: number;
     sigma: number;
@@ -28,7 +26,7 @@ class ExtremeValue {
      * @returns a extreme value distributed number
      */
     random(): number {
-        return (this.mu - this.sigma * Math.log(-Math.log(Math.random())));
+        return this.mu - this.sigma * Math.log(-Math.log(Math.random()));
     }
 
     /**
@@ -128,6 +126,25 @@ class ExtremeValue {
     }
 
     /**
+     * Skewness value
+     * Information only
+     * For calculating real value of skewness use analyzer
+     */
+    get skewness(): number {
+        let riemann: number = 1.202056903159594;
+        return 12 * Math.sqrt(6) * riemann / Math.pow(Math.PI, 3);
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     * For calculating real value of kurtosis use analyzer
+     */
+    get kurtosis(): number {
+        return 12 / 5;
+    }
+
+    /**
      * All parameters of distribution in one object
      * Information only
      */
@@ -137,7 +154,9 @@ class ExtremeValue {
             median: this.median,
             mode: this.mode,
             variance: this.variance,
-            entropy: this.entropy
+            entropy: this.entropy,
+            skewness: this.skewness,
+            kurtosis: this.kurtosis
         };
     }
 }
