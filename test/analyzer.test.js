@@ -349,7 +349,7 @@ describe('Analyzer', () => {
                 let uniformAnalyzer = Common.getInstance(uniformArray);
                 expect(uniformArray.length).to.be.equal(50000);
                 expect(uniformAnalyzer.variance).to.be.a('number');
-                expect(uniformAnalyzer.variance).to.be.closeTo(8.333, 0.06);
+                expect(uniformAnalyzer.variance).to.be.closeTo(8.333, 0.1);
             });
             it('should has skewness value close to 0', () => {
                 let uniformAnalyzer = Common.getInstance(uniformArray);

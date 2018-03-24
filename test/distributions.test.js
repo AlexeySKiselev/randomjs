@@ -2731,8 +2731,8 @@ describe('Random distributions', () => {
                     while(j < analyzer.pdf.probabilities.length) {
                         sum += analyzer.pdf.probabilities[j];
                         if(analyzer.pdf.values[j] >= values[i]) {
-                            expect(sum).to.be.closeTo(Math.exp(-Math.exp(-analyzer.pdf.values[j])), 0.03);
-                            expect(analyzer.cdf.probabilities[j]).to.be.closeTo(Math.exp(-Math.exp(-analyzer.pdf.values[j])), 0.03);
+                            expect(sum).to.be.closeTo(Math.exp(-Math.exp(-analyzer.pdf.values[j])), 0.04);
+                            expect(analyzer.cdf.probabilities[j]).to.be.closeTo(Math.exp(-Math.exp(-analyzer.pdf.values[j])), 0.04);
                             j += 1;
                             break;
                         }
