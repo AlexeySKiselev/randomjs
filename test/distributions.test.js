@@ -2934,7 +2934,7 @@ describe('Random distributions', () => {
             it('should has correct cdf curve', () => {
                 // Step: 0.5
                 let analyzer = Common.getInstance(distribution),
-                    values = [-7, -6, -5, -4, -3, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7],
+                    values = [-8, -7, -6, -5, -4, -3, -2, -1.5, -1, -0.6, -0.3, 0, 0.3, 0.6, 1, 1.5, 2, 3, 4, 5, 6, 7, 8],
                     j = 0,
                     sum = 0;
                 for(let i in values) {
@@ -2942,9 +2942,9 @@ describe('Random distributions', () => {
                         sum += analyzer.pdf.probabilities[j];
                         if(analyzer.pdf.values[j] >= values[i]) {
                             if(analyzer.pdf.values[j] < 0) {
-                                expect(sum).to.be.closeTo(Math.exp(-Math.abs(analyzer.pdf.values[j]) / 2) / 2, 0.05);
+                                expect(sum).to.be.closeTo(Math.exp(-Math.abs(analyzer.pdf.values[j]) / 2) / 2, 0.06);
                             } else {
-                                expect(sum).to.be.closeTo(1 - (Math.exp(-Math.abs(analyzer.pdf.values[j]) / 2)) / 2, 0.05);
+                                expect(sum).to.be.closeTo(1 - (Math.exp(-Math.abs(analyzer.pdf.values[j]) / 2)) / 2, 0.06);
                             }
                             j += 1;
                             break;
