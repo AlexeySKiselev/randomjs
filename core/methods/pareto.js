@@ -122,6 +122,30 @@ class Pareto {
     }
 
     /**
+     * Skewness value
+     * Information only
+     * For calculating real skewness value use analyzer
+     */
+    get skewness(): ?number {
+        if(this.alpha > 3) {
+            return 2 * Math.sqrt((this.alpha - 2) / this.alpha) * (1 + this.alpha) / (this.alpha - 3);
+        }
+        return undefined;
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): ?number {
+        if(this.alpha > 4) {
+            return 6 * (Math.pow(this.alpha, 3) + Math.pow(this.alpha, 2) - 6 * this.alpha - 2) / (this.alpha * (this.alpha - 3) * (this.alpha - 4));
+        }
+        return undefined;
+    }
+
+    /**
      * Entropy value
      * Information only
      * For calculating real entropy value use analyzer

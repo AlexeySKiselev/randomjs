@@ -38,9 +38,10 @@ class AnalyzerFactory implements IAnalyzerMethods {
      * But in this method I am going to assign randomArray property
      * Also I am going to check type of array: if not - throw Error
      * @param randomArray<number> - input array
+     * @param options - options for analyzer methods
      * @returns {Proxy}
      */
-    constructor(randomArray: RandomArray): any {
+    constructor(randomArray: RandomArray, options?: { [string]: any }): any {
         this.randomArray = randomArray;
         this.publicMethods = {};
         this.publicProperties = {};
@@ -73,7 +74,7 @@ class AnalyzerFactory implements IAnalyzerMethods {
                         } else if(randomArray.length <= 10) {
                             reject('Analyzer.Common: input randomArray is too small, that is no reason to analyze');
                         } else  {
-                            resolve(Methods.getInstance(this.randomArray));
+                            resolve(Methods.getInstance(this.randomArray, options));
                         }
                     }, 0);
                 });

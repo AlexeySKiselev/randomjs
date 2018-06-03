@@ -35,16 +35,15 @@ class Lognormal {
 
     /**
      * Generates lognormal distributed numbers
-     * As I use special algorithm for normal distribution
-     * I am going to create first normal distributed array
-     * Them iterate over this array and create lognormal array
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - lognormal distributed numbers
      */
     distribution(n: number): RandomArray {
-        return this.normal.distribution(n).map(num => {
-            return Math.exp(this.mu + this.sigma * num);
-        });
+        let lognormalArray: RandomArray = [];
+        for(let i: number = 0; i < n; i += 1){
+            lognormalArray[i] = this.random();
+        }
+        return lognormalArray;
     }
 
     /**
@@ -128,6 +127,16 @@ class Lognormal {
     get skewness(): number {
         let temp: number = Math.exp(Math.pow(this.sigma, 2)) - 1;
         return (temp + 3) * Math.sqrt(temp);
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        let sigma2: number = Math.pow(this.sigma, 2);
+        return Math.exp(4 * sigma2) + 2 * Math.exp(3 * sigma2) + 3 * Math.exp(2 * sigma2) - 6;
     }
 
     /**

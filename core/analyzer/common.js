@@ -63,7 +63,6 @@ class Common {
 
     /**
      * Number of values in PDF and CDF functions
-     * TODO: implement "options" mechanism for this parameter
      * @private
      */
     _values_in_pdf: number;
@@ -98,7 +97,7 @@ class Common {
      */
     _modes: RandomArray;
 
-    constructor(randomArray: RandomArray): void {
+    constructor(randomArray: RandomArray, options?: {[string]: any}): void {
         /**
          * Check if randomArray is array
          * if not - throw Error
@@ -122,6 +121,9 @@ class Common {
         this._maximum = -Infinity;
         this._minimum = Infinity;
         this._values_in_pdf = 200;
+        if(options && Number(options.pdf)) {
+            this._values_in_pdf = Number(options.pdf);
+        }
         this._entropy = 0;
         this._modes = [];
 
@@ -149,8 +151,14 @@ class Common {
          */
         let M: number = 0,
             M2: number = 0,
+            M3: number = 0,
+            M4: number = 0,
             n: number = 0,
-            delta: number;
+            delta: number,
+            delta_n: number,
+            delta_n2: number,
+            term1: number,
+            correction: number = 100; // correction needs to calculate floats with better accuracy
 
         for(let rv of this.randomArray) {
             // Calculating max and min values
@@ -162,16 +170,23 @@ class Common {
                 this._minimum = rv;
             }
 
-            // Calculating mean and variance
+            // Calculating moments
             n += 1;
-            delta = rv - M;
-            M += delta / n;
-            M2 += delta * (rv - M);
+            delta = rv * correction - M;
+            delta_n = delta / n;
+            delta_n2 = Math.pow(delta_n, 2);
+            term1 = delta * delta_n2 * (n - 1);
+            M += delta_n;
+            M4 += term1 * delta_n * (n * n - 3 * n + 3) + 6 * delta_n2 * M2 - 4 * delta_n * M3;
+            M3 += (n - 2) * term1  - 3 * delta_n * M2;
+            M2 += delta * (rv * correction - M);
         }
 
-        // Assign mean and variance values
-        this._mean = M;
-        this._variance = M2 / (n - 1);
+        // Assign mean, variance, skewness and kurtosis values
+        this._mean = M / correction;
+        this._variance = M2 / ((n - 1) * Math.pow(correction, 2));
+        this._skewness = Math.sqrt(n) * M3 / Math.pow(M2, 1.5);
+        this._kurtosis = n * M4 / (M2 * M2);
 
         /**
          * Calculating PDF and CDF
@@ -192,12 +207,6 @@ class Common {
                 : (this._maximum - this._minimum) / (values_in_pdf - 1),
             tempIndex;
 
-        // Variable for skewness
-        let sumOfCubes: number = 0;
-
-        // Variable for Kurtosis
-        let sumOfFourths: number = 0;
-
         // Create PDF and CDF arrays with initial zeros
         pdf.fill(0);
 
@@ -205,19 +214,7 @@ class Common {
         for(let rv of this.randomArray) {
             tempIndex = Math.floor((rv - this._minimum) / values_step);
             pdf[tempIndex] += 1;
-
-            // Calculate sum of cubes for skewness
-            sumOfCubes += Math.pow(rv - this._mean, 3);
-
-            // Calculate sum of 4-powers for Kurtosis
-            sumOfFourths += Math.pow(rv - this._mean, 4) / Math.pow(this._variance, 2);
         }
-
-        // Calculate skewness
-        this._skewness = sumOfCubes / ((rvLength - 1) * Math.pow(this._variance, 1.5));
-
-        // Calculate Kurtosis
-        this._kurtosis = sumOfFourths / (rvLength - 1);
 
         // Cumulative variable for CDF
         let sumOfPDF: number = 0;
@@ -255,7 +252,6 @@ class Common {
         // Convert pdf to probability
         for(let i = 0; i < pdf.length; i += 1) {
             pdf[i] /= rvLength;
-            // I move values by 0.5 for centering approximation bar
             pdf_values[i] = this._minimum + i * values_step;
 
             // Calculate CDF
