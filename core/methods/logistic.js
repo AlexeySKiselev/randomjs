@@ -117,6 +117,15 @@ class Logistic {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return 1.2;
+    }
+
+    /**
      * Skewness value
      * Information only
      * For calculating real skewness value use analyzer

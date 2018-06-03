@@ -58,6 +58,32 @@ class Utils {
         }
         return Math.log(z + 0.4849142940227510) - 1 / (z * 1.0271785180163817);
     }
+
+    /**
+     * Error function
+     * https://en.wikipedia.org/wiki/Error_function
+     * Use Maclaurin series approximation
+     * @param z: number
+     * @returns {number}
+     */
+    static erf(z: number): number {
+        let series: number = z,
+            factorial = 1;
+
+        if(z >= 3) {
+            return 1;
+        }
+
+        if(z <= -3) {
+            return -1;
+        }
+
+        for(let i = 1; i <= 26; i += 1) {
+            factorial *= i;
+            series += Math.pow(-1, i) * Math.pow(z, 2 * i + 1) / (factorial * (2 * i + 1));
+        }
+        return 2 * series / Math.sqrt(Math.PI);
+    }
 }
 
 module.exports = Utils;

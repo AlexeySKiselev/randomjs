@@ -20,6 +20,9 @@ describe('Utils', () => {
     it('should has static method "digamma"', () => {
         expect(methods).to.include.members(['digamma']);
     });
+    it('should has static method "erf"', () => {
+        expect(methods).to.include.members(['erf']);
+    });
 
     // Gamma function
     describe('Gamma function', () => {
@@ -152,6 +155,19 @@ describe('Utils', () => {
                 return digamma;
             };
             badParam.should.throw(Error);
+        });
+    });
+
+    // Error function
+    describe('Error function', () => {
+        it('erf(-z) should be equals to -erf(z)', () => {
+            expect(Utils.erf(-1)).to.be.closeTo(-Utils.erf(1), 0.05);
+        });
+        it('should be close to 1 for big z', () => {
+            expect(Utils.erf(2.9)).to.be.closeTo(1, 0.02);
+        });
+        it('should be close to 0 for z = 0', () => {
+            expect(Utils.erf(0)).to.be.closeTo(0, 0.02);
         });
     });
 });

@@ -38,8 +38,8 @@ class RandomJS {
          */
         Object.defineProperty(this, 'analyze', ({
             __proto__: null,
-            value: (randomArray: RandomArray): AnalyzerFactory => {
-                return new AnalyzerFactory(randomArray);
+            value: (randomArray: RandomArray, options?: { [string]: any }): AnalyzerFactory => {
+                return new AnalyzerFactory(randomArray, options);
             }
         }: Object));
     }
