@@ -172,6 +172,8 @@ class Pareto {
             median: this.median,
             mode: this.mode,
             variance: this.variance,
+            skewness: this.skewness,
+            kurtosis: this.kurtosis,
             entropy: this.entropy,
             fisher: this.fisher
         };

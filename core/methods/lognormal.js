@@ -167,6 +167,7 @@ class Lognormal {
             mode: this.mode,
             variance: this.variance,
             skewness: this.skewness,
+            kurtosis: this.kurtosis,
             entropy: this.entropy,
             fisher: this.fisher
         };
