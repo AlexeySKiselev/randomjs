@@ -33,7 +33,7 @@ class Rayleigh {
     /**
      * Generates Rayleigh distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
-     * @returns Array<number> - Pareto distributed numbers
+     * @returns Array<number> - Rayleigh distributed numbers
      */
     distribution(n: number): RandomArray {
         let rayleighArray: RandomArray = [];
@@ -133,6 +133,15 @@ class Rayleigh {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): number {
+        return - (6 * Math.pow(Math.PI, 2) - 24 * Math.PI + 16) / Math.pow(4 - Math.PI, 2);
+    }
+
+    /**
      * All parameters of distribution in one object
      * Information only
      */
@@ -143,7 +152,8 @@ class Rayleigh {
             mode: this.mode,
             variance: this.variance,
             entropy: this.entropy,
-            skewness: this.skewness
+            skewness: this.skewness,
+            kurtosis: this.kurtosis
         };
     }
 }

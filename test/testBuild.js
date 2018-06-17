@@ -3,19 +3,22 @@
  * Created by Alexey S. Kiselev on 23.12.2017.
  */
 
-let randomjs = require('../lib');
-
-console.log('Normal random number');
-console.log(randomjs.normal(3, 3).variance);
-console.log(randomjs.normal(2, 2).variance);
-console.log('Analyzer');
-let analyzer = randomjs.analyze([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);//[1, 5, 3, 4, 6, 7, 8, 10, 11, 12, 9, 4, 3, 5, 9, 12, 1, 1, 3, 4, 6, 2, 8]);
+let randomjs = require('../lib'),
+    distribution = randomjs.student(2).distributionSync(300000);
+let analyzer = randomjs.analyze(distribution, {
+    pdf: 300
+});
 //console.log(analyzer);
-analyzer.then(res => {
-    console.log('res', res);
+analyzer.pdf.then(res => {
+    for(let i = 0; i < res.probabilities.length; i += 1) {
+        console.log(res.values[i], res.probabilities[i]);
+    }
 })
     .catch((err) => {
         console.error('Error', err);
     });
+analyzer.kurtosis.then((res) => {
+    console.log(res);
+});
 console.log('Sync');
 

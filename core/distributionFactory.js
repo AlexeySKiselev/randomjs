@@ -21,12 +21,21 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
          */
         Object.getOwnPropertyNames(Object.getPrototypeOf(this._method)).map((method: string) => {
             if(!this.hasOwnProperty(method)){
-                Object.defineProperty(this, method, {
-                    __proto__: null,
-                    get: () => {
-                        return this._method[method];
-                    }
-                });
+                if(typeof this._method[method] === 'function') {
+                    Object.defineProperty(this, method, {
+                        __proto__: null,
+                        value: (...args: any) => {
+                            return this._method[method](...args);
+                        }
+                    });
+                } else {
+                    Object.defineProperty(this, method, {
+                        __proto__: null,
+                        get: () => {
+                            return this._method[method];
+                        }
+                    });
+                }
             }
         });
     }

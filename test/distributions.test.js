@@ -1016,11 +1016,11 @@ describe('Random distributions', () => {
 
             it('should has min value close to ~5', () => {
                 expect(analyzer.min).to.be.a('number');
-                expect(meanValue(min)).to.be.closeTo(5, 1.1);
+                expect(meanValue(min)).to.be.closeTo(5, 1.3);
             });
             it('should has max value close to ~20', () => {
                 expect(analyzer.max).to.be.a('number');
-                expect(meanValue(max)).to.be.closeTo(20, 1.1);
+                expect(meanValue(max)).to.be.closeTo(20, 1.3);
             });
             it('should has correct mean value', () => {
                 expect(analyzer.mean).to.be.a('number');
@@ -1502,7 +1502,9 @@ describe('Random distributions', () => {
 
             for(let i = 0; i < 20; i += 1) {
                 distribution = chiSquare.distribution(300000);
-                analyzer = Common.getInstance(distribution);
+                analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
@@ -1539,7 +1541,7 @@ describe('Random distributions', () => {
             });
             it('should has correct kurtosis value', () => {
                 expect(analyzer.kurtosis).to.be.a('number');
-                expect(meanValue(kurtosis) - 3).to.be.closeTo(chiSquare.kurtosis, 0.05);
+                expect(meanValue(kurtosis) - 3).to.be.closeTo(chiSquare.kurtosis, 0.1);
             });
             it('should has correct entropy value', () => {
                 let analyzer = Common.getInstance(distribution);
@@ -2735,7 +2737,7 @@ describe('Random distributions', () => {
             });
             it('should has correct kurtosis value', () => {
                 expect(analyzer.kurtosis).to.be.a('number');
-                expect(meanValue(kurtosis) - 3).to.be.closeTo(exponential.kurtosis, 0.07);
+                expect(meanValue(kurtosis) - 3).to.be.closeTo(exponential.kurtosis, 0.1);
             });
             it('should has correct entropy value', () => {
                 expect(analyzer.entropy).to.be.a('number');
@@ -3778,7 +3780,8 @@ describe('Random distributions', () => {
 
     // Rayleigh distribution
     describe('Rayleigh distribution', () => {
-        let Rayleigh = require('../lib/methods/rayleigh');
+        let Rayleigh = require('../lib/methods/rayleigh'),
+            Common = require('../lib/analyzer/common');
         it('requires one numerical argument with scale > 0', () => {
             let zeroParams = () => {
                 let rayleigh = new Rayleigh();
@@ -3858,11 +3861,99 @@ describe('Random distributions', () => {
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
         });
+        describe('With real generated data (sigma = 1)', () => {
+            let rayleigh = new Rayleigh(1),
+                distribution,
+                analyzer,
+                min = [],
+                max = [],
+                mean = [],
+                median = [],
+                variance = [],
+                skewness = [],
+                entropy = [],
+                kurtosis = [];
+
+            for(let i = 0; i < 20; i += 1) {
+                distribution = rayleigh.distribution(300000);
+                analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                min.push(analyzer.min);
+                max.push(analyzer.max);
+                mean.push(analyzer.mean);
+                median.push(analyzer.median);
+                variance.push(analyzer.variance);
+                skewness.push(analyzer.skewness);
+                entropy.push(analyzer.entropy);
+                kurtosis.push(analyzer.kurtosis);
+            }
+
+            it('should has min value close to zero', () => {
+                expect(analyzer.min).to.be.a('number');
+                expect(meanValue(min)).to.be.closeTo(0, 0.02);
+            });
+            it('should has max value greater then 3.2', () => {
+                expect(analyzer.max).to.be.a('number');
+                expect(meanValue(max)).to.be.at.least(3.2);
+            });
+            it('should has correct mean value', () => {
+                expect(analyzer.mean).to.be.a('number');
+                expect(meanValue(mean)).to.be.closeTo(rayleigh.mean, 0.02);
+            });
+            it('should has correct median value', () => {
+                expect(analyzer.median).to.be.a('number');
+                expect(meanValue(median)).to.be.closeTo(rayleigh.median, 0.03);
+            });
+            it('should has correct variance value', () => {
+                expect(analyzer.variance).to.be.a('number');
+                expect(meanValue(variance)).to.be.closeTo(rayleigh.variance, 0.05);
+            });
+            it('should has correct entropy value', () => {
+                expect(analyzer.entropy).to.be.a('number');
+                expect(meanValue(entropy)).to.be.closeTo(rayleigh.entropy, 0.04);
+            });
+            it('should has correct skewness value', () => {
+                expect(analyzer.skewness).to.be.a('number');
+                expect(meanValue(skewness)).to.be.closeTo(rayleigh.skewness, 0.04);
+            });
+            it('should has correct kurtosis value', () => {
+                expect(analyzer.kurtosis).to.be.a('number');
+                expect(meanValue(kurtosis) - 3).to.be.closeTo(rayleigh.kurtosis, 0.04);
+            });
+            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+                let analyzer = Common.getInstance(distribution),
+                    sum = 0;
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.values).to.be.an('array');
+                expect(analyzer.pdf.values[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                for(let el of analyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has cdf array with 200 elements and last element close to 1', () => {
+                let analyzer = Common.getInstance(distribution);
+                expect(analyzer.cdf.probabilities).to.be.an('array');
+                expect(analyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.cdf.values).to.be.an('array');
+                expect(analyzer.cdf.values[0]).to.be.a('number');
+                expect(analyzer.cdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                expect(analyzer.cdf.probabilities[199]).to.be.closeTo(1, 0.01);
+            });
+        });
     });
 
     // Student's t-distribution
     describe('Student\'s t-distribution', () => {
-        let Student = require('../lib/methods/student');
+        let Student = require('../lib/methods/student'),
+            Common = require('../lib/analyzer/common');
         it('requires one numerical argument with degrees of freedom > 0', () => {
             let zeroParams = () => {
                 let student = new Student();
@@ -3941,6 +4032,83 @@ describe('Random distributions', () => {
             expect(randomArray).to.be.an('array');
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
+        });
+        describe('With real generated data (v = 5)', () => {
+            let student = new Student(6),
+                distribution,
+                analyzer,
+                min = [],
+                max = [],
+                mean = [],
+                median = [],
+                variance = [],
+                skewness = [],
+                kurtosis = [];
+
+            for(let i = 0; i < 1; i += 1) {
+                distribution = student.distribution(200000);
+                analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                min.push(analyzer.min);
+                max.push(analyzer.max);
+                mean.push(analyzer.mean);
+                median.push(analyzer.median);
+                variance.push(analyzer.variance);
+                skewness.push(analyzer.skewness);
+                kurtosis.push(analyzer.kurtosis);
+            }
+
+            it('should has min value less then -5', () => {
+                expect(analyzer.min).to.be.a('number');
+                expect(meanValue(min)).to.be.at.most(-5);
+            });
+            it('should has max value greater then 5', () => {
+                expect(analyzer.max).to.be.a('number');
+                expect(meanValue(max)).to.be.at.least(5);
+            });
+            it('should has correct mean value', () => {
+                expect(analyzer.mean).to.be.a('number');
+                expect(meanValue(mean)).to.be.closeTo(student.mean, 0.03);
+            });
+            it('should has correct median value', () => {
+                expect(analyzer.median).to.be.a('number');
+                expect(meanValue(median)).to.be.closeTo(student.median, 0.03);
+            });
+            it('should has correct variance value', () => {
+                expect(analyzer.variance).to.be.a('number');
+                expect(meanValue(variance)).to.be.closeTo(student.variance, 0.05);
+            });
+            it('should has correct skewness value', () => {
+                expect(analyzer.skewness).to.be.a('number');
+                expect(meanValue(skewness)).to.be.closeTo(student.skewness, 0.05);
+            });
+            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+                let analyzer = Common.getInstance(distribution),
+                    sum = 0;
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.values).to.be.an('array');
+                expect(analyzer.pdf.values[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                for(let el of analyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has cdf array with 200 elements and last element close to 1', () => {
+                let analyzer = Common.getInstance(distribution);
+                expect(analyzer.cdf.probabilities).to.be.an('array');
+                expect(analyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.cdf.values).to.be.an('array');
+                expect(analyzer.cdf.values[0]).to.be.a('number');
+                expect(analyzer.cdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                expect(analyzer.cdf.probabilities[199]).to.be.closeTo(1, 0.01);
+            });
         });
     });
 

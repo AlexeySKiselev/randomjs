@@ -11,22 +11,13 @@
 
 import type { MethodError, RandomArray } from '../types';
 
-let Normal = require('./normal'),
-    Chi = require('./chi');
-
 class Student {
     degrees: number;
-    normal: Normal;
-    chi: Chi;
+    _b: number;
 
     constructor(v: number): void {
         this.degrees = Number(v);
-        this.normal = new Normal(0, 1);
-
-        /*
-         * Use random value (1) for Chi distribution, then refresh before usage
-         */
-        this.chi = new Chi(1);
+        this._b = Math.sqrt((2 / Math.sqrt(Math.E)) - 1);
     }
 
     /**
@@ -34,8 +25,83 @@ class Student {
      * @returns a Student's t-distributed number
      */
     random(): number {
-        this.chi.refresh(this.degrees);
-        return this.normal.random() / this.chi.random();
+        let randomNumber = this._random();
+        // Limit result to get good distribution
+        if(Math.abs(randomNumber) > 12) {
+            return this.random();
+        }
+        return randomNumber;
+    }
+
+    /**
+     * Generate Student t-value with TIR algorithm
+     * @returns a Student's t-distributed number
+     */
+    _random(): number {
+        let u, v, x;
+        /*eslint-disable no-constant-condition */
+        while(true) {
+            // --- step 1 ---
+            u = Math.random();
+            if (u < this._b / 2) {
+                //  --- step 2 ---
+                v = Math.random();
+                x = 4 * u - this._b;
+                if (v <= (1 - 0.5 * Math.abs(x))) {
+                    return x;
+                }
+                if (v <= this._u_alpha(this.degrees, x)) {
+                    return x;
+                }
+                // here go to step 1
+            } else {
+                // --- step 3 ---
+                if (u < 0.5) {
+                    x = (Math.abs(4 * u - 1 - this._b) + this._b) * Math.sign(4 * u - 1 - this._b);
+                    v = Math.random();
+                    // --- step 4 ---
+                    if (v <= (1 - 0.5 * Math.abs(x))) {
+                        return x;
+                    }
+                    if (v >= (1 + Math.pow(this._b, 2)) / (1 + Math.pow(x, 2))) {
+                        continue;
+                    }
+                    if (v <= this._u_alpha(this.degrees, x)) {
+                        return x;
+                    }
+                } else {
+                    if (u < 0.75) {
+                        // --- step 5 ---
+                        x = Math.sign(8 * u - 5) * 2 / (Math.abs(8 * u - 5) + 1);
+                        v = Math.random() / Math.pow(x, 2);
+                        // --- step 4 ---
+                        if (v <= (1 - 0.5 * Math.abs(x))) {
+                            return x;
+                        }
+                        if (v >= (1 + Math.pow(this._b, 2)) / (1 + Math.pow(x, 2))) {
+                            continue;
+                        }
+                        if (v <= this._u_alpha(this.degrees, x)) {
+                            return x;
+                        }
+                    } else {
+                        // --- step 6 ---
+                        x = 2 / (8 * u - 7);
+                        v = Math.random();
+                        if (v < Math.pow(x, 2) * this._u_alpha(this.degrees, x)) {
+                            return x;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * u_alpha function
+     */
+    _u_alpha(alpha: number, x: number): number {
+        return Math.pow(1 + Math.pow(x, 2)/ alpha, -0.5 * (alpha + 1));
     }
 
     /**
@@ -45,9 +111,8 @@ class Student {
      */
     distribution(n: number): RandomArray {
         let studentArray: RandomArray = [];
-        this.chi.refresh(this.degrees);
         for(let i: number = 0; i < n; i += 1){
-            studentArray[i] = this.normal.random() / this.chi.random();
+            studentArray[i] = this.random();
         }
         return studentArray;
     }
@@ -144,6 +209,22 @@ class Student {
     }
 
     /**
+     * Kurtosis value
+     * Information only
+     * For calculating real kurtosis value use analyzer
+     */
+    get kurtosis(): ?number {
+        if(this.degrees > 4) {
+            return 6 / (this.degrees - 4);
+        } else if(this.degrees > 2 && this.degrees <= 4) {
+            return Infinity;
+        }
+        return undefined;
+    }
+
+    // TODO: implement Beta function for entropy
+
+    /**
      * All parameters of distribution in one object
      * Information only
      */
@@ -153,7 +234,8 @@ class Student {
             median: this.median,
             mode: this.mode,
             variance: this.variance,
-            skewness: this.skewness
+            skewness: this.skewness,
+            kurtosis: this.kurtosis
         };
     }
 }
