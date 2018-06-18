@@ -136,6 +136,22 @@ class Weibull {
     }
 
     /**
+     * Skewness value
+     * Information only
+     */
+    get skewness(): number {
+        return (this.gamma(1 + 3 / this.k) * Math.pow(this.lambda, 3) - 3 * this.mean * this.variance - Math.pow(this.mean, 3)) / Math.pow(this.variance, 1.5);
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     */
+    get kurtosis(): number {
+        return -3 + (Math.pow(this.lambda, 4) * this.gamma(1 + 4 / this.k) - 4 * this.skewness * Math.pow(this.variance, 1.5) * this.mean - 6 * Math.pow(this.mean, 2) * this.variance - Math.pow(this.mean, 4)) / Math.pow(this.variance, 2);
+    }
+
+    /**
      * All parameters of distribution in one object
      * Information only
      */
@@ -145,7 +161,9 @@ class Weibull {
             median: this.median,
             mode: this.mode,
             variance: this.variance,
-            entropy: this.entropy
+            entropy: this.entropy,
+            skewness: this.skewness,
+            kurtosis: this.kurtosis
         };
     }
 }
