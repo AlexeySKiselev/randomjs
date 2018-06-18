@@ -130,7 +130,7 @@ class Triangular {
      * For calculating real variance value use analyzer
      */
     get variance(): number {
-        return (Math.pow(this.a, 2) + Math.pow(this.b, 2) + Math.pow(this.c, 2) - this.a * this.b - this.a * this.c - this.b - this.c) / 18;
+        return (Math.pow(this.a, 2) + Math.pow(this.b, 2) + Math.pow(this.c, 2) - this.a * this.b - this.a * this.c - this.b * this.c) / 18;
     }
 
     /**
@@ -149,6 +149,14 @@ class Triangular {
      */
     get entropy(): number {
         return 0.5 + Math.log((this.b - this.a) / 2);
+    }
+
+    /**
+     * Kurtosis value
+     * Information only
+     */
+    get kurtosis(): number {
+        return -3 / 5;
     }
 
     /**

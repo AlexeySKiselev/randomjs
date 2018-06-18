@@ -4033,7 +4033,7 @@ describe('Random distributions', () => {
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
         });
-        describe('With real generated data (v = 5)', () => {
+        describe('With real generated data (v = 6)', () => {
             let student = new Student(6),
                 distribution,
                 analyzer,
@@ -4045,7 +4045,7 @@ describe('Random distributions', () => {
                 skewness = [],
                 kurtosis = [];
 
-            for(let i = 0; i < 1; i += 1) {
+            for(let i = 0; i < 20; i += 1) {
                 distribution = student.distribution(200000);
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
@@ -4114,7 +4114,8 @@ describe('Random distributions', () => {
 
     // Triangular distribution
     describe('Triangular distribution', () => {
-        let Triangular = require('../lib/methods/triangular');
+        let Triangular = require('../lib/methods/triangular'),
+            Common = require('../lib/analyzer/common');
         it('requires three numerical arguments with a any, b > a and a <= c <= b', () => {
             let zeroParams = () => {
                 let triangular = new Triangular();
@@ -4218,6 +4219,114 @@ describe('Random distributions', () => {
             expect(randomArray).to.be.an('array');
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
+        });
+        describe('With real generated data (a = 1, b = 3, c = 2)', () => {
+            let triangular = new Triangular(1, 3, 2),
+                distribution,
+                analyzer,
+                min = [],
+                max = [],
+                mean = [],
+                median = [],
+                variance = [],
+                skewness = [],
+                entropy = [],
+                kurtosis = [];
+
+            for(let i = 0; i < 20; i += 1) {
+                distribution = triangular.distribution(300000);
+                analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                min.push(analyzer.min);
+                max.push(analyzer.max);
+                mean.push(analyzer.mean);
+                median.push(analyzer.median);
+                variance.push(analyzer.variance);
+                skewness.push(analyzer.skewness);
+                entropy.push(analyzer.entropy);
+                kurtosis.push(analyzer.kurtosis);
+            }
+
+            it('should has min value close to a', () => {
+                expect(analyzer.min).to.be.a('number');
+                expect(meanValue(min)).to.be.closeTo(1, 0.03);
+            });
+            it('should has max value to b', () => {
+                expect(analyzer.max).to.be.a('number');
+                expect(meanValue(max)).to.be.closeTo(3, 0.03);
+            });
+            it('should has correct mean value', () => {
+                expect(analyzer.mean).to.be.a('number');
+                expect(meanValue(mean)).to.be.closeTo(triangular.mean, 0.03);
+            });
+            it('should has correct median value', () => {
+                expect(analyzer.median).to.be.a('number');
+                expect(meanValue(median)).to.be.closeTo(triangular.median, 0.03);
+            });
+            it('should has correct entropy value', () => {
+                expect(analyzer.entropy).to.be.a('number');
+                expect(meanValue(entropy)).to.be.closeTo(triangular.entropy, 0.05);
+            });
+            it('should has correct variance value', () => {
+                expect(analyzer.variance).to.be.a('number');
+                expect(meanValue(variance)).to.be.closeTo(triangular.variance, 0.04);
+            });
+            it('should has correct skewness value', () => {
+                expect(analyzer.skewness).to.be.a('number');
+                expect(meanValue(skewness)).to.be.closeTo(triangular.skewness, 0.04);
+            });
+            it('should has correct kurtosis value', () => {
+                expect(analyzer.kurtosis).to.be.a('number');
+                expect(meanValue(kurtosis) - 3).to.be.closeTo(triangular.kurtosis, 0.04);
+            });
+            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+                let analyzer = Common.getInstance(distribution),
+                    sum = 0;
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.values).to.be.an('array');
+                expect(analyzer.pdf.values[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                for(let el of analyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has cdf array with 200 elements and last element close to 1', () => {
+                let analyzer = Common.getInstance(distribution);
+                expect(analyzer.cdf.probabilities).to.be.an('array');
+                expect(analyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.cdf.values).to.be.an('array');
+                expect(analyzer.cdf.values[0]).to.be.a('number');
+                expect(analyzer.cdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                expect(analyzer.cdf.probabilities[199]).to.be.closeTo(1, 0.01);
+            });
+            it('should has correct cdf curve', () => {
+                // Step: 0.5
+                let analyzer = Common.getInstance(distribution, {
+                        pdf: 1000
+                    }),
+                    values = [1, 2, 3],
+                    probs = [0, 0.5, 1],
+                    j = 0,
+                    sum = 0;
+                for(let i in values) {
+                    while(j < analyzer.pdf.probabilities.length) {
+                        sum += analyzer.pdf.probabilities[j];
+                        if(analyzer.pdf.values[j] >= values[i]) {
+                            expect(sum).to.be.closeTo(probs[i], 0.03);
+                            j += 1;
+                            break;
+                        }
+                        j += 1;
+                    }
+                }
+            });
         });
     });
 
