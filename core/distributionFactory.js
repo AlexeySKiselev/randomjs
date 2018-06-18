@@ -21,14 +21,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
          */
         Object.getOwnPropertyNames(Object.getPrototypeOf(this._method)).map((method: string) => {
             if(!this.hasOwnProperty(method)){
-                if(typeof this._method[method] === 'function') {
-                    Object.defineProperty(this, method, {
-                        __proto__: null,
-                        value: (...args: any) => {
-                            return this._method[method](...args);
-                        }
-                    });
-                } else {
+                if(typeof this._method[method] !== 'function') {
                     Object.defineProperty(this, method, {
                         __proto__: null,
                         get: () => {
@@ -50,11 +43,13 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
      */
     random(): Promise<number> {
         return new Promise((resolve, reject) => {
-            if(this.isError().error){
-                reject(this.isError());
-            } else {
-                resolve(this._method.random());
-            }
+            setTimeout(() => {
+                if(this.isError().error){
+                    reject(this.isError());
+                } else {
+                    resolve(this._method.random());
+                }
+            }, 0);
         });
     }
 
@@ -88,11 +83,13 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
             n = 1;
         }
         return new Promise((resolve, reject) => {
-            if(this.isError().error){
-                reject(this.isError());
-            } else {
-                resolve(this._method.distribution(n, ...distParams));
-            }
+            setTimeout(() => {
+                if(this.isError().error){
+                    reject(this.isError());
+                } else {
+                    resolve(this._method.distribution(n, ...distParams));
+                }
+            }, 0);
         });
     }
 
