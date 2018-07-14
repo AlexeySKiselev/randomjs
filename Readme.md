@@ -59,3 +59,10 @@ analyzer.entropy.then((res) => {
     // returns entropy value as a number
 });
 </pre>
+
+* Use utils ([Special functions list](./core/utils/))
+<br /> <pre>
+// Return gamma function
+console.log(unirand.utils.gamma(2));
+// returns value for gamma function with argument 2
+</pre>

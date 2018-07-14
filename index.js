@@ -10,9 +10,11 @@ import type { RandomArray } from './core/types';
 
 class RandomJS {
     analyze: any;
+    utils: any;
 
     constructor(): void {
         this.analyze = null;
+        this.utils = null;
 
         fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
             /**
@@ -42,6 +44,15 @@ class RandomJS {
                 return new AnalyzerFactory(randomArray, options);
             }
         }: Object));
+
+        /**
+         * Utils
+         * Contains implementation for Gamma, Digamma functions, etc.
+         */
+        Object.defineProperty(this, 'utils', ({
+            __proto__: null,
+            value: require(__dirname + '/core/utils/utils')
+        }: Object));
     }
 
     help(): void {
@@ -66,3 +77,5 @@ module.exports = new RandomJS();
 // TODO: add Bates distribution
 // TODO: add F-distribution
 // TODO: add Irwin–Hall distribution
+// TODO: add zipf distribution
+// TODO: add utils
