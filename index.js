@@ -57,12 +57,12 @@ module.exports = new RandomJS();
 
 // TODO: Create a check-values external function
 // TODO: Generators
-// TODO: Analysis
 // TODO: Regression
 // TODO: Prediction
 // TODO: Shuffle
-// TODO: Promise-like functions
 // TODO: Games
 // TODO: Pseudorandom generator
-// TODO: Singletons
 // TODO: add Proxy to random generators
+// TODO: add Bates distribution
+// TODO: add F-distribution
+// TODO: add Irwin–Hall distribution
