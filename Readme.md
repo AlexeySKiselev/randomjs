@@ -2,7 +2,7 @@
 [![dependencies Status](https://david-dm.org/AlexeySKiselev/randomjs/status.svg)](https://david-dm.org/AlexeySKiselev/randomjs)
 
 # Unirand
-A JavaScript for generating random distributions and its statistical analysis.
+A JavaScript module for generating random distributions and its statistical analysis.
 
 Implemented in pure JavaScript with no dependencies, designed to work Node.js and fully asynchronous, tested *with 450+ tests*.
 
