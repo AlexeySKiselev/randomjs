@@ -22,8 +22,8 @@ Analyzer object contains next fields:
         probabilities: [distribution values probabilities: Array[number]]
     },
     cdf: {
-            values: [distribution values: Array[number]],
-            probabilities: [distribution values probabilities: Array[number]]
+        values: [distribution values: Array[number]],
+        probabilities: [distribution values probabilities: Array[number]]
     }
 }
 </pre>
