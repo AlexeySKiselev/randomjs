@@ -74,7 +74,6 @@ module.exports = new RandomJS();
 // TODO: Games
 // TODO: Pseudorandom generator
 // TODO: add Proxy to random generators
-// TODO: add Bates distribution
 // TODO: add F-distribution
 // TODO: add Irwin–Hall distribution
 // TODO: add zipf distribution

@@ -4545,4 +4545,198 @@ describe('Random distributions', () => {
             });
         });
     });
+
+    // Bates distribution
+    describe('Bates distribution', () => {
+        let Bates = require('../lib/methods/bates'),
+            Common = require('../lib/analyzer/common');
+        it('requires minimum one numerical argument with n >= 1', () => {
+            let zeroParams = () => {
+                let bates = new Bates();
+                if(bates.isError().error)
+                    throw new Error(bates.isError().error);
+            };
+            zeroParams.should.throw(Error);
+
+            let oneParam =  () => {
+                let bates = new Bates(2);
+                if(bates.isError().error)
+                    throw new Error(bates.isError().error);
+            };
+            oneParam.should.not.throw(Error);
+        });
+        it('requires different "a" and "b" values', () => {
+            let equalParams = () => {
+                let bates = new Bates(2, 1, 1);
+                if(bates.isError().error)
+                    throw new Error(bates.isError().error);
+            };
+            equalParams.should.throw(Error);
+
+            let goodParams =  () => {
+                let bates = new Bates(2, 1, 2);
+                if(bates.isError().error)
+                    throw new Error(bates.isError().error);
+            };
+            goodParams.should.not.throw(Error);
+        });
+        it('requires correct "n" value' , () => {
+            let badNParam = () => {
+                let bates = new Bates(0, 1, 2);
+                if(bates.isError().error)
+                    throw new Error(bates.isError().error);
+            };
+            badNParam.should.throw(Error);
+
+            let floatParam = () => {
+                let bates = new Bates(2.5, 1, 2);
+                if(bates.isError().error)
+                    throw new Error(bates.isError().error);
+            };
+            floatParam.should.not.throw(Error);
+        });
+        it('should has methods: .random, .distribution, .refresh, .isError', () => {
+            let bates = new Bates(5, 1, 2);
+            expect(bates).to.have.property('random');
+            expect(bates).to.respondsTo('random');
+            expect(bates).to.have.property('distribution');
+            expect(bates).to.respondsTo('distribution');
+            expect(bates).to.have.property('refresh');
+            expect(bates).to.respondsTo('refresh');
+            expect(bates).to.have.property('isError');
+            expect(bates).to.respondsTo('isError');
+        });
+        it('should have "n", "a" and "b" values for initial n = 2 and a = 1, b = 2 equals to 3 and 4, 5 after .refresh(3, 4, 5) method',() => {
+            let bates = new Bates(2, 1, 2);
+            bates.n.should.equal(2);
+            bates.a.should.equal(1);
+            bates.b.should.equal(2);
+            bates.refresh(3, 4, 5);
+            bates.n.should.equal(3);
+            bates.a.should.equal(4);
+            bates.b.should.equal(5);
+        });
+        it('should return different values each time', () => {
+            let bates = new Bates(5, 1, 2),
+                value1;
+            for(let i = 0; i < 10; i += 1){
+                value1 = bates.random();
+                expect(bates.random()).to.be.a('number');
+                bates.random().should.not.equal(value1);
+            }
+        });
+        it('should generate an array with random values with length of 500', () => {
+            let bates = new Bates(5, 1, 2),
+                randomArray = bates.distribution(500),
+                countDiffs = 0,
+                last,
+                delta = 0.02;
+            // Check all values
+            randomArray.map(rand => {
+                if(last && Math.abs(rand - last) > delta){
+                    countDiffs += 1;
+                }
+                last = rand;
+            });
+            expect(randomArray).to.be.an('array');
+            expect(randomArray).to.have.lengthOf(500);
+            expect(countDiffs).to.be.at.least(200);
+        });
+        describe('With real generated data (n = 10, a = 0, b = 1)', () => {
+            let bates = new Bates(10, 0, 1),
+                distribution,
+                analyzer,
+                min = [],
+                max = [],
+                mean = [],
+                variance = [],
+                skewness = [],
+                kurtosis = [];
+
+            for(let i = 0; i < 30; i += 1) {
+                distribution = bates.distribution(300000);
+                analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                min.push(analyzer.min);
+                max.push(analyzer.max);
+                mean.push(analyzer.mean);
+                variance.push(analyzer.variance);
+                skewness.push(analyzer.skewness);
+                kurtosis.push(analyzer.kurtosis);
+            }
+
+            it('should has min value at most 0.2', () => {
+                expect(analyzer.min).to.be.a('number');
+                expect(meanValue(min)).to.be.at.most(0.2);
+            });
+            it('should has max value greater then 0.8', () => {
+                expect(analyzer.max).to.be.a('number');
+                expect(meanValue(max)).to.be.at.least(0.8);
+            });
+            it('should has correct mean value', () => {
+                expect(analyzer.mean).to.be.a('number');
+                expect(meanValue(mean)).to.be.closeTo(bates.mean, 0.03);
+            });
+            it('should has correct variance value', () => {
+                expect(analyzer.variance).to.be.a('number');
+                expect(meanValue(variance)).to.be.closeTo(bates.variance, 0.05);
+            });
+            it('should has correct skewness value', () => {
+                expect(analyzer.skewness).to.be.a('number');
+                expect(meanValue(skewness)).to.be.closeTo(bates.skewness, 0.05);
+            });
+            it('should has correct kurtosis value', () => {
+                expect(analyzer.kurtosis).to.be.a('number');
+                expect(meanValue(kurtosis) - 3).to.be.closeTo(bates.kurtosis, 0.05);
+            });
+            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+                let analyzer = Common.getInstance(distribution),
+                    sum = 0;
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.values).to.be.an('array');
+                expect(analyzer.pdf.values[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                for(let el of analyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has cdf array with 200 elements and last element close to 1', () => {
+                let analyzer = Common.getInstance(distribution);
+                expect(analyzer.cdf.probabilities).to.be.an('array');
+                expect(analyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.cdf.values).to.be.an('array');
+                expect(analyzer.cdf.values[0]).to.be.a('number');
+                expect(analyzer.cdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                expect(analyzer.cdf.probabilities[199]).to.be.closeTo(1, 0.01);
+            });
+            it('should has correct cdf curve', () => {
+                // Step: 0.5
+                let analyzer = Common.getInstance(distribution, {
+                        pdf: 1000
+                    }),
+                    values = [0, 0.1, 0.2, 0.5, 0.8, 0.9],
+                    probs = [0, 0, 0, 0.5, 1, 1],
+                    j = 0,
+                    sum = 0;
+                for(let i in values) {
+                    while(j < analyzer.pdf.probabilities.length) {
+                        sum += analyzer.pdf.probabilities[j];
+                        if(analyzer.pdf.values[j] >= values[i]) {
+                            expect(sum).to.be.closeTo(probs[i], 0.03);
+                            j += 1;
+                            break;
+                        }
+                        j += 1;
+                    }
+                }
+            });
+        });
+    });
 });
