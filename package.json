@@ -9,7 +9,8 @@
     "build:node": "gulp build:node --watch",
     "test": "node node_modules/npm-run-all/bin/run-s build:node mocha",
     "nyc-coverage": "node node_modules/nyc/bin/nyc --reporter=text mocha",
-    "test-coverage": "node node_modules/npm-run-all/bin/run-s build:node nyc-coverage"
+    "test-coverage": "node node_modules/npm-run-all/bin/run-s build:node nyc-coverage",
+    "publish": "npm run build:node && npm login && npm publish"
   },
   "repository": {
     "type": "git",
