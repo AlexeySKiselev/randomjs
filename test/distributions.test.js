@@ -24,13 +24,13 @@ describe('Random distributions', () => {
     describe('Uniform distribution',() => {
         let Uniform = require('../lib/methods/uniform'),
             Common = require('../lib/analyzer/common');
-        it('requires two numerical arguments', () => {
+        it('requires numerical arguments', () => {
             let zeroParams = () => {
                 let uniform = new Uniform();
                 if(uniform.isError().error)
                     throw new Error(uniform.isError().error);
             };
-            zeroParams.should.throw(Error);
+            zeroParams.should.not.throw(Error);
 
             let oneParam =  () => {
                 let uniform = new Uniform(1);
@@ -38,6 +38,13 @@ describe('Random distributions', () => {
                     throw new Error(uniform.isError().error);
             };
             oneParam.should.throw(Error);
+
+            let oneParam2 =  () => {
+                let uniform = new Uniform(-1);
+                if(uniform.isError().error)
+                    throw new Error(uniform.isError().error);
+            };
+            oneParam2.should.not.throw(Error);
 
             let badParams = () => {
                 let uniform = new Uniform('a', 'b');
