@@ -15,7 +15,7 @@ class Uniform {
     min: number;
     max: number;
 
-    constructor(min: number, max: number): void {
+    constructor(min: number = 0, max: number = 1): void {
         this.min = Math.min(min, max);
         this.max = Math.max(min, max);
     }
@@ -60,7 +60,7 @@ class Uniform {
      * @param newMin
      * @param newMax
      */
-    refresh(newMin: number, newMax: number): void {
+    refresh(newMin: number = 0, newMax: number = 1): void {
         this.min = Math.min(newMin, newMax);
         this.max = Math.max(newMin, newMax);
     }

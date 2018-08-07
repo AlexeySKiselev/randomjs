@@ -4739,4 +4739,185 @@ describe('Random distributions', () => {
             });
         });
     });
+
+    // Irwin-Hall distribution
+    describe('Irwin-Hall distribution', () => {
+        let IrwinHall = require('../lib/methods/irwinhall'),
+            Common = require('../lib/analyzer/common');
+        it('requires one numerical argument with n >= 1', () => {
+            let zeroParams = () => {
+                let irwinhall = new IrwinHall();
+                if(irwinhall.isError().error)
+                    throw new Error(irwinhall.isError().error);
+            };
+            zeroParams.should.throw(Error);
+
+            let oneParam =  () => {
+                let irwinhall = new IrwinHall(2);
+                if(irwinhall.isError().error)
+                    throw new Error(irwinhall.isError().error);
+            };
+            oneParam.should.not.throw(Error);
+        });
+        it('requires correct "n" value' , () => {
+            let badNParam = () => {
+                let irwinhall = new IrwinHall(0);
+                if(irwinhall.isError().error)
+                    throw new Error(irwinhall.isError().error);
+            };
+            badNParam.should.throw(Error);
+
+            let floatParam = () => {
+                let irwinhall = new IrwinHall(2.5);
+                if(irwinhall.isError().error)
+                    throw new Error(irwinhall.isError().error);
+            };
+            floatParam.should.not.throw(Error);
+        });
+        it('should has methods: .random, .distribution, .refresh, .isError', () => {
+            let irwinhall = new IrwinHall(5);
+            expect(irwinhall).to.have.property('random');
+            expect(irwinhall).to.respondsTo('random');
+            expect(irwinhall).to.have.property('distribution');
+            expect(irwinhall).to.respondsTo('distribution');
+            expect(irwinhall).to.have.property('refresh');
+            expect(irwinhall).to.respondsTo('refresh');
+            expect(irwinhall).to.have.property('isError');
+            expect(irwinhall).to.respondsTo('isError');
+        });
+        it('should have "n" value for initial n = 3 equals to 5 after .refresh(5) method',() => {
+            let irwinhall = new IrwinHall(3);
+            irwinhall.n.should.equal(3);
+            irwinhall.refresh(5);
+            irwinhall.n.should.equal(5);
+        });
+        it('should return different values each time', () => {
+            let irwinhall = new IrwinHall(5),
+                value1;
+            for(let i = 0; i < 10; i += 1){
+                value1 = irwinhall.random();
+                expect(irwinhall.random()).to.be.a('number');
+                irwinhall.random().should.not.equal(value1);
+            }
+        });
+        it('should generate an array with random values with length of 500', () => {
+            let irwinhall = new IrwinHall(5),
+                randomArray = irwinhall.distribution(500),
+                countDiffs = 0,
+                last,
+                delta = 0.02;
+            // Check all values
+            randomArray.map(rand => {
+                if(last && Math.abs(rand - last) > delta){
+                    countDiffs += 1;
+                }
+                last = rand;
+            });
+            expect(randomArray).to.be.an('array');
+            expect(randomArray).to.have.lengthOf(500);
+            expect(countDiffs).to.be.at.least(200);
+        });
+        describe('With real generated data (n = 8)', () => {
+            let irwinhall = new IrwinHall(8),
+                distribution,
+                analyzer,
+                min = [],
+                max = [],
+                mean = [],
+                median = [],
+                variance = [],
+                skewness = [],
+                kurtosis = [];
+
+            for(let i = 0; i < 30; i += 1) {
+                distribution = irwinhall.distribution(300000);
+                analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                min.push(analyzer.min);
+                max.push(analyzer.max);
+                mean.push(analyzer.mean);
+                median.push(analyzer.median);
+                variance.push(analyzer.variance);
+                skewness.push(analyzer.skewness);
+                kurtosis.push(analyzer.kurtosis);
+            }
+
+            it('should has min value at most 2', () => {
+                expect(analyzer.min).to.be.a('number');
+                expect(meanValue(min)).to.be.at.most(2);
+            });
+            it('should has max value greater then 7', () => {
+                expect(analyzer.max).to.be.a('number');
+                expect(meanValue(max)).to.be.at.least(7);
+            });
+            it('should has correct mean value', () => {
+                expect(analyzer.mean).to.be.a('number');
+                expect(meanValue(mean)).to.be.closeTo(irwinhall.mean, 0.03);
+            });
+            it('should has correct median value', () => {
+                expect(analyzer.mean).to.be.a('number');
+                expect(meanValue(mean)).to.be.closeTo(irwinhall.median, 0.03);
+            });
+            it('should has correct variance value', () => {
+                expect(analyzer.variance).to.be.a('number');
+                expect(meanValue(variance)).to.be.closeTo(irwinhall.variance, 0.05);
+            });
+            it('should has correct skewness value', () => {
+                expect(analyzer.skewness).to.be.a('number');
+                expect(meanValue(skewness)).to.be.closeTo(irwinhall.skewness, 0.05);
+            });
+            it('should has correct kurtosis value', () => {
+                expect(analyzer.kurtosis).to.be.a('number');
+                expect(meanValue(kurtosis) - 3).to.be.closeTo(irwinhall.kurtosis, 0.05);
+            });
+            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+                let analyzer = Common.getInstance(distribution),
+                    sum = 0;
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.values).to.be.an('array');
+                expect(analyzer.pdf.values[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                for(let el of analyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has cdf array with 200 elements and last element close to 1', () => {
+                let analyzer = Common.getInstance(distribution);
+                expect(analyzer.cdf.probabilities).to.be.an('array');
+                expect(analyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.cdf.values).to.be.an('array');
+                expect(analyzer.cdf.values[0]).to.be.a('number');
+                expect(analyzer.cdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                expect(analyzer.cdf.probabilities[199]).to.be.closeTo(1, 0.01);
+            });
+            it('should has correct cdf curve', () => {
+                // Step: 0.5
+                let analyzer = Common.getInstance(distribution, {
+                        pdf: 1000
+                    }),
+                    values = [2, 3, 3.5, 4, 4.5, 5, 6],
+                    probs = [0.006150794, 0.112624, 0.2735395, 0.5, 0.7264605, 0.887376, 0.9938492],
+                    j = 0,
+                    sum = 0;
+                for(let i in values) {
+                    while(j < analyzer.pdf.probabilities.length) {
+                        sum += analyzer.pdf.probabilities[j];
+                        if(analyzer.pdf.values[j] >= values[i]) {
+                            expect(sum).to.be.closeTo(probs[i], 0.03);
+                            j += 1;
+                            break;
+                        }
+                        j += 1;
+                    }
+                }
+            });
+        });
+    });
 });
