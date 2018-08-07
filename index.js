@@ -64,7 +64,18 @@ class RandomJS {
     }
 }
 
-module.exports = new RandomJS();
+// Add methods extractor
+const randomjs = new RandomJS();
+const methods = {
+    analyze: randomjs.analyze,
+    utils: randomjs.utils
+};
+fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
+    let rand_method = file.slice(0,-3);
+    methods[rand_method] = Object.getOwnPropertyDescriptor(randomjs, rand_method).get();
+});
+
+module.exports = methods;
 
 // TODO: Create a check-values external function
 // TODO: Generators
@@ -75,6 +86,5 @@ module.exports = new RandomJS();
 // TODO: Pseudorandom generator
 // TODO: add Proxy to random generators
 // TODO: add F-distribution
-// TODO: add Irwin–Hall distribution
 // TODO: add zipf distribution
 // TODO: add utils
