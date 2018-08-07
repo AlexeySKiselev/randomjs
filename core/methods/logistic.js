@@ -75,7 +75,7 @@ class Logistic {
     toString(): string {
         let info = [
             'Logistic Distribution',
-            `Usage: randomjs.logistic(${this.location}, ${this.scale}).random()`
+            `Usage: unirand.logistic(${this.location}, ${this.scale}).random()`
         ];
         return info.join('\n');
     }

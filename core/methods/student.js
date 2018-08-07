@@ -147,7 +147,7 @@ class Student {
     toString(): string {
         let info = [
             'Student\'s t-distribution',
-            `Usage: randomjs.student(${this.degrees}).random()`
+            `Usage: unirand.student(${this.degrees}).random()`
         ];
         return info.join('\n');
     }

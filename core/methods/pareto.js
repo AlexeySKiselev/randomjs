@@ -74,7 +74,7 @@ class Pareto {
     toString(): string {
         let info = [
             'Pareto Distribution',
-            `Usage: randomjs.pareto(${this.xm}, ${this.alpha}).random()`
+            `Usage: unirand.pareto(${this.xm}, ${this.alpha}).random()`
         ];
         return info.join('\n');
     }

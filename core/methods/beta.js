@@ -109,7 +109,7 @@ class Beta {
     toString(): string {
         let info = [
             'Beta Distribution',
-            `Usage: randomjs.beta(${this.alpha}, ${this.beta}).random()`
+            `Usage: unirand.beta(${this.alpha}, ${this.beta}).random()`
         ];
         return info.join('\n');
     }

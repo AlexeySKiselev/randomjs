@@ -74,7 +74,7 @@ class Chi {
     toString(): string {
         let info = [
             'Chi Distribution',
-            `Usage: randomjs.chi(${this.degrees}).random()`
+            `Usage: unirand.chi(${this.degrees}).random()`
         ];
         return info.join('\n');
     }

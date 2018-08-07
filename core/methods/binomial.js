@@ -85,7 +85,7 @@ class Binomial {
     toString(): string {
         let info = [
             'Binomial Distribution',
-            `Usage: randomjs.binomial(${this.trials}, ${this.successProb}).random()`
+            `Usage: unirand.binomial(${this.trials}, ${this.successProb}).random()`
         ];
         return info.join('\n');
     }

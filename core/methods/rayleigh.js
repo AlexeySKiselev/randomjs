@@ -73,7 +73,7 @@ class Rayleigh {
     toString(): string {
         let info = [
             'Rayleigh Distribution',
-            `Usage: randomjs.rayleigh(${this.sigma}).random()`
+            `Usage: unirand.rayleigh(${this.sigma}).random()`
         ];
         return info.join('\n');
     }

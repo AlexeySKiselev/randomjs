@@ -74,7 +74,7 @@ class Geometric {
     toString(): string {
         let info = [
             'Geometric Distribution',
-            `Usage: randomjs.geometric(${this.successProb}).random()`
+            `Usage: unirand.geometric(${this.successProb}).random()`
         ];
         return info.join('\n');
     }

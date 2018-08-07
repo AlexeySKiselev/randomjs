@@ -88,7 +88,7 @@ class Gamma {
     toString(): string {
         let info = [
             'Gamma Distribution',
-            `Usage: randomjs.gamma(${this.alpha}, ${this.beta}).random()`
+            `Usage: unirand.gamma(${this.alpha}, ${this.beta}).random()`
         ];
         return info.join('\n');
     }

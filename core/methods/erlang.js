@@ -84,7 +84,7 @@ class Erlang {
     toString(): string {
         let info = [
             'Erlang Distribution',
-            `Usage: randomjs.erlang(${this.shape}, ${this.scale}).random()`
+            `Usage: unirand.erlang(${this.shape}, ${this.scale}).random()`
         ];
         return info.join('\n');
     }

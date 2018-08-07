@@ -69,7 +69,7 @@ class Exponential {
     toString(): string {
         let info = [
             'Exponential Distribution',
-            `Usage: randomjs.exponential(${this.lambda}).random()`
+            `Usage: unirand.exponential(${this.lambda}).random()`
         ];
         return info.join('\n');
     }

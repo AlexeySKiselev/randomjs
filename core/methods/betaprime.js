@@ -89,7 +89,7 @@ class BetaPrime {
     toString(): string {
         let info = [
             'Beta Prime Distribution',
-            `Usage: randomjs.betaprime(${this.alpha}, ${this.beta}).random()`
+            `Usage: unirand.betaprime(${this.alpha}, ${this.beta}).random()`
         ];
         return info.join('\n');
     }

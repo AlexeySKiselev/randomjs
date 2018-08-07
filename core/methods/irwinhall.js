@@ -66,7 +66,7 @@ class IrwinHall {
     toString(): string {
         let info = [
             'Irwin-Hall Distribution',
-            `Usage: randomjs.irwinhall(${this.n}).random()`
+            `Usage: unirand.irwinhall(${this.n}).random()`
         ];
         return info.join('\n');
     }

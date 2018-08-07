@@ -77,7 +77,7 @@ class Poisson {
     toString(): string {
         let info = [
             'Poisson Distribution',
-            `Usage: randomjs.poisson(${this.lambda}).random()`
+            `Usage: unirand.poisson(${this.lambda}).random()`
         ];
         return info.join('\n');
     }

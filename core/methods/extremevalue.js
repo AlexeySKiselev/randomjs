@@ -74,7 +74,7 @@ class ExtremeValue {
     toString(): string {
         let info = [
             'Extreme Value (Gumbel type) Distribution',
-            `Usage: randomjs.extremevalue(${this.mu}, ${this.sigma}).random()`
+            `Usage: unirand.extremevalue(${this.mu}, ${this.sigma}).random()`
         ];
         return info.join('\n');
     }

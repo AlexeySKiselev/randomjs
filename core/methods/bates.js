@@ -90,7 +90,7 @@ class Bates {
     toString(): string {
         let info = [
             'Bates Distribution',
-            `Usage: randomjs.bates(${this.n}, ${this.a}, ${this.b}).random()`
+            `Usage: unirand.bates(${this.n}, ${this.a}, ${this.b}).random()`
         ];
         return info.join('\n');
     }

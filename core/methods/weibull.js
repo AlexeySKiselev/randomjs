@@ -81,7 +81,7 @@ class Weibull {
     toString(): string {
         let info = [
             'Weibull Distribution',
-            `Usage: randomjs.weibull(${this.k}, ${this.lambda}).random()`
+            `Usage: unirand.weibull(${this.k}, ${this.lambda}).random()`
         ];
         return info.join('\n');
     }

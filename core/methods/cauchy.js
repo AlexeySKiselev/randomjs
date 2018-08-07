@@ -82,7 +82,7 @@ class Cauchy {
     toString(): string {
         let info = [
             'Cauchy Distribution',
-            `Usage: randomjs.cauchy(${this.location}, ${this.scale}).random()`
+            `Usage: unirand.cauchy(${this.location}, ${this.scale}).random()`
         ];
         return info.join('\n');
     }

@@ -73,7 +73,7 @@ class Uniform {
     toString() {
         let info = [
             'Continuous Uniform Distribution',
-            `Usage: randomjs.uniform(${this.min}, ${this.max}).random()`
+            `Usage: unirand.uniform(${this.min}, ${this.max}).random()`
         ];
         return info.join('\n');
     }

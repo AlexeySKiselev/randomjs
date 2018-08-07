@@ -88,7 +88,7 @@ class Triangular {
     toString(): string {
         let info = [
             'Triangular Distribution',
-            `Usage: randomjs.triangular(${this.a}, ${this.b}, ${this.c}).random()`
+            `Usage: unirand.triangular(${this.a}, ${this.b}, ${this.c}).random()`
         ];
         return info.join('\n');
     }

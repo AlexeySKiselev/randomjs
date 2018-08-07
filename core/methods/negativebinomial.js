@@ -88,7 +88,7 @@ class NegativeBinomial {
     toString(): string {
         let info = [
             'Negative Binomial Distribution',
-            `Usage: randomjs.negativebinomial(${this.numberSuccess}, ${this.successProb}).random()`
+            `Usage: unirand.negativebinomial(${this.numberSuccess}, ${this.successProb}).random()`
         ];
         return info.join('\n');
     }

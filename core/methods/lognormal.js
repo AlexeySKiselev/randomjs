@@ -78,7 +78,7 @@ class Lognormal {
     toString(): string {
         let info = [
             'Lognormal Distribution',
-            `Usage: randomjs.lognormal(${this.mu}, ${this.sigma}).random()`
+            `Usage: unirand.lognormal(${this.mu}, ${this.sigma}).random()`
         ];
         return info.join('\n');
     }

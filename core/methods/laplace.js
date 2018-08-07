@@ -78,7 +78,7 @@ class Laplace {
     toString(): string {
         let info = [
             'Laplace Distribution',
-            `Usage: randomjs.laplace(${this.location}, ${this.scale}).random()`
+            `Usage: unirand.laplace(${this.location}, ${this.scale}).random()`
         ];
         return info.join('\n');
     }

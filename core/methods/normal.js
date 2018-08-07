@@ -118,7 +118,7 @@ class Normal {
     toString(): string {
         let info = [
             'Normal (Gaussian) Distribution',
-            `Usage: randomjs.normal(${this.mu}, ${this.sigma}).random()`
+            `Usage: unirand.normal(${this.mu}, ${this.sigma}).random()`
         ];
         return info.join('\n');
     }

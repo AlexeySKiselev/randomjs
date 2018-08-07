@@ -75,7 +75,7 @@ class Bernoulli {
     toString(): string {
         let info = [
             'Bernoulli Distribution',
-            `Usage: randomjs.bernoulli(${this.p}).random()`
+            `Usage: unirand.bernoulli(${this.p}).random()`
         ];
         return info.join('\n');
     }
