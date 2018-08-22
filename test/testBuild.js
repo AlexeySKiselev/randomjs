@@ -4,7 +4,9 @@
  */
 
 let randomjs = require('../lib'),
-    strand = randomjs.sample('abcdefghijklmnop', 3);
+    strand = randomjs.sample(() => {
+        return 1;
+    }, 5);
 
 console.log(strand);
 
