@@ -16,19 +16,29 @@ class Sample extends ArrayManipulation implements ISample {
         super();
     }
 
-    getSample(input: any, k: number): RandomArrayStringObject<number | string> {
+    getSample(input: any, k: number, shuffle: boolean = true): RandomArrayStringObject<number | string> {
+        let result: RandomArrayStringObject<number | string>;
         this._validateInput(input);
 
         if(k >= input.length) {
-            return 'shuffle';
+            if(shuffle) {
+                return 'shuffle';
+            }
+            return input;
         }
+
         // For performance purposes I am going to separate sampling methods for different types
         if(typeof input === 'string') {
-            return this._getSampleForString(input, k);
+            result = this._getSampleForString(input, k);
         } else if(typeof input === 'object'){
-            return this._getSampleForObject(input, k);
+            result = this._getSampleForObject(input, k);
+        } else {
+            result = this._getSampleForArray(input, k);
         }
-        return this._getSampleForArray(input, k);
+        if(shuffle) {
+            return 'shuffled result';
+        }
+        return result;
     }
 
     /**

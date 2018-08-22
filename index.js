@@ -65,8 +65,8 @@ class RandomJS {
          */
         Object.defineProperty(this, 'sample', ({
             __proto__: null,
-            value: (input: RandomArrayString<number | string>, k: number): any => {
-                return this._sample.getSample(input, k);
+            value: (input: RandomArrayString<number | string>, k: number, shuffle: boolean = true): any => {
+                return this._sample.getSample(input, k, shuffle);
             }
         }: Object));
     }

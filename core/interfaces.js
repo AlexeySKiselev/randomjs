@@ -136,7 +136,7 @@ export interface IRandomFactory<R, D> {
  * Interface for sample method
  */
 export interface ISample {
-    getSample(input: any, k: number): RandomArrayStringObject<number | string>;
+    getSample(input: any, k: number, shuffle: boolean): RandomArrayStringObject<number | string>;
 }
 
 /**
