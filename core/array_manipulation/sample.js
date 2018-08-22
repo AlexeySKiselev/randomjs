@@ -30,10 +30,10 @@ class Sample extends ArrayManipulation implements ISample {
         // For performance purposes I am going to separate sampling methods for different types
         if(typeof input === 'string') {
             result = this._getSampleForString(input, k);
-        } else if(typeof input === 'object'){
-            result = this._getSampleForObject(input, k);
-        } else {
+        } else if(Array.isArray(input)){
             result = this._getSampleForArray(input, k);
+        } else {
+            result = this._getSampleForObject(input, k);
         }
         if(shuffle) {
             return 'shuffled result';
