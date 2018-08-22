@@ -4,5 +4,7 @@
  */
 
 let randomjs = require('../lib'),
-    strand = randomjs.student(2);
+    strand = randomjs.sample('abcdefghijklmnop', 3);
+
+console.log(strand);
 

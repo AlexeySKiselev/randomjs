@@ -6,15 +6,21 @@
 import fs from 'fs';
 import DistributionFactory from './core/distributionFactory';
 import AnalyzerFactory from './core/analyzerFactory';
-import type { RandomArray } from './core/types';
+import Sample from './core/array_manipulation/sample';
+
+import type { RandomArray, RandomArrayString } from './core/types';
+import type { ISample } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
     utils: any;
+    sample: any;
+    _sample: ISample;
 
     constructor(): void {
         this.analyze = null;
         this.utils = null;
+        this._sample = new Sample();
 
         fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
             /**
@@ -53,6 +59,16 @@ class RandomJS {
             __proto__: null,
             value: require(__dirname + '/core/utils/utils')
         }: Object));
+
+        /**
+         * Random sample (k random elements from array with N elements 0 < k <= N)
+         */
+        Object.defineProperty(this, 'sample', ({
+            __proto__: null,
+            value: (input: RandomArrayString<number | string>, k: number): any => {
+                return this._sample.getSample(input, k);
+            }
+        }: Object));
     }
 
     help(): void {
@@ -68,7 +84,8 @@ class RandomJS {
 const randomjs = new RandomJS();
 const methods = {
     analyze: randomjs.analyze,
-    utils: randomjs.utils
+    utils: randomjs.utils,
+    sample: randomjs.sample
 };
 fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
     let rand_method = file.slice(0,-3);

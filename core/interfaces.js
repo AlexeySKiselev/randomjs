@@ -4,7 +4,10 @@
  * Created by Alexey S. Kiselev
  */
 
-import type { RandomArray, AnalyzerPublicMethods, AnalyzerPublicProperties, MethodError } from './types';
+import type {
+    RandomArray, RandomArrayString, AnalyzerPublicMethods, AnalyzerPublicProperties, MethodError,
+    RandomArrayStringObject
+} from './types';
 
 /**
  * Analyzer methods interface
@@ -127,4 +130,18 @@ export interface IRandomFactory<R, D> {
      * @returns string
      */
     toString(): string;
+}
+
+/**
+ * Interface for sample method
+ */
+export interface ISample {
+    getSample(input: any, k: number): RandomArrayStringObject<number | string>;
+}
+
+/**
+ * Interface for shuffle method
+ */
+export interface IShuffle {
+    getPermutation(): RandomArrayString<number | string>;
 }
