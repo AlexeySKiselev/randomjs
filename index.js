@@ -7,20 +7,24 @@ import fs from 'fs';
 import DistributionFactory from './core/distributionFactory';
 import AnalyzerFactory from './core/analyzerFactory';
 import Sample from './core/array_manipulation/sample';
+import Shuffle from './core/array_manipulation/shuffle';
 
 import type { RandomArray, RandomArrayString } from './core/types';
-import type { ISample } from './core/interfaces';
+import type { ISample, IShuffle } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
     utils: any;
     sample: any;
     _sample: ISample;
+    shuffle: any;
+    _shuffle: IShuffle;
 
     constructor(): void {
         this.analyze = null;
         this.utils = null;
         this._sample = new Sample();
+        this._shuffle = new Shuffle();
 
         fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
             /**
@@ -65,8 +69,18 @@ class RandomJS {
          */
         Object.defineProperty(this, 'sample', ({
             __proto__: null,
-            value: (input: RandomArrayString<number | string>, k: number, shuffle: boolean = true): any => {
+            value: (input: RandomArrayString<number | string>, k: number, shuffle: boolean = false): any => {
                 return this._sample.getSample(input, k, shuffle);
+            }
+        }: Object));
+
+        /**
+         * Simple shuffle method
+         */
+        Object.defineProperty(this, 'shuffle', ({
+            __proto__: null,
+            value: (input: RandomArrayString<number | string>): any => {
+                return this._shuffle.getPermutation(input);
             }
         }: Object));
     }
@@ -85,7 +99,8 @@ const randomjs = new RandomJS();
 const methods = {
     analyze: randomjs.analyze,
     utils: randomjs.utils,
-    sample: randomjs.sample
+    sample: randomjs.sample,
+    shuffle: randomjs.shuffle
 };
 fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
     let rand_method = file.slice(0,-3);
