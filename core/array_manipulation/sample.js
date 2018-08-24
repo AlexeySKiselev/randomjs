@@ -24,6 +24,10 @@ class Sample extends ArrayManipulation implements ISample {
         let result: RandomArrayStringObject<number | string>;
         this._validateInput(input);
 
+        if(typeof k !== 'number' || k <= 0) {
+            throw new Error('Sample: "k" must be positive integer');
+        }
+
         if(k >= input.length) {
             if(shuffle && !(typeof input === 'object' && !Array.isArray(input))) {
                 return this._shuffle.getPermutation(input);
