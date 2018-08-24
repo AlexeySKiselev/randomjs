@@ -66,3 +66,24 @@ analyzer.entropy.then((res) => {
 console.log(unirand.utils.gamma(2));
 // returns value for gamma function with argument 2
 </pre>
+
+* Generate **random sample** from array, string or object. This method will generate "k" random elements from array/string with "n" elements.
+<br /> <pre>
+let sample = unirand.sample;
+console.log(sample(<array|string|object>, 10));
+</pre>
+<br /> Method will return random sample with same type as input. In case when "k" greater then input length method will return input.
+This method also allow shuffle output:
+<br /><pre>
+sample([1, 2, 3, 4, 5, 6, 7, 8, 9], 3) // will output [2, 5, 8], for example, or [1, 4, 9]
+sample([1, 2, 3, 4, 5, 6, 7, 8, 9], 3, true) // will output [6, 9, 1] or [3, 2, 7]
+</pre>
+
+Sample method is **3 times faster** for arrays and **7 times faster** for string compared to simple shuffled and sliced array|string.
+
+* **Shuffle** array or string
+<br /><pre>
+let shuffle = unirand.shuffle;
+console.log(shuffle(<array|string>)); // will output random permutation of input
+</pre>
+Method will return random permutation with same type as input.
