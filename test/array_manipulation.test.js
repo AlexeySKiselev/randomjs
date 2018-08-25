@@ -189,9 +189,12 @@ describe('Array manipulation methods', () => {
         it('should generate different results each time', () => {
             let shuffle = new Shuffle(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-                samples = {};
+                samples = {},
+                temp;
             for(let i = 0; i < 100000; i += 1) {
-                samples[shuffle.getPermutation(input_str)] = 1;
+                input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                temp = shuffle.getPermutation(input_str);
+                samples[temp] = 1;
             }
             expect(Object.keys(samples).length).to.be.at.least(99990);
         });
@@ -210,6 +213,7 @@ describe('Array manipulation methods', () => {
             }
             // generate samples
             for(let i = 0; i < 10000000; i += 1) {
+                input_str = 'abcdefghijklmnopqrstuvwxyz';
                 temp = shuffle.getPermutation(input_str);
                 for(let j = 0; j < temp.length; j += 1) {
                     letters[temp[j]][j] += 1;
@@ -241,6 +245,7 @@ describe('Array manipulation methods', () => {
 
             for(let i = 0; i < 100000; i += 1) {
                 letters = {};
+                input_str = 'abcdefghijklmnopqrstuvwxyz';
                 temp = shuffle.getPermutation(input_str);
                 for(let j = 0; j < temp.length; j += 1) {
                     if(letters[temp[j]]) {
@@ -251,6 +256,146 @@ describe('Array manipulation methods', () => {
                 }
                 expect(temp.length).to.be.equal(input_str.length);
                 expect(checkLetters(letters)).to.be.equal(true);
+            }
+            done();
+        });
+    });
+    describe('Derange', () => {
+        let Shuffle = require('../lib/array_manipulation/shuffle').default;
+        it('requires at least one correct argument', () => {
+            let zeroParams = () => {
+                let shuffle = new Shuffle();
+                return shuffle.getDerangement();
+            };
+            zeroParams.should.throw(Error);
+
+            let oneParam =  () => {
+                let shuffle = new Shuffle();
+                return shuffle.getDerangement([1, 2, 3, 4, 5]);
+            };
+            oneParam.should.not.throw(Error);
+
+            let badParam1 =  () => {
+                let shuffle = new Shuffle();
+                return shuffle.getDerangement(1);
+            };
+            badParam1.should.throw(TypeError);
+
+            let badParam2 =  () => {
+                let shuffle = new Shuffle();
+                return shuffle.getDerangement({1: 2, 3: 4, 5: 6});
+            };
+            badParam2.should.throw(TypeError);
+        });
+        it('returns the same type as input with the same length', () => {
+            let shuffle = new Shuffle(),
+                input_array = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                input_string = 'abcdefghijklmnopqrst';
+            expect(shuffle.getDerangement(input_array)).to.be.a('array');
+            shuffle.getDerangement(input_array).length.should.equal(input_array.length);
+            expect(shuffle.getDerangement(input_string)).to.be.a('string');
+            shuffle.getDerangement(input_string).length.should.equal(input_string.length);
+        });
+        it('should generate different results each time', () => {
+            let shuffle = new Shuffle(),
+                input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+                samples = {},
+                temp;
+            for(let i = 0; i < 100000; i += 1) {
+                input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                temp = shuffle.getDerangement(input_str);
+                samples[temp] = 1;
+            }
+            expect(Object.keys(samples).length).to.be.at.least(99990);
+        });
+        it('should place each element on each position with the same probability', function(done) {
+            this.timeout(480000);
+            let shuffle = new Shuffle(),
+                input_str = 'abcdefghijklmnopqrstuvwxyz',
+                letters = {},
+                temp;
+            // generate letters dict
+            for(let letter of input_str) {
+                letters[letter] = {};
+                for(let i = 0; i < input_str.length; i += 1) {
+                    letters[letter][i] = 0;
+                }
+            }
+            // generate samples
+            for(let i = 0; i < 10000000; i += 1) {
+                input_str = 'abcdefghijklmnopqrstuvwxyz';
+                temp = shuffle.getDerangement(input_str);
+                for(let j = 0; j < temp.length; j += 1) {
+                    letters[temp[j]][j] += 1;
+                }
+            }
+            let valueToCompare = 10000000 / 26;
+            for(let key of Object.keys(letters)) {
+                for(let j = 0; j < letters[key].length; j += 1) {
+                    expect(letters[key][j]).to.be.closeTo(valueToCompare, 0.015 * valueToCompare);
+                }
+            }
+            done();
+        });
+        it('should select each element only once', function (done) {
+            this.timeout(480000);
+            let shuffle = new Shuffle(),
+                input_str = 'abcdefghijklmnopqrstuvwxyz',
+                letters = {},
+                checkLetters = (input) => {
+                    let keys = Object.keys(input);
+                    for(let i = 0; i < keys.length; i += 1) {
+                        if(input[keys[i]] > 1) {
+                            return false;
+                        }
+                    }
+                    return true;
+                },
+                temp;
+
+            for(let i = 0; i < 100000; i += 1) {
+                letters = {};
+                input_str = 'abcdefghijklmnopqrstuvwxyz';
+                temp = shuffle.getDerangement(input_str);
+                for(let j = 0; j < temp.length; j += 1) {
+                    if(letters[temp[j]]) {
+                        letters[temp[j]] += 1;
+                    } else {
+                        letters[temp[j]] = 1;
+                    }
+                }
+                expect(temp.length).to.be.equal(input_str.length);
+                expect(checkLetters(letters)).to.be.equal(true);
+            }
+            done();
+        });
+        it('should not has fixed points', function (done) {
+            this.timeout(480000);
+            let shuffle = new Shuffle(),
+                input_arr = [],
+                checkDerangement = (input) => {
+                    for(let i = 0; i < input.length; i += 1) {
+                        if(input[i] === i + 1) {
+                            return false;
+                        }
+                    }
+                    return true;
+                },
+                temp;
+
+            // Initialize input array
+            for(let i = 0; i < 12; i += 1) {
+                input_arr[i] = i + 1;
+            }
+
+            for(let i = 0; i < 1000000; i += 1) {
+                input_arr = [];
+                for(let i = 0; i < 12; i += 1) {
+                    input_arr[i] = i + 1;
+                }
+                temp = shuffle.getDerangement(input_arr);
+                expect(temp.length).to.be.equal(12);
+                expect(checkDerangement(temp)).to.be.equal(true);
             }
             done();
         });

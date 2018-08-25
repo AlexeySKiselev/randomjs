@@ -21,6 +21,7 @@ class RandomJS {
     _sample: ISample;
     shuffle: any;
     _shuffle: IShuffle;
+    derange: any;
     chance: boolean;
 
     constructor(): void {
@@ -88,6 +89,16 @@ class RandomJS {
         }: Object));
 
         /**
+         * Derange method
+         */
+        Object.defineProperty(this, 'derange', ({
+            __proto__: null,
+            value: (input: RandomArrayString<number | string>): any => {
+                return this._shuffle.getDerangement(input);
+            }
+        }: Object));
+
+        /**
          * Chance - returns true with given probability
          */
         Object.defineProperty(this, 'chance', ({
@@ -118,6 +129,7 @@ const methods = {
     utils: randomjs.utils,
     sample: randomjs.sample,
     shuffle: randomjs.shuffle,
+    derange: randomjs.derange,
     chance: randomjs.chance
 };
 fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {

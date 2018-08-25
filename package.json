@@ -1,6 +1,6 @@
 {
   "name": "unirand",
-  "version": "2.2.1",
+  "version": "2.2.3",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
@@ -30,6 +30,7 @@
     "gamma",
     "beta",
     "shuffle",
+    "derangement",
     "sampling",
     "random number generator",
     "analyzis"

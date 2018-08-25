@@ -144,4 +144,5 @@ export interface ISample {
  */
 export interface IShuffle {
     getPermutation(input: any): RandomArrayString<number | string>;
+    getDerangement(input: any): RandomArrayString<number | string>;
 }
