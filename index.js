@@ -9,6 +9,8 @@ import AnalyzerFactory from './core/analyzerFactory';
 import Sample from './core/array_manipulation/sample';
 import Shuffle from './core/array_manipulation/shuffle';
 
+const Bernoulli = require('./core/methods/bernoulli');
+
 import type { RandomArray, RandomArrayString } from './core/types';
 import type { ISample, IShuffle } from './core/interfaces';
 
@@ -19,6 +21,7 @@ class RandomJS {
     _sample: ISample;
     shuffle: any;
     _shuffle: IShuffle;
+    chance: boolean;
 
     constructor(): void {
         this.analyze = null;
@@ -83,6 +86,20 @@ class RandomJS {
                 return this._shuffle.getPermutation(input);
             }
         }: Object));
+
+        /**
+         * Chance - returns true with given probability
+         */
+        Object.defineProperty(this, 'chance', ({
+            __proto__: null,
+            value: (trueProb: number): boolean => {
+                let _chance = new Bernoulli(trueProb);
+                if(_chance.isError().error) {
+                    throw new Error(_chance.isError().error);
+                }
+                return !!_chance.random();
+            }
+        }: Object));
     }
 
     help(): void {
@@ -100,7 +117,8 @@ const methods = {
     analyze: randomjs.analyze,
     utils: randomjs.utils,
     sample: randomjs.sample,
-    shuffle: randomjs.shuffle
+    shuffle: randomjs.shuffle,
+    chance: randomjs.chance
 };
 fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
     let rand_method = file.slice(0,-3);
