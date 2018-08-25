@@ -28,7 +28,11 @@
     "gaussian",
     "bernoulli",
     "gamma",
-    "beta"
+    "beta",
+    "shuffle",
+    "sampling",
+    "random number generator",
+    "analyzis"
   ],
   "author": "Alexey S. Kiselev <alexeys.kiselev@yahoo.com>",
   "license": "ISC",
