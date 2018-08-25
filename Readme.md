@@ -87,7 +87,7 @@ sample([1, 2, 3, 4, 5, 6, 7, 8, 9], 3, true) // will output [6, 9, 1] or [3, 2, 
 Sample method is **3 times faster** for arrays and **7 times faster** for string compared to simple shuffled and sliced array|string.
 
 ### Shuffle 
-**Shuffle** array or string
+**Shuffle** array or string (O(n) time complexity)
 <br /><pre>
 let shuffle = unirand.shuffle;
 console.log(shuffle(<array|string>)); // will output random permutation of input
@@ -95,7 +95,7 @@ console.log(shuffle(<array|string>)); // will output random permutation of input
 Method will return random permutation with same type as input.
 
 ### Derange
-**Derange** method returns random derangement of array or string.<br />
+**Derange** method returns random derangement of array or string (O(n) time complexity) <br />
 Derangement is a permutation of the elements of a set, such that no element appears in its original position. In other words, derangement is a permutation that has no fixed points.
 <br /> <pre>
 let derange = unirand.derange;
