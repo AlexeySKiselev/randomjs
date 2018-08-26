@@ -50,7 +50,38 @@ class Sample extends ArrayManipulation implements ISample {
     }
 
     /**
+     * Improved sampling with O(n + k) in memory and O(k) in time
+     * It makes sense only for shuffled results
+     * By statistics - it is faster then _getSampleForArray method only for k <= n / 2
+     * @param inputArr: Array
+     * @param k: number
+     * @returns {RandomArrayNumberString<number|string>}
+     * @private
+     */
+    _getSampleImprovedForArray(
+        inputArr: RandomArrayNumberString<number | string>,
+        k: number): RandomArrayNumberString<number | string>  {
+        let input = inputArr.slice(),
+            n: number = input.length,
+            ni: number = n,
+            r: number = -1,
+            result: any = [],
+            m: number = 0; // elements in result
+        while(m < k) {
+            r = Math.floor(Math.random() * ni);
+            result[m] = [r, input[r]];
+            m += 1;
+            // swap chosen element and last element
+            ni -= 1;
+            // $FlowFixMe - Destructuring swap is faster
+            [input[r], input[ni]] = [input[ni], input[r]];
+        }
+        return result;
+    }
+
+    /**
      * Private getSample method for arrays
+     * O(k) in memory and O(n) in time
      * @param input: RandomArrayNumberString<number | string>
      * @param k: number
      * @private
@@ -76,6 +107,7 @@ class Sample extends ArrayManipulation implements ISample {
 
     /**
      * Private getSample method for arrays
+     * O(k) in memory, O(n) in time
      * @param input: string
      * @param k: number
      * @private
@@ -101,6 +133,7 @@ class Sample extends ArrayManipulation implements ISample {
 
     /**
      * Private getSample method for objects
+     * O(k) in memory, O(n) in time
      * @param input: RandomArrayNumberString<number | string>
      * @param k: number
      * @private
