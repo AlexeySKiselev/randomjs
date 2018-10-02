@@ -62,7 +62,7 @@ describe('Array manipulation methods', () => {
             expect(sample.getSample(input_object, 2)).to.be.a('object');
             Object.keys(sample.getSample(input_string, 2)).length.should.equal(2);
         });
-        it('should generate different results each time', () => {
+        it('should generate different results each time for k/n < 0.2', () => {
             let sample = new Sample(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 samples = {};
@@ -71,7 +71,7 @@ describe('Array manipulation methods', () => {
             }
             expect(Object.keys(samples).length).to.be.at.least(995);
         });
-        it('should select each element with the same probability', function(done) {
+        it('should select each element with the same probability for k/n < 0.2', function(done) {
             this.timeout(480000);
             let sample = new Sample(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
@@ -89,6 +89,38 @@ describe('Array manipulation methods', () => {
                 }
             }
             let valueToCompare = 5 * 10000000 / 62;
+            for(let key of Object.keys(letters)) {
+                expect(letters[key]).to.be.closeTo(valueToCompare, 0.015 * valueToCompare);
+            }
+            done();
+        });
+        it('should generate different results each time for k/n > 0.2', () => {
+            let sample = new Sample(),
+                input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+                samples = {};
+            for(let i = 0; i < 1000; i += 1) {
+                samples[sample.getSample(input_str, 16)] = 1;
+            }
+            expect(Object.keys(samples).length).to.be.at.least(995);
+        });
+        it('should select each element with the same probability for k/n > 0.2', function(done) {
+            this.timeout(480000);
+            let sample = new Sample(),
+                input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+                letters = {},
+                temp;
+            // generate letters dict
+            for(let letter of input_str) {
+                letters[letter] = 0;
+            }
+            // generate samples
+            for(let i = 0; i < 10000000; i += 1) {
+                temp = sample.getSample(input_str, 16);
+                for(let ch of temp) {
+                    letters[ch] += 1;
+                }
+            }
+            let valueToCompare = 16 * 10000000 / 62;
             for(let key of Object.keys(letters)) {
                 expect(letters[key]).to.be.closeTo(valueToCompare, 0.015 * valueToCompare);
             }
@@ -148,6 +180,46 @@ describe('Array manipulation methods', () => {
             temp = sample.getSample(input, input.length + 5);
             expect(input.length).to.be.equal(temp.length);
             expect(checkInput(input, temp)).to.be.equal(true);
+        });
+        it('should not mutate the original input', function(done) {
+            this.timeout(480000);
+            let sample = new Sample(),
+                input_arr = [],
+                temp,
+                correctOrders = 0;
+
+            // function for checking correct order
+            let checkOrder = (input) => {
+                for(let i = 1; i <= input.length; i += 1) {
+                    if(input[i - 1] !== i) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+            // populate input array
+            for(let i = 1; i <= 20000; i += 1) {
+                input_arr[i - 1] = i;
+            }
+
+            for(let j = 0; j < 20000; j += 1) {
+                temp = sample.getSample(input_arr, 1000);
+                if(checkOrder(input_arr)) {
+                    correctOrders += 1;
+                }
+            }
+            expect(correctOrders).to.be.equal(20000);
+
+            correctOrders = 0;
+            for(let j = 0; j < 20000; j += 1) {
+                temp = sample.getSample(input_arr, 5000);
+                if(checkOrder(input_arr)) {
+                    correctOrders += 1;
+                }
+            }
+            expect(correctOrders).to.be.equal(20000);
+            done();
         });
     });
     describe('Shuffle', () => {

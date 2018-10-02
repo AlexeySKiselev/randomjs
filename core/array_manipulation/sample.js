@@ -8,7 +8,7 @@
 import ArrayManipulation from './base';
 import Shuffle from './shuffle';
 
-import type { RandomArrayNumberString, RandomArrayStringObject } from '../types';
+import type { RandomArray, RandomArrayNumberString, RandomArrayStringObject } from '../types';
 import type { ISample, IShuffle } from '../interfaces';
 
 class Sample extends ArrayManipulation implements ISample {
@@ -37,9 +37,17 @@ class Sample extends ArrayManipulation implements ISample {
 
         // For performance purposes I am going to separate sampling methods for different types
         if(typeof input === 'string') {
-            result = this._getSampleForString(input, k);
+            if((k / input.length) <= 0.2) {
+                result = this._getHijenhuisWilfSampleForString(input, k);
+            } else {
+                result = this._getSampleForString(input, k);
+            }
         } else if(Array.isArray(input)){
-            result = this._getSampleForArray(input, k);
+            if((k / input.length) <= 0.125) {
+                result = this._getHijenhuisWilfSampleForArray(input, k);
+            } else {
+                result = this._getSampleForArray(input, k);
+            }
         } else {
             result = this._getSampleForObject(input, k);
         }
@@ -80,6 +88,143 @@ class Sample extends ArrayManipulation implements ISample {
     }
 
     /**
+     * Hijenhuis & Wilf algorithm for indexes
+     * Improved sampling with O(k) time complexity
+     * Does not mutate original array
+     * @param n: number - number of elements in array or string
+     * @param k: number
+     * @returns {RandomArray} - array with random indexes shifted by one to the right
+     * @private
+     */
+    _getHijenhuisWilfSampleIndexes(
+        n: number,
+        k: number): RandomArray {
+        let c: number,
+            a: RandomArray = [],
+            x: number,
+            l: number,
+            i: number,
+            p: number,
+            s: number,
+            temp: number,
+            delta_s: number,
+            r: number,
+            m0: number,
+            m: number;
+
+        // 1 - O(k) complexity
+        for(let idx = 0; idx < k; idx += 1) {
+            a[idx] = Math.floor(idx * n / k);
+        }
+        c = k;
+
+        // 2
+        while(c > 0){
+            x = 1 + Math.floor(Math.random() * n);
+            l = 1 + Math.floor((x * k - 1)/ n);
+            if(x > a[l - 1]) {
+                a[l - 1] += 1;
+                c -= 1;
+            }
+        }
+        i = 0;
+        p = 0;
+        s = k;
+
+        // 3 - O(k) complexity
+        while(i < k) {
+            i += 1;
+            if(a[i - 1] === Math.floor(n * (i - 1) / k)) {
+                a[i - 1] = 0;
+                continue;
+            }
+            p += 1;
+            temp = a[i - 1];
+            a[i - 1] = 0;
+            a[p - 1] = temp;
+        }
+
+        // 4
+        while(p > 0) {
+            l = 1 + Math.floor((a[p-1] * k - 1) / n);
+            delta_s = a[p - 1] - Math.floor((l - 1) * n / k);
+            a[p - 1] = 0;
+            a[s - 1] = l;
+            s -= delta_s;
+            p -= 1;
+        }
+        l = k;
+
+        // 5
+        while(l > 0) {
+            if(a[l - 1] > 0) {
+                r = l;
+                m0 = 1 + Math.floor((a[l - 1] - 1) * n / k);
+                m = Math.floor(a[l - 1] * n / k) - m0 + 1;
+            }
+            // $FlowFixMe
+            x = m0 + Math.floor(Math.random() * m);
+            i = l;
+            // eslint-disable-next-line no-constant-condition
+            while(true){
+                i += 1;
+                // $FlowFixMe
+                if(i > r || x < a[i - 1]) {
+                    break;
+                }
+                a[i - 2] = a[i - 1];
+                x += 1;
+            }
+            a[i - 2] = x;
+            // $FlowFixMe
+            m -= 1;
+            l -= 1;
+        }
+
+        return a;
+    }
+
+    /**
+     * Private getSample method (Hijenhuis & Wilf algorithm) for arrays
+     * @param input: RandomArrayNumberString<number | string>
+     * @param k: number
+     * @private
+     */
+    _getHijenhuisWilfSampleForArray(
+        input: RandomArrayNumberString<number | string>,
+        k: number
+    ): RandomArrayNumberString<number | string> {
+        // for arrays
+        let result: RandomArrayNumberString<number | string> = [],
+            n: number = input.length,
+            indexes: RandomArray = this._getHijenhuisWilfSampleIndexes(n, k);
+        for(let idx = 0; idx < k; idx += 1) {
+            result[idx] = input[indexes[idx] - 1];
+        }
+        return result;
+    }
+
+    /**
+     * Private getSample method (Hijenhuis & Wilf algorithm) for strings
+     * @param input: string
+     * @param k: number
+     * @private
+     */
+    _getHijenhuisWilfSampleForString(
+        input: string,
+        k: number
+    ): string {
+        // for strings
+        let result: string = '',
+            n: number = input.length,
+            indexes: RandomArray = this._getHijenhuisWilfSampleIndexes(n, k);
+        for(let idx = 0; idx < k; idx += 1) {
+            result += input[indexes[idx] - 1];
+        }
+        return result;
+    }
+
+    /**
      * Private getSample method for arrays
      * O(k) in memory and O(n) in time
      * @param input: RandomArrayNumberString<number | string>
@@ -91,10 +236,10 @@ class Sample extends ArrayManipulation implements ISample {
         k: number
     ): RandomArrayNumberString<number | string> {
         // for arrays
-        let result = [],
-            n = input.length,
-            t = 0, // total elements
-            m = 0; // selected elements
+        let result: RandomArrayNumberString<number | string> = [],
+            n: number = input.length,
+            t: number = 0, // total elements
+            m: number = 0; // selected elements
         while(m < k) {
             if((n - t) * Math.random() < (k - m)) {
                 result[m] = input[t];
@@ -116,11 +261,11 @@ class Sample extends ArrayManipulation implements ISample {
         input: string,
         k: number
     ): string {
-        // for arrays
-        let result = '',
-            n = input.length,
-            t = 0, // total elements
-            m = 0; // selected elements
+        // for strings
+        let result: string = '',
+            n: number = input.length,
+            t: number = 0, // total elements
+            m: number = 0; // selected elements
         while(m < k) {
             if((n - t) * Math.random() < (k - m)) {
                 result += input[t];
@@ -142,12 +287,12 @@ class Sample extends ArrayManipulation implements ISample {
         input: {[any]: any},
         k: number
     ): {[any]: any} {
-        // for arrays
-        let result = {},
-            keys = Object.keys(input),
-            n = keys.length,
-            t = 0, // total elements
-            m = 0; // selected elements
+        // for objects
+        let result: Object = {},
+            keys: Array<any> = Object.keys(input),
+            n: number = keys.length,
+            t: number = 0, // total elements
+            m: number = 0; // selected elements
         while(m < k) {
             if((n - t) * Math.random() < (k - m)) {
                 result[keys[t]] = input[keys[t]];
