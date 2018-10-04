@@ -8,7 +8,7 @@
 import ArrayManipulation from './base';
 import Shuffle from './shuffle';
 
-import type { RandomArray, RandomArrayNumberString, RandomArrayStringObject } from '../types';
+import type { RandomArray, RandomArrayNumberString, RandomArrayStringObject, SampleOptions } from '../types';
 import type { ISample, IShuffle } from '../interfaces';
 
 class Sample extends ArrayManipulation implements ISample {
@@ -20,16 +20,31 @@ class Sample extends ArrayManipulation implements ISample {
         this._shuffle = new Shuffle();
     }
 
-    getSample(input: any, k: number, shuffle: boolean = false): RandomArrayStringObject<number | string> {
+    getSample(input: any, k: ?number, options: SampleOptions = { shuffle: false }): RandomArrayStringObject<number | string> {
         let result: RandomArrayStringObject<number | string>;
         this._validateInput(input);
+
+        // if k is undefined - returns a sample with random size (including [])
+        if(typeof k === 'undefined') {
+            if(typeof input === 'string') {
+                result = this._getSampleRandomSizeForString(input);
+            } else if(Array.isArray(input)) {
+                result = this._getSampleRandomSizeForArray(input);
+            } else {
+                result = this._getSampleRandomSizeForObject(input);
+            }
+            if(options.shuffle && !(typeof input === 'object' && !Array.isArray(input))) {
+                return this._shuffle.getPermutation(result);
+            }
+            return result;
+        }
 
         if(typeof k !== 'number' || k <= 0) {
             throw new Error('Sample: "k" must be positive integer');
         }
 
         if(k >= input.length) {
-            if(shuffle && !(typeof input === 'object' && !Array.isArray(input))) {
+            if(options.shuffle && !(typeof input === 'object' && !Array.isArray(input))) {
                 return this._shuffle.getPermutation(input);
             }
             return input;
@@ -51,8 +66,66 @@ class Sample extends ArrayManipulation implements ISample {
         } else {
             result = this._getSampleForObject(input, k);
         }
-        if(shuffle && !(typeof input === 'object' && !Array.isArray(input))) {
+        if(options.shuffle && !(typeof input === 'object' && !Array.isArray(input))) {
             return this._shuffle.getPermutation(result);
+        }
+        return result;
+    }
+
+    /**
+     * Random sample with random size (including [])
+     * @param inputArr: Array
+     * @returns {RandomArrayNumberString<number|string>}
+     * @private
+     */
+    _getSampleRandomSizeForArray(inputArr: RandomArrayNumberString<number | string>): RandomArrayNumberString<number | string> {
+        let temp: number,
+            j: number = 0,
+            result: RandomArrayNumberString<number | string> = [];
+        for(let i = 0; i < inputArr.length; i += 1) {
+            temp = Math.floor(2 * Math.random());
+            if(temp === 1) {
+                result[j] = inputArr[i];
+                j += 1;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Random sample with random size (including '')
+     * @param inputArr: string
+     * @returns string
+     * @private
+     */
+    _getSampleRandomSizeForString(inputStr: string): string {
+        let temp: number,
+            result: string = '';
+        for(let i = 0; i < inputStr.length; i += 1) {
+            temp = Math.floor(2 * Math.random());
+            if(temp === 1) {
+                result += inputStr[i];
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Private getSample method for objects
+     * O(k) in memory, O(n) in time
+     * @param input: RandomArrayNumberString<number | string>
+     * @param k: number
+     * @private
+     */
+    _getSampleRandomSizeForObject(input: {[any]: any}): {[any]: any} {
+        let result: Object = {},
+            keys: Array<any> = Object.keys(input),
+            temp: number;
+        for(let i = 0; i < keys.length; i += 1) {
+            temp = Math.floor(2 * Math.random());
+            if(temp === 1) {
+                result[keys[i]] += input[keys[i]];
+            }
         }
         return result;
     }

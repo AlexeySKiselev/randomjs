@@ -6,7 +6,7 @@
 
 import type {
     RandomArray, RandomArrayString, AnalyzerPublicMethods, AnalyzerPublicProperties, MethodError,
-    RandomArrayStringObject
+    RandomArrayStringObject, SampleOptions
 } from './types';
 
 /**
@@ -136,7 +136,7 @@ export interface IRandomFactory<R, D> {
  * Interface for sample method
  */
 export interface ISample {
-    getSample(input: any, k: number, shuffle: boolean): RandomArrayStringObject<number | string>;
+    getSample(input: any, k: ?number, options: SampleOptions): RandomArrayStringObject<number | string>;
 }
 
 /**

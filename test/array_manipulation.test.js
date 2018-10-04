@@ -13,7 +13,7 @@ chai.should();
 describe('Array manipulation methods', () => {
     describe('Sample', () => {
         let Sample = require('../lib/array_manipulation/sample').default;
-        it('requires at least two correct arguments', () => {
+        it('requires at least one correct argument', () => {
             let zeroParams = () => {
                 let sample = new Sample();
                 return sample.getSample();
@@ -24,7 +24,7 @@ describe('Array manipulation methods', () => {
                 let sample = new Sample();
                 return sample.getSample([1, 2, 3, 4, 5]);
             };
-            oneParam.should.throw(Error);
+            oneParam.should.not.throw(Error);
 
             let badParam1 =  () => {
                 let sample = new Sample();
@@ -157,7 +157,7 @@ describe('Array manipulation methods', () => {
 
             correctOrders = 0;
             for(let j = 0; j < 20000; j += 1) {
-                temp = sample.getSample(input_arr, 1000, true);
+                temp = sample.getSample(input_arr, 1000, {shuffle: true});
                 if(checkOrder(temp)) {
                     correctOrders += 1;
                 }

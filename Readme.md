@@ -75,13 +75,17 @@ console.log(unirand.utils.gamma(2));
 Generate **random sample** from array, string or object. This method will generate "k" random elements from array/string with "n" elements.
 <br /> <pre>
 let sample = unirand.sample;
-console.log(sample(<array|string|object>, 10));
+console.log(sample(<array|string|object>, <number|options object>, options object));
 </pre>
+<br />
+You can point `k` value (in this case .sample returns k-length result) or not (in this case .sample returns result with random length).
 <br /> Method will return random sample with same type as input. In case when "k" greater then input length method will return input.
 This method also allow shuffle output:
 <br /> <pre>
-sample([1, 2, 3, 4, 5, 6, 7, 8, 9], 3) // will output [2, 5, 8], for example, or [1, 4, 9]
-sample([1, 2, 3, 4, 5, 6, 7, 8, 9], 3, true) // will output [6, 9, 1] or [3, 2, 7]
+sample([1, 2, 3, 4, 5, 6, 7, 8, 9], 3) // will output [2, 5, 8], for example, or [1, 4, 9] - in ascending order by index
+sample([1, 2, 3, 4, 5, 6, 7, 8, 9], 3, {shuffle: true}) // will output [6, 9, 1] or [3, 2, 7] - shuffled result
+sample([1, 2, 3, 4, 5, 6, 7, 8, 9]) // will output [2, 5, 8], for example, or [1, 4, 7, 9] - random length, in ascending order by index
+sample([1, 2, 3, 4, 5, 6, 7, 8, 9], {shuffle: true}) // will output [6, 9, 1] or [3, 2, 7, 4] - random length, shuffled result
 </pre>
 
 Sample method is **3 times faster** for arrays and **7 times faster** for string compared to simple shuffled and sliced array|string.

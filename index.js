@@ -11,7 +11,7 @@ import Shuffle from './core/array_manipulation/shuffle';
 
 const Bernoulli = require('./core/methods/bernoulli');
 
-import type { RandomArray, RandomArrayString } from './core/types';
+import type { RandomArray, RandomArrayString, SampleOptions } from './core/types';
 import type { ISample, IShuffle } from './core/interfaces';
 
 class RandomJS {
@@ -73,8 +73,17 @@ class RandomJS {
          */
         Object.defineProperty(this, 'sample', ({
             __proto__: null,
-            value: (input: RandomArrayString<number | string>, k: number, shuffle: boolean = false): any => {
-                return this._sample.getSample(input, k, shuffle);
+            value: (input: RandomArrayString<number | string>, k: any, options: ?SampleOptions): any => {
+                const defaultOptions: SampleOptions = {
+                    shuffle: false
+                };
+                if(typeof k === 'object' || typeof k === 'undefined') {
+                    // assume that k is undefined, and the second parameter is options
+                    return this._sample.getSample(input, undefined, Object.assign(defaultOptions, k));
+                } else {
+                    return this._sample.getSample(input, k, Object.assign(defaultOptions, options));
+                }
+
             }
         }: Object));
 

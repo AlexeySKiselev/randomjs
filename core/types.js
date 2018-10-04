@@ -46,3 +46,10 @@ export type AnalyzerPDF = {
     values: RandomArray,
     probabilities: RandomArray
 };
+
+/**
+ * Sample options
+ */
+export type SampleOptions = {
+    shuffle: ?boolean
+};
