@@ -14,14 +14,21 @@ import type { AnalyzerPublicProperties } from './types';
  * Then add name of public method to this object via propertyKey value
  * In class add @PublicMethod string before every public method
  */
-export let AnalyzerPublicMethod = (Target: { [property: string ]: AnalyzerPublicProperties }, propertyKey: string): void => {
-    if(!Target.publicMethods){
-        Target.publicMethods = {};
+export const AnalyzerPublicMethod = (Target: { [property: string ]: AnalyzerPublicProperties }, propertyKey: string): void => {
+    if(!Target.constructor.publicMethods){
+        Target.constructor.publicMethods = {};
     }
-    Target.publicMethods[propertyKey] = 1;
+    Target.constructor.publicMethods[propertyKey] = 1;
 };
 
-export let AnalyzerSingleton = (Target: any): void => {
+export const AnalyzerPublicFunction = (Target: { [property: string ]: AnalyzerPublicProperties }, propertyKey: string): void => {
+    if(!Target.constructor.publicFunctions){
+        Target.constructor.publicFunctions = {};
+    }
+    Target.constructor.publicFunctions[propertyKey] = 1;
+};
+
+export const AnalyzerSingleton = (Target: any): void => {
     /**
      * Create instance object initially assigned to null
      */

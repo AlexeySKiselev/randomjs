@@ -48,6 +48,8 @@ export interface IAnalyzerSingleton {
      * I add this method to class in SingletonDecorator
      */
     getInstance(...args: any): IAnalyzerMethods;
+    publicMethods?: AnalyzerPublicProperties;
+    publicFunctions?: AnalyzerPublicProperties;
 }
 
 /**

@@ -82,14 +82,14 @@ describe('Analyzer', () => {
             expect(common).to.have.property('publicMethods');
             expect(common2).to.have.property('publicMethods');
         });
-        it('should receive for input data only array with length > 10', () => {
+        it('should receive for input data only array with length > 3', () => {
             let receiveNotArray = () => {
                 Common.getInstance(3);
             };
             receiveNotArray.should.throw(Error);
 
             let receiveSmallArray = () => {
-                Common.getInstance([1, 2, 3]);
+                Common.getInstance([1, 3]);
             };
             receiveSmallArray.should.throw(Error);
 
@@ -210,6 +210,13 @@ describe('Analyzer', () => {
                 expect(commonSequence.kurtosis).to.be.a('number');
                 expect(commonSequence.kurtosis).to.be.closeTo(1.704286, 0.1);
             });
+            it('should have correct quartile values', () => {
+                let commonSequence = Common.getInstance([1, 2, 3, 4, 5, 6, 3, 8, 9, 10, 11, 12, 13, 14, 10, 16, 17, 18, 19, 20]);
+                console.log(commonSequence.median);
+                expect(commonSequence.Q25).to.be.closeTo(4.75, 0.001);
+                expect(commonSequence.Q50).to.be.closeTo(10.5, 0.001);
+                expect(commonSequence.Q75).to.be.closeTo(15.25, 0.001);
+            });
             it('should has pdf function with 20 elements and sum of them equals to 1', () => {
                 let commonRandom = Common.getInstance(sampleSequence),
                     probSum = 0;
@@ -288,6 +295,12 @@ describe('Analyzer', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray);
                 expect(commonRandom.kurtosis).to.be.a('number');
                 expect(commonRandom.kurtosis).to.be.closeTo(1.931, 0.1);
+            });
+            it('should have correct quartile values', () => {
+                let commonNonRandom = Common.getInstance(sampleRandomArray);
+                expect(commonNonRandom.Q25).to.be.closeTo(4, 0.001);
+                expect(commonNonRandom.Q50).to.be.closeTo(6, 0.001);
+                expect(commonNonRandom.Q75).to.be.closeTo(8, 0.001);
             });
             it('should has pdf function with 21 elements and sum of them equals to 1', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray),
@@ -368,6 +381,12 @@ describe('Analyzer', () => {
                 expect(uniformArray.length).to.be.equal(50000);
                 expect(uniformAnalyzer.kurtosis).to.be.a('number');
                 expect(uniformAnalyzer.kurtosis).to.be.closeTo(3 - (6 / 5), 0.03);
+            });
+            it('should have correct quartile values', () => {
+                let commonNonRandom = Common.getInstance(uniformArray);
+                expect(commonNonRandom.Q25).to.be.closeTo(2.5, 0.05);
+                expect(commonNonRandom.Q50).to.be.closeTo(5, 0.05);
+                expect(commonNonRandom.Q75).to.be.closeTo(7.5, 0.05);
             });
             it('should has pdf function with 200 equal elements and sum of them equals to 1', () => {
                 let uniformAnalyzer = Common.getInstance(uniformArray),

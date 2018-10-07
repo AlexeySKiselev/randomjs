@@ -6,7 +6,7 @@
  */
 
 import type { RandomArray, AnalyzerPDF } from '../types';
-import { AnalyzerPublicMethod, AnalyzerSingleton } from '../decorators';
+import { AnalyzerPublicMethod, AnalyzerPublicFunction, AnalyzerSingleton } from '../decorators';
 
 @AnalyzerSingleton
 class Common {
@@ -68,6 +68,24 @@ class Common {
     _values_in_pdf: number;
 
     /**
+     * 25% quartile
+     * @private
+     */
+    _Q25: number;
+
+    /**
+     * 75% quartile
+     * @private
+     */
+    _Q75: number;
+
+    /**
+     * Interquartile range
+     * @private
+     */
+    _interquartile_range: number;
+
+    /**
      * PDF object contains PDF function values
      * @private
      */
@@ -110,7 +128,7 @@ class Common {
         /**
          * Check if array is too small
          */
-        if(randomArray.length <= 10) {
+        if(randomArray.length < 3) {
             throw new Error('Analyzer.Common: input randomArray is too small, that is no reason to analyze');
         }
 
@@ -132,6 +150,11 @@ class Common {
          * I need it for performance, because I want to traverse array only once
          */
         this._calculateParams();
+
+        /**
+         * Calculate quartiles
+         */
+        this._calculateQuartiles();
     }
 
     /**
@@ -291,6 +314,34 @@ class Common {
     }
 
     /**
+     * Calclate 25% and 75% quartiles
+     * @private
+     */
+    _calculateQuartiles(): void {
+        let j: number = 0,
+            pdf_low: number = 0;
+        // Q25 calculation
+        for(let i = 0; i < this._pdf.length; i += 1) {
+            if(pdf_low < 0.249999) {
+                pdf_low += this._pdf[i];
+            } else {
+                this._Q25 = (3 * this._pdf_values[i] + this._pdf_values[i - 1]) / 4;
+                j = i;
+                break;
+            }
+        }
+        // Q75 calculation
+        for(let i = j; i < this._pdf.length; i += 1) {
+            if(pdf_low < 0.749999) {
+                pdf_low += this._pdf[i];
+            } else {
+                this._Q75 = (this._pdf_values[i] + 3 * this._pdf_values[i - 1]) / 4;
+                break;
+            }
+        }
+    }
+
+    /**
      * Public method for AnalyzerFactory
      * @returns {number} - minimum value in array
      */
@@ -415,6 +466,47 @@ class Common {
             values: this._pdf_values,
             probabilities: this._cdf
         };
+    }
+
+    /**
+     * Public method for Analyzer
+     * @returns {number} - 25% Quartile
+     */
+    @AnalyzerPublicMethod
+    get Q25(): number {
+        return this._Q25;
+    }
+
+    /**
+     * Public method for Analyzer
+     * @returns {number} - 50% Quartile
+     */
+    @AnalyzerPublicMethod
+    get Q50(): number {
+        return this._median;
+    }
+
+    /**
+     * Public method for Analyzer
+     * @returns {number} - 75% Quartile
+     */
+    @AnalyzerPublicMethod
+    get Q75(): number {
+        return this._Q75;
+    }
+
+    /**
+     * Public method for analyzer
+     * @returns {number} - Interquartile range
+     */
+    @AnalyzerPublicMethod
+    get interquartile_range(): number {
+        return this._Q75 - this._Q25;
+    }
+
+    @AnalyzerPublicFunction
+    exam(a: any): string {
+        return 'Works' + a.toString();
     }
 }
 

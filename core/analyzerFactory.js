@@ -34,6 +34,14 @@ class AnalyzerFactory implements IAnalyzerMethods {
     _importedClasses: Array<Promise<IAnalyzerMethods>>;
 
     /**
+     * Object for sync access to analyzer's properties and functions
+     * @private
+     */
+    _methodsTypes: {
+        [string]: string
+    };
+
+    /**
      * Classic constructor
      * But in this method I am going to assign randomArray property
      * Also I am going to check type of array: if not - throw Error
@@ -46,6 +54,7 @@ class AnalyzerFactory implements IAnalyzerMethods {
         this.publicMethods = {};
         this.publicProperties = {};
         this._importedClasses = [];
+        this._methodsTypes = {};
 
         /**
          * Traverse over analyzer folder, get classes from this folder
@@ -71,7 +80,7 @@ class AnalyzerFactory implements IAnalyzerMethods {
                          */
                         if(!Array.isArray(this.randomArray)) {
                             reject('Input must be an Array!');
-                        } else if(randomArray.length <= 10) {
+                        } else if(randomArray.length < 3) {
                             reject('Analyzer.Common: input randomArray is too small, that is no reason to analyze');
                         } else  {
                             resolve(Methods.getInstance(this.randomArray, options));
@@ -79,6 +88,13 @@ class AnalyzerFactory implements IAnalyzerMethods {
                     }, 0);
                 });
 
+            // Write properties and function to object for sync checking type of method
+            for(let prop in Methods.publicMethods) {
+                this._methodsTypes[prop] = 'property';
+            }
+            for(let prop in Methods.publicFunctions) {
+                this._methodsTypes[prop] = 'function';
+            }
             this._importedClasses.push(methodsClass);
         });
 
@@ -93,7 +109,8 @@ class AnalyzerFactory implements IAnalyzerMethods {
                  * Add methods to Factory and publicMethods
                  */
                 methods.forEach((methodsClass: AnalyzerPublicProperties) => {
-                    Object.keys(methodsClass.publicMethods).forEach((classMethod: string) => {
+                    // Define Analyzer properties
+                    Object.keys(methodsClass.constructor.publicMethods).forEach((classMethod: string) => {
                         /**
                          * If different classes contain the same public methods
                          * Throw "Methods conflict error"
@@ -127,6 +144,35 @@ class AnalyzerFactory implements IAnalyzerMethods {
                             }
                         });
                     });
+                    // Define Analyzer functions
+                    Object.keys(methodsClass.constructor.publicFunctions).forEach((classFunction: string) => {
+                        /**
+                         * If different classes contain the same public methods
+                         * Throw "Methods conflict error"
+                         */
+                        if(this.publicMethods[classFunction]){
+                            throw new Error('Analyzer: Methods conflict');
+                        }
+
+                        /**
+                         * If method is function
+                         * Store this method in publicProperties object
+                         * I don't need to check methods conflict, because I did it earlier
+                         */
+                        if(typeof methodsClass[classFunction] === 'function'){
+                            this.publicProperties[classFunction] = methodsClass[classFunction];
+                        }
+
+                        /**
+                         * Assign particular functions to Analyzer
+                         */
+                        Object.defineProperty(this, classFunction, {
+                            __proto__: null,
+                            value: (...args) => {
+                                return methodsClass[classFunction](...args);
+                            }
+                        });
+                    });
                 });
                 return this.publicProperties;
             })
@@ -144,10 +190,21 @@ class AnalyzerFactory implements IAnalyzerMethods {
             get: (obj: Promise<any>, method: any): any => {
                 /**
                  * If method is in class methods:
+                 * Excluding functions
                  * @returns: resolved Promise with evaluated method
                  */
                 if(method === 'then') {
-                    return PromiseMethods.then.bind(obj);
+                    return (cb: Function) => {
+                        return obj.then((res: any) => {
+                            let result = {};
+                            for(let m in res){
+                                if(typeof res[m] !== 'function'){
+                                    result[m] = res[m];
+                                }
+                            }
+                            return cb.call(obj, result);
+                        });
+                    };
                 } else if(method === 'catch') {
                     return PromiseMethods.catch.bind(obj);
                 } else if(typeof method !== 'string') {
@@ -160,24 +217,17 @@ class AnalyzerFactory implements IAnalyzerMethods {
                             return res;
                         });
                 } else {
-                    return PromiseMethods
-                        .then((res): any => {
-                            return new Promise((resolve, reject) => {
-                                if(method in res) {
-                                    /**
-                                     * If method is in class methods:
-                                     * @returns: resolved Promise with evaluated method
-                                     */
-                                    resolve(res[method]);
-                                } else {
-                                    /**
-                                     * If there no method in methods, but we call some method:
-                                     * @returns rejected Promise with error
-                                     */
-                                    reject('No such method in analyzer');
-                                }
+                    if(this._methodsTypes[method] === 'function'){
+                        return (...args) => {
+                            return obj.then((res: any) => {
+                                return Promise.resolve(res[method](...args));
                             });
+                        };
+                    } else {
+                        return obj.then((res: any) => {
+                            return Promise.resolve(res[method]);
                         });
+                    }
                 }
             }
         });
