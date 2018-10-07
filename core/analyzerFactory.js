@@ -216,7 +216,7 @@ class AnalyzerFactory implements IAnalyzerMethods {
                         .then((res): any => {
                             return res;
                         });
-                } else {
+                } else if(method in this._methodsTypes) {
                     if(this._methodsTypes[method] === 'function'){
                         return (...args) => {
                             return obj.then((res: any) => {
@@ -228,6 +228,8 @@ class AnalyzerFactory implements IAnalyzerMethods {
                             return Promise.resolve(res[method]);
                         });
                     }
+                } else {
+                    return Promise.reject('No such method in Analyzer');
                 }
             }
         });
