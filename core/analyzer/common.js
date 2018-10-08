@@ -6,14 +6,12 @@
  */
 
 import type { RandomArray, AnalyzerPDF } from '../types';
-import { AnalyzerPublicMethod, AnalyzerPublicFunction, AnalyzerSingleton } from '../decorators';
+import { AnalyzerPublicMethod, AnalyzerSingleton } from '../decorators';
 
 @AnalyzerSingleton
 class Common {
     /**
      * Main input Array
-     * I don't check whether this input is array
-     * I did it in AnalyzerFactory
      */
     randomArray: RandomArray;
 
@@ -44,12 +42,6 @@ class Common {
     _variance: number;
 
     /**
-     * Median value
-     * @private
-     */
-    _median: number;
-
-    /**
      * Skewness value
      * @private
      */
@@ -66,24 +58,6 @@ class Common {
      * @private
      */
     _values_in_pdf: number;
-
-    /**
-     * 25% quartile
-     * @private
-     */
-    _Q25: number;
-
-    /**
-     * 75% quartile
-     * @private
-     */
-    _Q75: number;
-
-    /**
-     * Interquartile range
-     * @private
-     */
-    _interquartile_range: number;
 
     /**
      * PDF object contains PDF function values
@@ -150,11 +124,6 @@ class Common {
          * I need it for performance, because I want to traverse array only once
          */
         this._calculateParams();
-
-        /**
-         * Calculate quartiles
-         */
-        this._calculateQuartiles();
     }
 
     /**
@@ -243,16 +212,6 @@ class Common {
         let sumOfPDF: number = 0;
 
         /**
-         * Add special variables for calculating median
-         * Increase pdf_low until it achieves 0.5
-         * At 0.5 assign median_low and median_high
-         * For saving calculating time add variable catch_median (false in initial)
-         * Then calculate average value
-         */
-        let pdf_low: number = 0,
-            catch_median: boolean = false;
-
-        /**
          * Calculate mode value
          * max_pdf - maximum value of pdf
          * max_mode - value of max_pds
@@ -281,17 +240,6 @@ class Common {
             sumOfPDF += pdf[i];
             cdf[i] = sumOfPDF;
 
-            // Increase pdf_low
-            if(!catch_median) {
-                if(pdf_low < 0.499999) {
-                    pdf_low += pdf[i];
-                } else {
-                    // Assign median value and stop calculation median
-                    this._median = (pdf_values[i] + pdf_values[i - 1]) / 2;
-                    catch_median = true;
-                }
-            }
-
             // Calculate mode
             if(pdf[i] - max_pdf > 0.005 * pdf[i]) {
                 max_pdf = pdf[i];
@@ -311,34 +259,6 @@ class Common {
         this._pdf = pdf;
         this._pdf_values = pdf_values;
         this._cdf = cdf;
-    }
-
-    /**
-     * Calclate 25% and 75% quartiles
-     * @private
-     */
-    _calculateQuartiles(): void {
-        let j: number = 0,
-            pdf_low: number = 0;
-        // Q25 calculation
-        for(let i = 0; i < this._pdf.length; i += 1) {
-            if(pdf_low < 0.249999) {
-                pdf_low += this._pdf[i];
-            } else {
-                this._Q25 = (3 * this._pdf_values[i] + this._pdf_values[i - 1]) / 4;
-                j = i;
-                break;
-            }
-        }
-        // Q75 calculation
-        for(let i = j; i < this._pdf.length; i += 1) {
-            if(pdf_low < 0.749999) {
-                pdf_low += this._pdf[i];
-            } else {
-                this._Q75 = (this._pdf_values[i] + 3 * this._pdf_values[i - 1]) / 4;
-                break;
-            }
-        }
     }
 
     /**
@@ -379,15 +299,6 @@ class Common {
 
     /**
      * Public method for Analyzer
-     * @returns {number} - median of random array
-     */
-    @AnalyzerPublicMethod
-    get median(): number {
-        return this._median;
-    }
-
-    /**
-     * Public method for Analyzer
      * @returns {number} - variance of random array
      */
     @AnalyzerPublicMethod
@@ -423,19 +334,6 @@ class Common {
     }
 
     /**
-     * Pearson's skewness: mode and median
-     * Public method for Analyzer
-     * @returns {Object} - object with mean and median skewness
-     */
-    @AnalyzerPublicMethod
-    get pearson(): { skewness_mode: ?number, skewness_median: number } {
-        return {
-            skewness_mode: (this._modes.length === 1)?((this._mean - this._modes[0]) / this.standard_deviation):undefined,
-            skewness_median: (this._mean - this._median) / this.standard_deviation
-        };
-    }
-
-    /**
      * Public method for Analyzer
      * @returns {number} - Kurtosis value of random distribution
      */
@@ -466,47 +364,6 @@ class Common {
             values: this._pdf_values,
             probabilities: this._cdf
         };
-    }
-
-    /**
-     * Public method for Analyzer
-     * @returns {number} - 25% Quartile
-     */
-    @AnalyzerPublicMethod
-    get Q25(): number {
-        return this._Q25;
-    }
-
-    /**
-     * Public method for Analyzer
-     * @returns {number} - 50% Quartile
-     */
-    @AnalyzerPublicMethod
-    get Q50(): number {
-        return this._median;
-    }
-
-    /**
-     * Public method for Analyzer
-     * @returns {number} - 75% Quartile
-     */
-    @AnalyzerPublicMethod
-    get Q75(): number {
-        return this._Q75;
-    }
-
-    /**
-     * Public method for analyzer
-     * @returns {number} - Interquartile range
-     */
-    @AnalyzerPublicMethod
-    get interquartile_range(): number {
-        return this._Q75 - this._Q25;
-    }
-
-    @AnalyzerPublicFunction
-    exam(a: any): string {
-        return 'Works' + a.toString();
     }
 }
 

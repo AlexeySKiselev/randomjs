@@ -53,3 +53,8 @@ export type AnalyzerPDF = {
 export type SampleOptions = {
     shuffle: ?boolean
 };
+
+/**
+ * Percentile input
+ */
+export type PercentileInput<T> = Array<T> | T;

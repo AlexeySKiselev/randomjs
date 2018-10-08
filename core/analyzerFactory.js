@@ -110,69 +110,73 @@ class AnalyzerFactory implements IAnalyzerMethods {
                  */
                 methods.forEach((methodsClass: AnalyzerPublicProperties) => {
                     // Define Analyzer properties
-                    Object.keys(methodsClass.constructor.publicMethods).forEach((classMethod: string) => {
-                        /**
-                         * If different classes contain the same public methods
-                         * Throw "Methods conflict error"
-                         */
-                        if(this.publicMethods[classMethod]){
-                            throw new Error('Analyzer: Methods conflict');
-                        }
-                        this.publicMethods[classMethod] = 1;
+                    if(methodsClass.constructor.publicMethods) {
+                        Object.keys(methodsClass.constructor.publicMethods).forEach((classMethod: string) => {
+                            /**
+                             * If different classes contain the same public methods
+                             * Throw "Methods conflict error"
+                             */
+                            if(this.publicMethods[classMethod]){
+                                throw new Error('Analyzer: Methods conflict');
+                            }
+                            this.publicMethods[classMethod] = 1;
 
-                        /**
-                         * If method is NOT function
-                         * Store this method in publicProperties object
-                         * I don't need to check methods conflict, because I did it earlier
-                         */
-                        if(typeof methodsClass[classMethod] !== 'function'){
-                            this.publicProperties[classMethod] = methodsClass[classMethod];
-                        }
+                            /**
+                             * If method is NOT function
+                             * Store this method in publicProperties object
+                             * I don't need to check methods conflict, because I did it earlier
+                             */
+                            if(typeof methodsClass[classMethod] !== 'function'){
+                                this.publicProperties[classMethod] = methodsClass[classMethod];
+                            }
 
-                        /**
-                         * Assign particular properties and methods to Analyzer
-                         */
-                        Object.defineProperty(this, classMethod, {
-                            __proto__: null,
-                            get: () => {
-                                if(typeof methodsClass[classMethod] === 'function'){
-                                    return (...args) => {
-                                        return methodsClass[classMethod](...args);
-                                    };
+                            /**
+                             * Assign particular properties and methods to Analyzer
+                             */
+                            Object.defineProperty(this, classMethod, {
+                                __proto__: null,
+                                get: () => {
+                                    if(typeof methodsClass[classMethod] === 'function'){
+                                        return (...args) => {
+                                            return methodsClass[classMethod].bind(methodsClass)(...args);
+                                        };
+                                    }
+                                    return this.publicProperties[classMethod];
                                 }
-                                return this.publicProperties[classMethod];
-                            }
+                            });
                         });
-                    });
+                    }
                     // Define Analyzer functions
-                    Object.keys(methodsClass.constructor.publicFunctions).forEach((classFunction: string) => {
-                        /**
-                         * If different classes contain the same public methods
-                         * Throw "Methods conflict error"
-                         */
-                        if(this.publicMethods[classFunction]){
-                            throw new Error('Analyzer: Methods conflict');
-                        }
-
-                        /**
-                         * If method is function
-                         * Store this method in publicProperties object
-                         * I don't need to check methods conflict, because I did it earlier
-                         */
-                        if(typeof methodsClass[classFunction] === 'function'){
-                            this.publicProperties[classFunction] = methodsClass[classFunction];
-                        }
-
-                        /**
-                         * Assign particular functions to Analyzer
-                         */
-                        Object.defineProperty(this, classFunction, {
-                            __proto__: null,
-                            value: (...args) => {
-                                return methodsClass[classFunction](...args);
+                    if(methodsClass.constructor.publicFunctions){
+                        Object.keys(methodsClass.constructor.publicFunctions).forEach((classFunction: string) => {
+                            /**
+                             * If different classes contain the same public methods
+                             * Throw "Methods conflict error"
+                             */
+                            if(this.publicMethods[classFunction]){
+                                throw new Error('Analyzer: Methods conflict');
                             }
+
+                            /**
+                             * If method is function
+                             * Store this method in publicProperties object
+                             * I don't need to check methods conflict, because I did it earlier
+                             */
+                            if(typeof methodsClass[classFunction] === 'function'){
+                                this.publicProperties[classFunction] = methodsClass[classFunction].bind(methodsClass);
+                            }
+
+                            /**
+                             * Assign particular functions to Analyzer
+                             */
+                            Object.defineProperty(this, classFunction, {
+                                __proto__: null,
+                                value: (...args) => {
+                                    return methodsClass[classFunction].bind(methodsClass)(...args);
+                                }
+                            });
                         });
-                    });
+                    }
                 });
                 return this.publicProperties;
             })
