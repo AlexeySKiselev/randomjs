@@ -90,8 +90,9 @@ class Percentiles {
      */
     @AnalyzerPublicMethod
     get interquartile_range(): ?number {
-        if(this.quartiles['q3'] && this.quartiles['q1']) {
-            return this.quartiles['q3'] - this.quartiles['q1'];
+        let quartiles: {[string]: ?number} = this.quartiles;
+        if(quartiles['q3'] && quartiles['q1']) {
+            return quartiles['q3'] - quartiles['q1'];
         }
         return undefined;
     }
