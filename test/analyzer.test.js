@@ -37,7 +37,7 @@ describe('Analyzer', () => {
     });
     it('should rejected with too small array', (done) => {
         let randomjs = require('../lib'),
-            promise = randomjs.analyze([1, 2, 3]),
+            promise = randomjs.analyze([1, 2]),
             rejected = false;
         promise
             .catch((err) => {
@@ -58,13 +58,14 @@ describe('Analyzer', () => {
             })
             .catch((err) => {
                 rejected = true;
-                expect(err).to.be.equal('No such method in analyzer');
+                expect(err).to.be.equal('No such method in Analyzer');
                 done();
             });
         expect(rejected).to.be.equal(false);
     });
     describe('Imported Common class', () => {
         let Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles'),
             sampleArray = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], // Not random Array
             sampleRandomArray = [1, 4, 5, 9, 6, 4, 2, 6, 2, 10, 11, 8, 7, 12, 1, 1, 8, 6, 4, 5, 9],
             sampleSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
@@ -76,11 +77,11 @@ describe('Analyzer', () => {
             expect(methods1).to.equal(methods2);
             expect(methods3).to.not.equal(methods4);
         });
-        it('should has "publicMethods" property for instances', () => {
+        it('should has "publicMethods" property classes', () => {
             let common = Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
-                common2 = new Common([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
-            expect(common).to.have.property('publicMethods');
-            expect(common2).to.have.property('publicMethods');
+                percentile = new Percentile([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+            expect(Common).to.have.property('publicMethods');
+            expect(Percentile).to.have.property('publicMethods');
         });
         it('should receive for input data only array with length > 3', () => {
             let receiveNotArray = () => {
@@ -173,9 +174,9 @@ describe('Analyzer', () => {
                 expect(commonSequence.mean).to.be.equal(10.5);
             });
             it('should has median value equals to 10.5', () => {
-                let commonSequence = Common.getInstance(sampleSequence);
-                expect(commonSequence.median).to.be.a('number');
-                expect(commonSequence.median).to.be.closeTo(10.5, (commonSequence.max - commonSequence.min) / sampleSequence.length);
+                let percentileSequence = Percentile.getInstance(sampleSequence);
+                expect(percentileSequence.median).to.be.a('number');
+                expect(percentileSequence.median).to.be.closeTo(10.5, 0.001);
             });
             it('should has variance value equals to 35', () => {
                 let commonSequence = Common.getInstance(sampleSequence);
@@ -211,11 +212,10 @@ describe('Analyzer', () => {
                 expect(commonSequence.kurtosis).to.be.closeTo(1.704286, 0.1);
             });
             it('should have correct quartile values', () => {
-                let commonSequence = Common.getInstance([1, 2, 3, 4, 5, 6, 3, 8, 9, 10, 11, 12, 13, 14, 10, 16, 17, 18, 19, 20]);
-                console.log(commonSequence.median);
-                expect(commonSequence.Q25).to.be.closeTo(4.75, 0.001);
-                expect(commonSequence.Q50).to.be.closeTo(10.5, 0.001);
-                expect(commonSequence.Q75).to.be.closeTo(15.25, 0.001);
+                let commonSequence = Percentile.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+                expect(commonSequence.quartiles['q1']).to.be.closeTo(5.75, 0.001);
+                expect(commonSequence.quartiles['q2']).to.be.closeTo(10.5, 0.001);
+                expect(commonSequence.quartiles['q3']).to.be.closeTo(15.25, 0.001);
             });
             it('should has pdf function with 20 elements and sum of them equals to 1', () => {
                 let commonRandom = Common.getInstance(sampleSequence),
@@ -277,9 +277,9 @@ describe('Analyzer', () => {
                 expect(commonRandom.mode[2]).to.be.closeTo(6, (commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
             });
             it('should has correct median value equals to 6 +/- accuracy', () => {
-                let commonRandom = Common.getInstance(sampleRandomArray);
-                expect(commonRandom.median).to.be.a('number');
-                expect(commonRandom.median).to.be.closeTo(6, (commonRandom.max - commonRandom.min) / Math.floor(sampleRandomArray.length));
+                let percentileRandom = Percentile.getInstance(sampleRandomArray);
+                expect(percentileRandom.median).to.be.a('number');
+                expect(percentileRandom.median).to.be.closeTo(6, 0.001);
             });
             it('should has correct entropy value equals to 2.30592168 +/- accuracy', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray);
@@ -297,10 +297,10 @@ describe('Analyzer', () => {
                 expect(commonRandom.kurtosis).to.be.closeTo(1.931, 0.1);
             });
             it('should have correct quartile values', () => {
-                let commonNonRandom = Common.getInstance(sampleRandomArray);
-                expect(commonNonRandom.Q25).to.be.closeTo(4, 0.001);
-                expect(commonNonRandom.Q50).to.be.closeTo(6, 0.001);
-                expect(commonNonRandom.Q75).to.be.closeTo(8, 0.001);
+                let percentileNonRandom = Percentile.getInstance(sampleRandomArray);
+                expect(percentileNonRandom.quartiles['q1']).to.be.closeTo(4, 0.001);
+                expect(percentileNonRandom.quartiles['q2']).to.be.closeTo(6, 0.001);
+                expect(percentileNonRandom.quartiles['q3']).to.be.closeTo(8, 0.001);
             });
             it('should has pdf function with 21 elements and sum of them equals to 1', () => {
                 let commonRandom = Common.getInstance(sampleRandomArray),
@@ -353,10 +353,16 @@ describe('Analyzer', () => {
                 expect(uniformAnalyzer.mean).to.be.closeTo(5, 0.05);
             });
             it('should has median value close to 5', () => {
-                let uniformAnalyzer = Common.getInstance(uniformArray);
+                let uniformAnalyzer = Percentile.getInstance(uniformArray);
                 expect(uniformArray.length).to.be.equal(50000);
                 expect(uniformAnalyzer.median).to.be.a('number');
                 expect(uniformAnalyzer.median).to.be.closeTo(5, 0.1);
+            });
+            it('should have correct quartile values', () => {
+                let uniformAnalyzer = Percentile.getInstance(uniformArray);
+                expect(uniformAnalyzer.quartiles['q1']).to.be.closeTo(2.5, 0.1);
+                expect(uniformAnalyzer.quartiles['q2']).to.be.closeTo(5, 0.1);
+                expect(uniformAnalyzer.quartiles['q3']).to.be.closeTo(7.5, 0.1);
             });
             it('should has variance value close to 8.333', () => {
                 let uniformAnalyzer = Common.getInstance(uniformArray);
@@ -381,12 +387,6 @@ describe('Analyzer', () => {
                 expect(uniformArray.length).to.be.equal(50000);
                 expect(uniformAnalyzer.kurtosis).to.be.a('number');
                 expect(uniformAnalyzer.kurtosis).to.be.closeTo(3 - (6 / 5), 0.03);
-            });
-            it('should have correct quartile values', () => {
-                let commonNonRandom = Common.getInstance(uniformArray);
-                expect(commonNonRandom.Q25).to.be.closeTo(2.5, 0.05);
-                expect(commonNonRandom.Q50).to.be.closeTo(5, 0.05);
-                expect(commonNonRandom.Q75).to.be.closeTo(7.5, 0.05);
             });
             it('should has pdf function with 200 equal elements and sum of them equals to 1', () => {
                 let uniformAnalyzer = Common.getInstance(uniformArray),
@@ -444,9 +444,16 @@ describe('Analyzer', () => {
                 expect(normalAnalyzer.mean).to.be.closeTo(mu, 3 * sigma / normalAnalyzer.pdf.probabilities.length);
             });
             it('should has median value close to mu +/- accuracy', () => {
-                let normalAnalyzer = Common.getInstance(normalArray);
+                let normalAnalyzer = Percentile.getInstance(normalArray),
+                    commonAnalyzer = Common.getInstance(normalArray);
                 expect(normalAnalyzer.median).to.be.a('number');
-                expect(normalAnalyzer.median).to.be.closeTo(mu, 6 * sigma / normalAnalyzer.pdf.probabilities.length);
+                expect(normalAnalyzer.median).to.be.closeTo(mu, 6 * sigma / commonAnalyzer.pdf.probabilities.length);
+            });
+            it('should have correct quartile values', () => {
+                let normalAnalyzer = Percentile.getInstance(normalArray);
+                expect(normalAnalyzer.quartiles['q1']).to.be.closeTo(mu - 0.67 * sigma, 0.05);
+                expect(normalAnalyzer.quartiles['q2']).to.be.closeTo(mu, 0.05);
+                expect(normalAnalyzer.quartiles['q3']).to.be.closeTo(mu + 0.67 * sigma, 0.05);
             });
             it('should has one mode value close to mu +/- accuracy', () => {
                 let normalAnalyzer = Common.getInstance(normalArray);
@@ -563,9 +570,15 @@ describe('Analyzer', () => {
                 expect(betaAnalyzer.mean).to.be.closeTo(alpha / (alpha + beta), 0.005);
             });
             it('should has median value close to (alpha - 1/3) / (alpha + beta - 2/3)', () => {
-                let betaAnalyzer = Common.getInstance(betaArray);
+                let betaAnalyzer = Percentile.getInstance(betaArray);
                 expect(betaAnalyzer.median).to.be.a('number');
-                expect(betaAnalyzer.median).to.be.closeTo((alpha - 0.33333) / (alpha + beta - 0.66667), 0.005);
+                expect(betaAnalyzer.median).to.be.closeTo((alpha - 0.33333) / (alpha + beta - 0.66667), 0.05);
+            });
+            it('should have correct quartile values', () => {
+                let betaAnalyzer = Percentile.getInstance(betaArray);
+                expect(betaAnalyzer.quartiles['q1']).to.be.closeTo(0.161163, 0.05);
+                expect(betaAnalyzer.quartiles['q2']).to.be.closeTo((alpha - 0.33333) / (alpha + beta - 0.66667), 0.05);
+                expect(betaAnalyzer.quartiles['q3']).to.be.closeTo(0.3894795, 0.05);
             });
             it('should has one mode value close to (alpha - 1) / (alpha + beta - 2)', () => {
                 let betaAnalyzer = Common.getInstance(betaArray);

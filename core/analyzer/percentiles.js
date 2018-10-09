@@ -37,7 +37,10 @@ class Percentiles {
         if(percentile_index < 0) {
             return undefined;
         }
-        return this.randomArray[percentile_index] + (1 - value) * (this.randomArray[percentile_index + 1] - this.randomArray[percentile_index]);
+        if(this.randomArray.length % 2 === 0){
+            return this.randomArray[percentile_index] + (1 - value) * (this.randomArray[percentile_index + 1] - this.randomArray[percentile_index]);
+        }
+        return this.randomArray[percentile_index + 1];
     }
 
     /**

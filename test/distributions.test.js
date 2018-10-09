@@ -23,7 +23,8 @@ describe('Random distributions', () => {
     // Uniform distribution
     describe('Uniform distribution',() => {
         let Uniform = require('../lib/methods/uniform'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires numerical arguments', () => {
             let zeroParams = () => {
                 let uniform = new Uniform();
@@ -119,6 +120,7 @@ describe('Random distributions', () => {
             let uniform = new Uniform(1, 4),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -130,11 +132,12 @@ describe('Random distributions', () => {
 
             for(let i = 0; i < 20; i += 1) {
                 distribution = uniform.distribution(300000);
-                analyzer = Common.getInstance(distribution);
+                analyzer = Common.getInstance(distribution),
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -154,7 +157,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(uniform.mean, 0.01);
             });
             it('should has median value close to 2.5', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(uniform.median, 0.02);
             });
             it('should has variance value close to 9/12', () => {
@@ -204,7 +207,8 @@ describe('Random distributions', () => {
     // Normal Distribution
     describe('Normal distribution', () => {
         let Normal = require('../lib/methods/normal'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires two numerical arguments', () => {
             let zeroParams = () => {
                 let normal = new Normal();
@@ -290,6 +294,7 @@ describe('Random distributions', () => {
                 mu = 1,
                 sigma = 2,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -301,11 +306,12 @@ describe('Random distributions', () => {
 
             for(let i = 0; i < 20; i += 1) {
                 distribution = normal.distribution(300000);
-                analyzer = Common.getInstance(distribution);
+                analyzer = Common.getInstance(distribution),
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -325,7 +331,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(normal.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(normal.median, 0.02);
             });
             it('should has correct variance value', () => {
@@ -877,7 +883,8 @@ describe('Random distributions', () => {
     // Binomial distribution
     describe('Binomial distribution', () => {
         let Binomial = require('../lib/methods/binomial'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires two numerical arguments with n > 0 and 0 <= p <= 1', () => {
             let zeroParams = () => {
                 let binomial = new Binomial();
@@ -999,6 +1006,7 @@ describe('Random distributions', () => {
             let binomial = new Binomial(20, 0.7),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -1011,10 +1019,11 @@ describe('Random distributions', () => {
             for(let i = 0; i < 20; i += 1) {
                 distribution = binomial.distribution(300000);
                 analyzer = Common.getInstance(distribution);
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -1034,7 +1043,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(binomial.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(binomial.median, 0.02);
             });
             it('should has correct variance value', () => {
@@ -1093,7 +1102,8 @@ describe('Random distributions', () => {
     // Cauchy distribution
     describe('Cauchy distribution', () => {
         let Cauchy = require('../lib/methods/cauchy'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires two numerical arguments with gamma > 0', () => {
             let zeroParams = () => {
                 let cauchy = new Cauchy();
@@ -1186,6 +1196,7 @@ describe('Random distributions', () => {
             let cauchy = new Cauchy(1, 1),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 median = [];
@@ -1193,9 +1204,10 @@ describe('Random distributions', () => {
             for(let i = 0; i < 20; i += 1) {
                 distribution = cauchy.distribution(300000);
                 analyzer = Common.getInstance(distribution);
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
             }
 
             it('should has min value less then -4', () => {
@@ -1207,7 +1219,7 @@ describe('Random distributions', () => {
                 expect(meanValue(max)).to.be.at.least(6);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(cauchy.median, 0.02);
             });
             it('should has pdf array with 200 elements and sum of them close to 1', () => {
@@ -1243,7 +1255,8 @@ describe('Random distributions', () => {
     // Chi distribution
     describe('Chi distribution', () => {
         let Chi = require('../lib/methods/chi'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires one numerical argument with k > 0', () => {
             let zeroParams = () => {
                 let chi = new Chi();
@@ -1327,6 +1340,7 @@ describe('Random distributions', () => {
             let chi = new Chi(2),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -1339,10 +1353,11 @@ describe('Random distributions', () => {
             for(let i = 0; i < 20; i += 1) {
                 distribution = chi.distribution(300000);
                 analyzer = Common.getInstance(distribution);
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -1362,7 +1377,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(chi.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(chi.median, 0.02);
             });
             it('should has correct variance value', () => {
@@ -1414,7 +1429,8 @@ describe('Random distributions', () => {
     // Chi Square distribution
     describe('Chi Square distribution', () => {
         let ChiSquare = require('../lib/methods/chisquare'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires one numerical argument with k > 0', () => {
             let zeroParams = () => {
                 let chiSquare = new ChiSquare();
@@ -1498,6 +1514,7 @@ describe('Random distributions', () => {
             let chiSquare = new ChiSquare(2),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -1512,10 +1529,11 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -1535,7 +1553,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(chiSquare.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(chiSquare.median, 0.03);
             });
             it('should has correct variance value', () => {
@@ -2397,7 +2415,8 @@ describe('Random distributions', () => {
     // Poisson distribution
     describe('Poisson distribution', () => {
         let Poisson = require('../lib/methods/poisson'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires one numerical argument with lambda > 0', () => {
             let zeroParams = () => {
                 let poisson = new Poisson();
@@ -2503,6 +2522,7 @@ describe('Random distributions', () => {
             let poisson = new Poisson(4),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -2515,10 +2535,11 @@ describe('Random distributions', () => {
             for(let i = 0; i < 20; i += 1) {
                 distribution = poisson.distribution(300000);
                 analyzer = Common.getInstance(distribution);
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -2538,7 +2559,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(poisson.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(poisson.median, 0.02);
             });
             it('should has correct variance value', () => {
@@ -2604,7 +2625,8 @@ describe('Random distributions', () => {
     // Exponential distribution
     describe('Exponential distribution', () => {
         let Exponential = require('../lib/methods/exponential'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires one numerical argument', () => {
             let zeroParams = () => {
                 let exponential = new Exponential();
@@ -2696,6 +2718,7 @@ describe('Random distributions', () => {
             let exponential = new Exponential(1),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -2708,10 +2731,11 @@ describe('Random distributions', () => {
             for(let i = 0; i < 20; i += 1) {
                 distribution = exponential.distribution(300000);
                 analyzer = Common.getInstance(distribution);
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -2731,7 +2755,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(exponential.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(exponential.median, 0.02);
             });
             it('should has correct variance value', () => {
@@ -2798,7 +2822,8 @@ describe('Random distributions', () => {
     // Extreme Value (Gumbel-type) distribution
     describe('Extreme Value (Gumbel-type) distribution', () => {
         let ExtremeValue = require('../lib/methods/extremevalue'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires two numerical arguments with sigma > 0', () => {
             let zeroParams = () => {
                 let extremevalue = new ExtremeValue();
@@ -2891,6 +2916,7 @@ describe('Random distributions', () => {
             let extremeValue = new ExtremeValue(0, 1),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -2903,10 +2929,11 @@ describe('Random distributions', () => {
             for(let i = 0; i < 20; i += 1) {
                 distribution = extremeValue.distribution(300000);
                 analyzer = Common.getInstance(distribution);
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -2926,7 +2953,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(extremeValue.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(extremeValue.median, 0.02);
             });
             it('should has correct variance value', () => {
@@ -2996,7 +3023,8 @@ describe('Random distributions', () => {
     // Laplace distribution
     describe('Laplace distribution', () => {
         let Laplace = require('../lib/methods/laplace'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires two numerical arguments with scale > 0', () => {
             let zeroParams = () => {
                 let laplace = new Laplace();
@@ -3105,6 +3133,7 @@ describe('Random distributions', () => {
             let laplace = new Laplace(0, 2),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -3119,10 +3148,11 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -3142,7 +3172,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(laplace.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(laplace.median, 0.02);
             });
             it('should has correct variance value', () => {
@@ -3217,7 +3247,8 @@ describe('Random distributions', () => {
     // Logistic distribution
     describe('Logistic distribution', () => {
         let Logistic = require('../lib/methods/logistic'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires two numerical arguments with scale > 0', () => {
             let zeroParams = () => {
                 let logistic = new Logistic();
@@ -3326,6 +3357,7 @@ describe('Random distributions', () => {
             let logistic = new Logistic(5, 2),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -3340,10 +3372,11 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -3363,7 +3396,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(logistic.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(logistic.median, 0.03);
             });
             it('should has correct variance value', () => {
@@ -3432,7 +3465,8 @@ describe('Random distributions', () => {
     // Lognormal distribution
     describe('Lognormal distribution', () => {
         let Lognormal = require('../lib/methods/lognormal'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires two numerical arguments with sigma > 0', () => {
             let zeroParams = () => {
                 let lognormal = new Lognormal();
@@ -3525,6 +3559,7 @@ describe('Random distributions', () => {
             let lognormal = new Lognormal(0, 1),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -3538,10 +3573,11 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -3560,7 +3596,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(lognormal.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(lognormal.median, 0.03);
             });
             it('should has correct variance value', () => {
@@ -3607,7 +3643,8 @@ describe('Random distributions', () => {
     // Pareto distribution
     describe('Pareto distribution', () => {
         let Pareto = require('../lib/methods/pareto'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires two numerical arguments with scale > 0 and shape > 0', () => {
             let zeroParams = () => {
                 let pareto = new Pareto();
@@ -3714,6 +3751,7 @@ describe('Random distributions', () => {
             let pareto = new Pareto(1, 4),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 mean = [],
                 median = [],
@@ -3725,9 +3763,10 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 3000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 entropy.push(analyzer.entropy);
             }
@@ -3741,7 +3780,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(pareto.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(pareto.median, 0.03);
             });
             it('should has correct variance value', () => {
@@ -3788,7 +3827,8 @@ describe('Random distributions', () => {
     // Rayleigh distribution
     describe('Rayleigh distribution', () => {
         let Rayleigh = require('../lib/methods/rayleigh'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires one numerical argument with scale > 0', () => {
             let zeroParams = () => {
                 let rayleigh = new Rayleigh();
@@ -3872,6 +3912,7 @@ describe('Random distributions', () => {
             let rayleigh = new Rayleigh(1),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -3886,10 +3927,11 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -3909,7 +3951,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(rayleigh.mean, 0.02);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(rayleigh.median, 0.03);
             });
             it('should has correct variance value', () => {
@@ -3960,7 +4002,8 @@ describe('Random distributions', () => {
     // Student's t-distribution
     describe('Student\'s t-distribution', () => {
         let Student = require('../lib/methods/student'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires one numerical argument with degrees of freedom > 0', () => {
             let zeroParams = () => {
                 let student = new Student();
@@ -4044,6 +4087,7 @@ describe('Random distributions', () => {
             let student = new Student(6),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -4057,10 +4101,11 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 kurtosis.push(analyzer.kurtosis);
@@ -4079,7 +4124,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(student.mean, 0.03);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(student.median, 0.03);
             });
             it('should has correct variance value', () => {
@@ -4122,7 +4167,8 @@ describe('Random distributions', () => {
     // Triangular distribution
     describe('Triangular distribution', () => {
         let Triangular = require('../lib/methods/triangular'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires three numerical arguments with a any, b > a and a <= c <= b', () => {
             let zeroParams = () => {
                 let triangular = new Triangular();
@@ -4231,6 +4277,7 @@ describe('Random distributions', () => {
             let triangular = new Triangular(1, 3, 2),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -4245,10 +4292,11 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -4268,7 +4316,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(triangular.mean, 0.03);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(triangular.median, 0.03);
             });
             it('should has correct entropy value', () => {
@@ -4340,7 +4388,8 @@ describe('Random distributions', () => {
     // Weibull distribution
     describe('Weibull distribution', () => {
         let Weibull = require('../lib/methods/weibull'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires two numerical arguments with k > 0 and lambda > 0', () => {
             let zeroParams = () => {
                 let weibull = new Weibull();
@@ -4447,6 +4496,7 @@ describe('Random distributions', () => {
             let weibull = new Weibull(1.5, 1),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -4461,10 +4511,11 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 entropy.push(analyzer.entropy);
@@ -4484,7 +4535,7 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(weibull.mean, 0.03);
             });
             it('should has correct median value', () => {
-                expect(analyzer.median).to.be.a('number');
+                expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(weibull.median, 0.04);
             });
             it('should has correct entropy value', () => {
@@ -4750,7 +4801,8 @@ describe('Random distributions', () => {
     // Irwin-Hall distribution
     describe('Irwin-Hall distribution', () => {
         let IrwinHall = require('../lib/methods/irwinhall'),
-            Common = require('../lib/analyzer/common');
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
         it('requires one numerical argument with n >= 1', () => {
             let zeroParams = () => {
                 let irwinhall = new IrwinHall();
@@ -4828,6 +4880,7 @@ describe('Random distributions', () => {
             let irwinhall = new IrwinHall(8),
                 distribution,
                 analyzer,
+                percentiler,
                 min = [],
                 max = [],
                 mean = [],
@@ -4841,10 +4894,11 @@ describe('Random distributions', () => {
                 analyzer = Common.getInstance(distribution, {
                     pdf: 1000
                 });
+                percentiler = Percentile.getInstance(distribution);
                 min.push(analyzer.min);
                 max.push(analyzer.max);
                 mean.push(analyzer.mean);
-                median.push(analyzer.median);
+                median.push(percentiler.median);
                 variance.push(analyzer.variance);
                 skewness.push(analyzer.skewness);
                 kurtosis.push(analyzer.kurtosis);
@@ -4863,8 +4917,8 @@ describe('Random distributions', () => {
                 expect(meanValue(mean)).to.be.closeTo(irwinhall.mean, 0.03);
             });
             it('should has correct median value', () => {
-                expect(analyzer.mean).to.be.a('number');
-                expect(meanValue(mean)).to.be.closeTo(irwinhall.median, 0.03);
+                expect(percentiler.median).to.be.a('number');
+                expect(meanValue(median)).to.be.closeTo(irwinhall.median, 0.03);
             });
             it('should has correct variance value', () => {
                 expect(analyzer.variance).to.be.a('number');
