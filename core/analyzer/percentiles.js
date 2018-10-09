@@ -62,7 +62,7 @@ class Percentiles {
      */
     @AnalyzerPublicMethod
     get median(): ?number {
-        return this.quartiles['q2'];
+        return this._calculate_percentile(0.5);
     }
 
     /**
