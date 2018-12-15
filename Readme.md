@@ -113,7 +113,7 @@ Winsorization replaces extreme data values with less extreme values.
 Winsorization is the transformation of statistics by limiting extreme values in the statistical data to reduce the effect of possibly spurious outliers.
 Parameters:
 - input: array of numbers
-- limits: single number, represent same value trimming value from left and right (should be 0 < limit < 0.5), or an array \[<left trim value>, <right trim value>\] (values should be 0 < <left trim value> < <right trim value> < 1)
+- limits: single number, represent same value trimming value from left and right (should be 0 < limit < 0.5), or an array \[left trim value, right trim value\] (values should be 0 < left trim value < right trim value < 1)
 - mutate: <true|false> value (default true). If true - mutate ofiginal array, otherwise - no
 
 <br /> <pre>
