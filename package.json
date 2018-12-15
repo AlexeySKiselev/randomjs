@@ -1,6 +1,6 @@
 {
   "name": "unirand",
-  "version": "2.2.8",
+  "version": "2.3.0",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
@@ -33,7 +33,8 @@
     "derangement",
     "sampling",
     "random number generator",
-    "analyzis"
+    "analyzis",
+    "winsorize"
   ],
   "author": "Alexey S. Kiselev <alexeys.kiselev@yahoo.com>",
   "license": "ISC",

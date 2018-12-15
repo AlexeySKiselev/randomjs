@@ -8,10 +8,11 @@ import DistributionFactory from './core/distributionFactory';
 import AnalyzerFactory from './core/analyzerFactory';
 import Sample from './core/array_manipulation/sample';
 import Shuffle from './core/array_manipulation/shuffle';
+import Winsorize from './core/array_manipulation/winsorize';
 
 const Bernoulli = require('./core/methods/bernoulli');
 
-import type { RandomArray, RandomArrayString, SampleOptions } from './core/types';
+import type { PercentileInput, RandomArray, RandomArrayString, SampleOptions } from './core/types';
 import type { ISample, IShuffle } from './core/interfaces';
 
 class RandomJS {
@@ -22,7 +23,8 @@ class RandomJS {
     shuffle: any;
     _shuffle: IShuffle;
     derange: any;
-    chance: boolean;
+    chance: (trueProb: number) => boolean;
+    winsorize: (input: RandomArray, limits: any) => RandomArray;
 
     constructor(): void {
         this.analyze = null;
@@ -120,6 +122,17 @@ class RandomJS {
                 return !!_chance.random();
             }
         }: Object));
+
+        /**
+         * Winsorize method
+         */
+        Object.defineProperty(this, 'winsorize', ({
+            __proto__: null,
+            value: (input: RandomArray, limits: PercentileInput<number> = 0.05, mutate: boolean = true): RandomArray => {
+                let _winsorize: Winsorize = new Winsorize();
+                return _winsorize.winsorize(input, limits, mutate);
+            }
+        }: Object));
     }
 
     help(): void {
@@ -139,7 +152,8 @@ const methods = {
     sample: randomjs.sample,
     shuffle: randomjs.shuffle,
     derange: randomjs.derange,
-    chance: randomjs.chance
+    chance: randomjs.chance,
+    winsorize: randomjs.winsorize
 };
 fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
     let rand_method = file.slice(0,-3);

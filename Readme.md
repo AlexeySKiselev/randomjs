@@ -108,6 +108,22 @@ console.log(derange(<array|string>)); // will output random derangement of input
 <br />
 There are approximately n!/e derangements for array with n elements. 
 
+### Winsorize
+Winsorization replaces extreme data values with less extreme values.
+Winsorization is the transformation of statistics by limiting extreme values in the statistical data to reduce the effect of possibly spurious outliers.
+Parameters:
+- input: array of numbers
+- limits: single number, represent same value trimming value from left and right (should be 0 < limit < 0.5), or an array \[<left trim value>, <right trim value>\] (values should be 0 < <left trim value> < <right trim value> < 1)
+- mutate: <true|false> value (default true). If true - mutate ofiginal array, otherwise - no
+
+<br /> <pre>
+let winsorize = unirand.winsorize;
+console.log(winsorize(input: <array>, limits: <number|array>, mutate: <true|false>));
+let input  = [92, 19, 101, 58, 1053, 91, 26, 78, 10, 13, −40, 101, 86, 85, 15, 89, 89, 28, −5, 41];
+let output = winsorize(input, 0.05, false); // returns [92, 19, 101, 58, 101, 91, 26, 78, 10, 13, −5, 101, 86, 85, 15, 89, 89, 28, −5, 41]
+// replaced -40 with -5 and 1053 with 101
+</pre>
+
 ### Chance
 **Chance** returns `true` with given probability
 <br /> <pre>

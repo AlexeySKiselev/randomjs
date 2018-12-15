@@ -6,7 +6,7 @@
 
 import type {
     RandomArray, RandomArrayString, AnalyzerPublicMethods, AnalyzerPublicProperties, MethodError,
-    RandomArrayStringObject, SampleOptions
+    RandomArrayStringObject, SampleOptions, PercentileInput
 } from './types';
 
 /**
@@ -147,4 +147,11 @@ export interface ISample {
 export interface IShuffle {
     getPermutation(input: any): RandomArrayString<number | string>;
     getDerangement(input: any): RandomArrayString<number | string>;
+}
+
+/**
+ * Interface for winsorize method
+ */
+export interface IWinsorize {
+    winsorize(input: RandomArray, limits: PercentileInput<number>, mutate: boolean): RandomArray;
 }
