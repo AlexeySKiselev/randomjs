@@ -9,11 +9,13 @@ import AnalyzerFactory from './core/analyzerFactory';
 import Sample from './core/array_manipulation/sample';
 import Shuffle from './core/array_manipulation/shuffle';
 import Winsorize from './core/array_manipulation/winsorize';
+import murmur3 from './core/utils/hash';
+import prngProxy from './core/prng/prngProxy';
 
 const Bernoulli = require('./core/methods/bernoulli');
 
-import type { PercentileInput, RandomArray, RandomArrayString, SampleOptions } from './core/types';
-import type { ISample, IShuffle } from './core/interfaces';
+import type { NumberString, PercentileInput, RandomArray, RandomArrayString, SampleOptions } from './core/types';
+import type { IPRNGProxy, ISample, IShuffle } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
@@ -25,12 +27,17 @@ class RandomJS {
     derange: any;
     chance: (trueProb: number) => boolean;
     winsorize: (input: RandomArray, limits: any) => RandomArray;
+    hash: (data: NumberString, seed: ?number) => number;
+    _prng: IPRNGProxy;
+    seed: (seed_value: ?NumberString) => void;
+    prng: IPRNGProxy;
 
     constructor(): void {
         this.analyze = null;
         this.utils = null;
         this._sample = new Sample();
         this._shuffle = new Shuffle();
+        this._prng = prngProxy('tuchei'); // default PRNG with seed
 
         fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
             /**
@@ -133,6 +140,36 @@ class RandomJS {
                 return _winsorize.winsorize(input, limits, mutate);
             }
         }: Object));
+
+        /**
+         * Hash function
+         */
+        Object.defineProperty(this, 'hash', ({
+            __proto__: null,
+            value: (data: NumberString, seed: ?number): number => {
+                return murmur3(data, seed);
+            }
+        }: Object));
+
+        /**
+         * PRNG seed
+         */
+        Object.defineProperty(this, 'seed', ({
+            __proto__: null,
+            value: (seed_value: ?NumberString): void => {
+                this._prng.seed(seed_value);
+            }
+        }: Object));
+
+        /**
+         * Sets PRNG
+         */
+        Object.defineProperty(this, 'prng', ({
+            __proto__: null,
+            get: (): IPRNGProxy => {
+                return this._prng;
+            }
+        }: Object));
     }
 
     help(): void {
@@ -153,7 +190,10 @@ const methods = {
     shuffle: randomjs.shuffle,
     derange: randomjs.derange,
     chance: randomjs.chance,
-    winsorize: randomjs.winsorize
+    winsorize: randomjs.winsorize,
+    hash: randomjs.hash,
+    seed: randomjs.seed,
+    prng: randomjs.prng
 };
 fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
     let rand_method = file.slice(0,-3);

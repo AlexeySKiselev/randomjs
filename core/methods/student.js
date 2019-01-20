@@ -37,6 +37,7 @@ class Student {
      * Generate Student t-value with TIR algorithm
      * @returns a Student's t-distributed number
      */
+    // $FlowFixMe
     _random(): number {
         let u, v, x;
         /*eslint-disable no-constant-condition */

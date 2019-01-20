@@ -58,3 +58,13 @@ export type SampleOptions = {
  * Percentile input
  */
 export type PercentileInput<T> = Array<T> | T;
+
+/**
+ * Number or string type
+ */
+export type NumberString = number | string;
+
+/**
+ * Array<number> or number
+ */
+export type RandomArrayNumber = RandomArray | number;
