@@ -66,6 +66,14 @@ class PRNGProxy implements IPRNGProxy {
     }
 
     /**
+     * Next method
+     * @returns {number} only single random value
+     */
+    next(): number {
+        return this._current_generator.next();
+    }
+
+    /**
      * Returns random integer [0, 2^32)
      * @returns {number}
      */

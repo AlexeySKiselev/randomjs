@@ -1,6 +1,6 @@
 {
   "name": "unirand",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {

@@ -27,6 +27,10 @@ class DefaultPRNG extends BasicPRNG implements IPRNG {
     randomInt(n: number = 1): RandomArrayNumber {
         throw new Error('Default RPNG does not have .randomInt method');
     }
+
+    next(): number {
+        return Math.random();
+    }
 }
 
 export default DefaultPRNG;

@@ -163,6 +163,7 @@ export interface IPRNG {
     seed(seed_value: ?NumberString): void;
     random(n: number): RandomArrayNumber;
     randomInt(n: number): RandomArrayNumber;
+    next(): number;
 }
 
 /**

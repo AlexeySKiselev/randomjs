@@ -26,6 +26,16 @@ class BasicPRNG implements IPRNG {
     }
 
     /**
+     * Next random value
+     * Returns only single random value
+     * @abstract
+     * @returns {number}
+     */
+    next(): number {
+        throw new Error('Unassigned method');
+    }
+
+    /**
      * Generates random integer [0, 2^32)
      * @returns {number}
      */
