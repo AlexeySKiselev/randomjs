@@ -14,7 +14,10 @@ import prngProxy from './core/prng/prngProxy';
 
 const Bernoulli = require('./core/methods/bernoulli');
 
-import type { NumberString, PercentileInput, RandomArray, RandomArrayString, SampleOptions } from './core/types';
+import type {
+    NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
+    SampleOptions
+} from './core/types';
 import type { IPRNGProxy, ISample, IShuffle } from './core/interfaces';
 
 class RandomJS {
@@ -31,13 +34,14 @@ class RandomJS {
     _prng: IPRNGProxy;
     seed: (seed_value: ?NumberString) => void;
     prng: IPRNGProxy;
+    random: number;
 
     constructor(): void {
         this.analyze = null;
         this.utils = null;
         this._sample = new Sample();
         this._shuffle = new Shuffle();
-        this._prng = prngProxy('tuchei'); // default PRNG with seed
+        this._prng = prngProxy; // default PRNG with seed
 
         fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
             /**
@@ -170,6 +174,15 @@ class RandomJS {
                 return this._prng;
             }
         }: Object));
+
+        /**
+         * Returns seeded random value [0, 1) with uniform distribution
+         */
+        Object.defineProperty(this, 'random', ({
+            value: (n: number = 1): RandomArrayNumber => {
+                return this._prng.random(n);
+            }
+        }: Object));
     }
 
     help(): void {
@@ -193,7 +206,8 @@ const methods = {
     winsorize: randomjs.winsorize,
     hash: randomjs.hash,
     seed: randomjs.seed,
-    prng: randomjs.prng
+    prng: randomjs.prng,
+    random: randomjs.random
 };
 fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
     let rand_method = file.slice(0,-3);

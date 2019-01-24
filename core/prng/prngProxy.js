@@ -11,6 +11,8 @@ import BasicPRNG from './BasicPRNG';
 import TucheiPRNG from './TucheiPRNG';
 import DefaultPRNG from './DefaultPRNG';
 
+const DEFAULT_GENERATOR = 'tuchei';
+
 class PRNGProxy implements IPRNGProxy {
 
     _generators: {[string]: IPRNG};
@@ -93,6 +95,7 @@ class PRNGProxy implements IPRNGProxy {
             if (!this._generators[prng_name]) {
                 this._generators[prng_name] = new this._allowed_generators[prng_name]();
             }
+            this._current_generator_name = prng_name;
             this._current_generator = this._generators[prng_name];
             this._current_generator.seed(this._seed);
         }
@@ -106,4 +109,4 @@ const prng = (prng_name: string = 'default'): IPRNGProxy => {
     return prng_proxy;
 };
 
-export default prng;
+export default prng(DEFAULT_GENERATOR);
