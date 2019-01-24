@@ -144,5 +144,12 @@ describe('PRNG', () =>  {
         expect(count).to.be.at.most(10);
         done();
     });
-
+    it('should return different value with .next() method', () => {
+        prng.seed(123456);
+        const first = prng.random();
+        const second = prng.next();
+        expect(second === first).to.be.equal(false);
+        const third = prng.next();
+        expect(first === third || second === third).to.be.equal(false);
+    });
 });
