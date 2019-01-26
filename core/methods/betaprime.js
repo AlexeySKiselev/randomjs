@@ -44,10 +44,11 @@ class BetaPrime {
      * @returns Array<number> - Beta Prime distributed numbers
      */
     distribution(n: number): RandomArray {
-        let betaPrimeArray: RandomArray = [];
-
+        this.betaRandom.refresh(this.alpha, this.beta);
+        let betaPrimeArray: RandomArray = [],
+            betaVariance: RandomArray = this.betaRandom.distribution(n);
         for(let i: number = 0; i < n; i += 1){
-            betaPrimeArray[i] = this.random();
+            betaPrimeArray[i] = betaVariance[i] / (1 - betaVariance[i]);
         }
         return betaPrimeArray;
     }

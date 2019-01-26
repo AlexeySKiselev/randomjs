@@ -10,6 +10,7 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import prng from '../prng/prngProxy';
 
 class Student {
     degrees: number;
@@ -25,10 +26,11 @@ class Student {
      * @returns a Student's t-distributed number
      */
     random(): number {
-        let randomNumber = this._random();
+        prng.random();
+        let randomNumber: number = this._random();
         // Limit result to get good distribution
-        if(Math.abs(randomNumber) > 12) {
-            return this.random();
+        while(Math.abs(randomNumber) > 12) {
+            randomNumber = this._random();
         }
         return randomNumber;
     }
@@ -39,14 +41,14 @@ class Student {
      */
     // $FlowFixMe
     _random(): number {
-        let u, v, x;
+        let u: number, v: number, x: number;
         /*eslint-disable no-constant-condition */
         while(true) {
             // --- step 1 ---
-            u = Math.random();
+            u = prng.next();
             if (u < this._b / 2) {
                 //  --- step 2 ---
-                v = Math.random();
+                v = prng.next();
                 x = 4 * u - this._b;
                 if (v <= (1 - 0.5 * Math.abs(x))) {
                     return x;
@@ -59,7 +61,7 @@ class Student {
                 // --- step 3 ---
                 if (u < 0.5) {
                     x = (Math.abs(4 * u - 1 - this._b) + this._b) * Math.sign(4 * u - 1 - this._b);
-                    v = Math.random();
+                    v = prng.next();
                     // --- step 4 ---
                     if (v <= (1 - 0.5 * Math.abs(x))) {
                         return x;
@@ -74,7 +76,7 @@ class Student {
                     if (u < 0.75) {
                         // --- step 5 ---
                         x = Math.sign(8 * u - 5) * 2 / (Math.abs(8 * u - 5) + 1);
-                        v = Math.random() / Math.pow(x, 2);
+                        v = prng.next() / Math.pow(x, 2);
                         // --- step 4 ---
                         if (v <= (1 - 0.5 * Math.abs(x))) {
                             return x;
@@ -88,7 +90,7 @@ class Student {
                     } else {
                         // --- step 6 ---
                         x = 2 / (8 * u - 7);
-                        v = Math.random();
+                        v = prng.next();
                         if (v < Math.pow(x, 2) * this._u_alpha(this.degrees, x)) {
                             return x;
                         }
@@ -112,8 +114,15 @@ class Student {
      */
     distribution(n: number): RandomArray {
         let studentArray: RandomArray = [];
+        prng.random();
+        let randomNumber: number;
         for(let i: number = 0; i < n; i += 1){
-            studentArray[i] = this.random();
+            randomNumber = this._random();
+            // Limit result to get good distribution
+            while(randomNumber > 12) {
+                randomNumber = this._random();
+            }
+            studentArray[i] = randomNumber;
         }
         return studentArray;
     }

@@ -10,22 +10,15 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
-let Uniform = require('./uniform');
+import prng from '../prng/prngProxy';
 
 class Normal {
     mu: number;
     sigma: number;
-    uniform: Uniform;
 
     constructor(mu: number, sigma: number): void {
         this.mu = Number(mu);
         this.sigma = Number(sigma);
-        /**
-         * Create an instance of Uniform class
-         * Use this class for generation random normal distributed numbers
-         * @type {Uniform}
-         */
-        this.uniform = new Uniform(-1, 1);
     }
 
     /**
@@ -39,9 +32,10 @@ class Normal {
             U2: number,
             W: number,
             mult: number;
+        prng.random();
         do {
-            U1 = this.uniform.random();
-            U2 = this.uniform.random();
+            U1 = 2 * prng.next() - 1;
+            U2 = 2 * prng.next() - 1;
             W = Math.pow(U1, 2) + Math.pow(U2, 2);
         } while(W >= 1 || W === 0);
         mult = Math.sqrt((-2*Math.log(W))/W);
@@ -63,10 +57,11 @@ class Normal {
             U2: number,
             W: number,
             mult: number;
+        prng.random();
         for(let i: number = 0; i < n; i += 2){
             do {
-                U1 = this.uniform.random();
-                U2 = this.uniform.random();
+                U1 = 2 * prng.next() - 1;
+                U2 = 2 * prng.next() - 1;
                 W = Math.pow(U1, 2) + Math.pow(U2, 2);
             } while(W >= 1 || W === 0);
             mult = Math.sqrt((-2*Math.log(W))/W);

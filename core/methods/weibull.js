@@ -11,6 +11,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 let Utils = require('../utils/utils');
 
 class Weibull {
@@ -29,7 +30,17 @@ class Weibull {
      * @returns a Triangular distributed number
      */
     random(): number {
-        return this.lambda * Math.pow(-Math.log(1 - Math.random()), 1 / this.k);
+        let u: number = (prng.random(): any);
+        return this._random(u);
+    }
+
+    /**
+     * For simplicity
+     * @param {number} u
+     * @private
+     */
+    _random(u: number): number {
+        return this.lambda * Math.pow(-Math.log(1 - u), 1 / this.k);
     }
 
     /**
@@ -38,9 +49,10 @@ class Weibull {
      * @returns Array<number> - Weibull distributed numbers
      */
     distribution(n: number): RandomArray {
-        let weibullArray: RandomArray = [];
+        let weibullArray: RandomArray = [],
+            random: RandomArray = (prng.random(n): any);
         for(let i: number = 0; i < n; i += 1){
-            weibullArray[i] = this.random();
+            weibullArray[i] = this._random(random[i]);
         }
         return weibullArray;
     }

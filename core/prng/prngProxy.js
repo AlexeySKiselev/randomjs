@@ -61,7 +61,7 @@ class PRNGProxy implements IPRNGProxy {
      * Random method
      * @returns random number in range [0, 1)
      */
-    random(n: number = 1): RandomArrayNumber {
+    random(n: ?number = 1): RandomArrayNumber {
         return this._current_generator.random(n);
     }
 
@@ -73,11 +73,15 @@ class PRNGProxy implements IPRNGProxy {
         return this._current_generator.next();
     }
 
+    nextInt(): number {
+        return this._current_generator.nextInt();
+    }
+
     /**
      * Returns random integer [0, 2^32)
      * @returns {number}
      */
-    randomInt(n: number = 1): RandomArrayNumber {
+    randomInt(n: ?number = 1): RandomArrayNumber {
         return this._current_generator.randomInt(n);
     }
 

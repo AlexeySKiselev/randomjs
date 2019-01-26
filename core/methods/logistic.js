@@ -11,6 +11,7 @@
  */
 
 import type { RandomArray, MethodError } from '../types';
+import prng from '../prng/prngProxy';
 
 class Logistic {
     location: number;
@@ -26,7 +27,11 @@ class Logistic {
      * @returns a Logistic distributed number
      */
     random(): number {
-        let u: number = Math.random();
+        let u: number = (prng.random(): any);
+        return this._random(u);
+    }
+
+    _random(u: number): number {
         return this.location + this.scale * Math.log(u / (1 - u));
     }
 
@@ -36,9 +41,10 @@ class Logistic {
      * @returns Array<number> - Logistic distributed numbers
      */
     distribution(n: number): RandomArray {
-        let logisticArray: RandomArray = [];
+        let logisticArray: RandomArray = [],
+            random: RandomArray = (prng.random(n): any);
         for(let i: number = 0; i < n; i += 1){
-            logisticArray[i] = this.random();
+            logisticArray[i] = this._random(random[i]);
         }
         return logisticArray;
     }

@@ -11,6 +11,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 
 class Pareto {
     xm: number;
@@ -26,7 +27,17 @@ class Pareto {
      * @returns a Pareto distributed number
      */
     random(): number {
-        return this.xm * Math.pow(Math.random(), -1 / this.alpha);
+        let u: number = (prng.random(): any);
+        return this._random(u);
+    }
+
+    /**
+     * For simplicity
+     * @param {number} u
+     * @private
+     */
+    _random(u: number): number {
+        return this.xm * Math.pow(u, -1 / this.alpha);
     }
 
     /**
@@ -35,9 +46,10 @@ class Pareto {
      * @returns Array<number> - Pareto distributed numbers
      */
     distribution(n: number): RandomArray {
-        let paretoArray: RandomArray = [];
+        let paretoArray: RandomArray = [],
+            random: RandomArray = (prng.random(n): any);
         for(let i: number = 0; i < n; i += 1){
-            paretoArray[i] = this.random();
+            paretoArray[i] = this._random(random[i]);
         }
         return paretoArray;
     }

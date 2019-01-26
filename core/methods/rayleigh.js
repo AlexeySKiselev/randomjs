@@ -10,6 +10,7 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import prng from '../prng/prngProxy';
 
 class Rayleigh {
     sigma: number;
@@ -23,10 +24,12 @@ class Rayleigh {
      * @returns a Rayleigh distributed number
      */
     random(): number {
-        let u: number = Math.random();
-        if(u === 0) {
-            return this.random();
-        }
+        let epsilon = 0.00000001;
+        let u: number = Math.min((prng.random(): any) + epsilon, 1 - epsilon);
+        return this._random(u);
+    }
+
+    _random(u: number): number {
         return this.sigma * Math.sqrt(-2 * Math.log(u));
     }
 
@@ -36,9 +39,13 @@ class Rayleigh {
      * @returns Array<number> - Rayleigh distributed numbers
      */
     distribution(n: number): RandomArray {
-        let rayleighArray: RandomArray = [];
+        let rayleighArray: RandomArray = [],
+            epsilon = 0.00000001,
+            random: RandomArray = (prng.random(n): any),
+            u: number;
         for(let i: number = 0; i < n; i += 1){
-            rayleighArray[i] = this.random();
+            u = Math.min(random[i] + epsilon, 1 - epsilon);
+            rayleighArray[i] = this._random(u);
         }
         return rayleighArray;
     }

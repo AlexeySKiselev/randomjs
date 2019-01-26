@@ -82,31 +82,43 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
         }
     }
 
-    random(n: number = 1): RandomArrayNumber {
+    random(n: ?number = 1): RandomArrayNumber {
         this._prepare_initial();
 
-        if (n <= 1 || typeof n !== 'number') {
-            return (this.next() >>> 0) / 0x100000000;
+        if (typeof n !== 'number') {
+            return this.next();
         }
 
-        const random_array: RandomArray = [];
-        for (let i = 0; i < n; i += 1) {
-            random_array[i] = (this.next() >>> 0) / 0x100000000;
-        }
-
-        return random_array;
-    }
-
-    randomInt(n: number = 1): RandomArrayNumber {
-        this._prepare_initial();
-
-        if (n <= 1 || typeof n !== 'number') {
+        if (n <= 1) {
             return this.next();
         }
 
         const random_array: RandomArray = [];
         for (let i = 0; i < n; i += 1) {
             random_array[i] = this.next();
+        }
+
+        return random_array;
+    }
+
+    next(): number {
+        return (this.nextInt() >>> 0) / 0x100000000;
+    }
+
+    randomInt(n: ?number = 1): RandomArrayNumber {
+        this._prepare_initial();
+
+        if (typeof n !== 'number') {
+            return this.nextInt();
+        }
+
+        if (n <= 1) {
+            return this.nextInt();
+        }
+
+        const random_array: RandomArray = [];
+        for (let i = 0; i < n; i += 1) {
+            random_array[i] = this.nextInt();
         }
 
         return random_array;
@@ -136,7 +148,7 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
         }
     }
 
-    next(): number {
+    nextInt(): number {
         let a = this._a,
             b = this._b,
             c = this._c,

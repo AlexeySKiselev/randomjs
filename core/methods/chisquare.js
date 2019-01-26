@@ -27,9 +27,10 @@ class ChiSquare {
      * @returns a Chi Square distributed number
      */
     random(): number {
-        let res: number = 0;
+        let res: number = 0,
+            random: RandomArray = this.normal.distribution(this.degrees);
         for(let i: number = 0; i < this.degrees; i += 1){
-            res += Math.pow(this.normal.random(), 2);
+            res += Math.pow(random[i], 2);
         }
         return res;
     }
@@ -40,9 +41,15 @@ class ChiSquare {
      * @returns Array<number> - Chi Square distributed numbers
      */
     distribution(n: number): RandomArray {
-        let chiSquareArray: RandomArray = [];
+        let chiSquareArray: RandomArray = [],
+            res: number,
+            random: RandomArray = this.normal.distribution(n * this.degrees);
         for(let i:number = 0; i < n; i += 1){
-            chiSquareArray[i] = this.random();
+            res = 0;
+            for(let j: number = 0; j < this.degrees; j += 1){
+                res += Math.pow(random[i * this.degrees + j], 2);
+            }
+            chiSquareArray[i] = res;
         }
         return chiSquareArray;
     }

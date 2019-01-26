@@ -30,7 +30,11 @@ class Lognormal {
      * @returns a Lognormal distributed number
      */
     random(): number {
-        return Math.exp(this.mu + this.sigma * this.normal.random());
+        return this._random(this.normal.random());
+    }
+
+    _random(u: number): number {
+        return Math.exp(this.mu + this.sigma * u);
     }
 
     /**
@@ -39,9 +43,10 @@ class Lognormal {
      * @returns Array<number> - lognormal distributed numbers
      */
     distribution(n: number): RandomArray {
-        let lognormalArray: RandomArray = [];
+        let lognormalArray: RandomArray = [],
+            random: RandomArray = this.normal.distribution(n);
         for(let i: number = 0; i < n; i += 1){
-            lognormalArray[i] = this.random();
+            lognormalArray[i] = this._random(random[i]);
         }
         return lognormalArray;
     }

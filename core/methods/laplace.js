@@ -11,6 +11,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 
 class Laplace {
     location: number;
@@ -26,7 +27,11 @@ class Laplace {
      * @returns a Laplace distributed number
      */
     random(): number {
-        let u: number = Math.random();
+        let u: number = (prng.random(): any);
+        return this._random(u);
+    }
+
+    _random(u: number): number {
         if(u <= 0.5){
             return this.location + this.scale * Math.log(2 * u);
         }
@@ -39,9 +44,10 @@ class Laplace {
      * @returns Array<number> - Laplace distributed numbers
      */
     distribution(n: number): RandomArray {
-        let laplaceArray: RandomArray = [];
+        let laplaceArray: RandomArray = [],
+            random: RandomArray = (prng.random(n): any);
         for(let i: number = 0; i < n; i += 1){
-            laplaceArray[i] = this.random();
+            laplaceArray[i] = this._random(random[i]);
         }
         return laplaceArray;
     }

@@ -11,8 +11,12 @@ class DefaultPRNG extends BasicPRNG implements IPRNG {
         super();
     }
 
-    random(n: number = 1): RandomArrayNumber {
-        if (n <= 1 || typeof n !== 'number') {
+    random(n: ?number = 1): RandomArrayNumber {
+        if (typeof n !== 'number') {
+            return Math.random();
+        }
+
+        if (n <= 1) {
             return Math.random();
         }
 
@@ -24,12 +28,16 @@ class DefaultPRNG extends BasicPRNG implements IPRNG {
     }
 
     // eslint-disable-next-line
-    randomInt(n: number = 1): RandomArrayNumber {
+    randomInt(n: ?number = 1): RandomArrayNumber {
         throw new Error('Default RPNG does not have .randomInt method');
     }
 
     next(): number {
         return Math.random();
+    }
+
+    nextInt(): number {
+        throw new Error('Default RPNG does not have .nextInt method');
     }
 }
 

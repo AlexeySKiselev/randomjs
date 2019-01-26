@@ -152,4 +152,20 @@ describe('PRNG', () =>  {
         const third = prng.next();
         expect(first === third || second === third).to.be.equal(false);
     });
+    it('should have max value close to 1 and min close to 0', function(done) {
+        this.timeout(480000);
+        prng.seed('seed test');
+        const random = prng.random(10000000);
+        let max_v = -1,
+            min_v = 2;
+        for (let i = 0; i < 10000000; i += 1) {
+            max_v = Math.max(max_v, random[i]);
+            min_v = Math.min(min_v, random[i]);
+        }
+        expect(max_v).to.be.at.most(1);
+        expect(max_v).to.be.closeTo(1, 0.00001);
+        expect(min_v).to.be.at.least(0);
+        expect(min_v).to.be.closeTo(0, 0.00001);
+        done();
+    });
 });

@@ -44,9 +44,12 @@ class NegativeBinomial {
      * @returns Array<number> - Negative Binomial distributed numbers
      */
     distribution(n: number): RandomArray {
-        let negativeBinomialArray: RandomArray = [];
+        this.gamma.refresh(this.numberSuccess, this.successProb / (1 - this.successProb));
+        let negativeBinomialArray: RandomArray = [],
+            random: RandomArray = this.gamma.distribution(n);
         for(let i:number = 0; i < n; i += 1){
-            negativeBinomialArray[i] = this.random();
+            this.poisson.refresh(random[i]);
+            negativeBinomialArray[i] = this.poisson.distribution(n)[i];
         }
         return negativeBinomialArray;
     }

@@ -21,13 +21,14 @@ class BasicPRNG implements IPRNG {
      * @returns {number} random number
      */
     // eslint-disable-next-line
-    random(n: number = 1): RandomArrayNumber {
+    random(n: ?number = 1): RandomArrayNumber {
         throw new Error('Unassigned method');
     }
 
     /**
      * Next random value
      * Returns only single random value
+     * Does not support seed
      * @abstract
      * @returns {number}
      */
@@ -36,11 +37,22 @@ class BasicPRNG implements IPRNG {
     }
 
     /**
+     * Next integer random value
+     * Returns only single random value
+     * Does not support seed
+     * @abstract
+     * @returns {number}
+     */
+    nextInt(): number {
+        throw new Error('Unassigned method');
+    }
+
+    /**
      * Generates random integer [0, 2^32)
      * @returns {number}
      */
     // eslint-disable-next-line
-    randomInt(n: number = 1): RandomArrayNumber {
+    randomInt(n: ?number = 1): RandomArrayNumber {
         throw new Error('Unassigned method');
     }
 

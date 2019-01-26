@@ -11,6 +11,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 
 class ExtremeValue {
     mu: number;
@@ -26,7 +27,11 @@ class ExtremeValue {
      * @returns a extreme value distributed number
      */
     random(): number {
-        return this.mu - this.sigma * Math.log(-Math.log(Math.random()));
+        return this._random((prng.random(): any));
+    }
+
+    _random(u: number): number {
+        return this.mu - this.sigma * Math.log(-Math.log(u));
     }
 
     /**
@@ -35,9 +40,10 @@ class ExtremeValue {
      * @returns Array<number> - extreme value distributed numbers
      */
     distribution(n: number): RandomArray {
-        let extremeValueArray: RandomArray = [];
+        const random: RandomArray = (prng.random(n): any);
+        const extremeValueArray: RandomArray = [];
         for(let i: number = 0; i < n; i += 1){
-            extremeValueArray[i] = this.random();
+            extremeValueArray[i] = this._random(random[i]);
         }
         return extremeValueArray;
     }
