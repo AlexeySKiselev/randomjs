@@ -44,6 +44,7 @@ class Geometric {
             res: number;
         for(let i = 0; i < n; i += 1){
             res = 1;
+            random = prng.next();
             while(random >= this.successProb){
                 res += 1;
                 random = prng.next();

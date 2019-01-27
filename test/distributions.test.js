@@ -6,9 +6,11 @@
 // Import Mocha tool for tests
 let chai = require('chai'),
     expect = chai.expect,
-    {describe, it} = require('mocha');
+    {describe, it} = require('mocha'),
+    prng = require('../lib/prng/prngProxy').default;
 
 chai.should();
+prng.seed();
 
 // Calculate mean value of array
 function meanValue(arr) {
@@ -19,7 +21,7 @@ function meanValue(arr) {
     return res / arr.length;
 }
 
-describe('Random distributions', () => {
+describe('Random distributions without seed', () => {
     // Uniform distribution
     describe('Uniform distribution',() => {
         let Uniform = require('../lib/methods/uniform'),
@@ -834,7 +836,7 @@ describe('Random distributions', () => {
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
         });
-        describe('With real generated data (alpha = 1.5, beta = 3)', () => {
+        describe('With real generated data (alpha = 5, beta = 3)', () => {
             let betaPrime = new BetaPrime(5, 3),
                 distribution,
                 analyzer,

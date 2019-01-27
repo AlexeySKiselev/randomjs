@@ -114,7 +114,7 @@ describe('PRNG', () =>  {
         }
         done();
     });
-    it('should return same seeded vector every time without seed', function(done) {
+    it('should return different vector every time without seed', function(done) {
         this.timeout(480000);
         prng.seed();
         const first = prng.random(10);
