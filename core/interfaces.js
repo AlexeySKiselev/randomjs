@@ -70,10 +70,15 @@ export interface IDistribution {
  */
 export interface IRandomFactory<R, D> {
     /**
-     * Object for storing imported classes
+     * Object for storing current active distribution instance
      * @private
      */
-    _method?: IRandomFactory<number, RandomArray>;
+    _current_method: IDistribution;
+
+    /**
+     * Object for storing all distribution instances
+     */
+    _distributions: {[string]: IDistribution};
 
     /**
      * Required method
