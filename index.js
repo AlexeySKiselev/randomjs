@@ -34,8 +34,10 @@ class RandomJS {
     _prng: IPRNGProxy;
     seed: (seed_value: ?NumberString) => void;
     prng: IPRNGProxy;
-    random: number;
+    random: RandomArrayNumber;
     next: number;
+    randomInt: RandomArrayNumber;
+    nextInt: number;
 
     constructor(): void {
         this.analyze = null;
@@ -191,6 +193,24 @@ class RandomJS {
         Object.defineProperty(this, 'next', ({
             value: (): number => {
                 return this._prng.next();
+            }
+        }: Object));
+
+        /**
+         * Returns seeded random integer value [0, 2^32) with uniform distribution
+         */
+        Object.defineProperty(this, 'randomInt', ({
+            value: (n: number = 1): RandomArrayNumber => {
+                return this._prng.randomInt(n);
+            }
+        }: Object));
+
+        /**
+         * Returns seeded next integer value [0, 2^32) with uniform distribution
+         */
+        Object.defineProperty(this, 'nextInt', ({
+            value: (): number => {
+                return this._prng.nextInt();
             }
         }: Object));
     }

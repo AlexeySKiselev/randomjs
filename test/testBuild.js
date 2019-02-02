@@ -5,11 +5,14 @@
 
 let unirand = require('../lib');
 
-unirand.seed();
-console.log(unirand.negativebinomial(3, 0.6).randomSync());
-console.log(unirand.negativebinomial(3, 0.6).nextSync());
-console.log(unirand.negativebinomial(3, 0.6).nextSync());
+unirand.seed(12345);
+console.log(unirand.random());
+console.log(unirand.next());
+console.log(unirand.next());
 //unirand.seed();
-console.log(unirand.negativebinomial(3, 0.6).randomSync());
-console.log(unirand.negativebinomial(3, 0.6).nextSync());
-console.log(unirand.negativebinomial(3, 0.6).nextSync());
+console.log(unirand.normal(3, 3).randomSync());
+console.log(unirand.normal(3, 3).nextSync());
+console.log(unirand.normal(3, 3).nextSync());
+console.log(unirand.normal(3, 3).nextSync());
+console.log(unirand.normal(3, 3).nextSync());
+

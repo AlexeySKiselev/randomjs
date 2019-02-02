@@ -127,7 +127,7 @@ describe('Array manipulation methods', () => {
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 letters = {},
                 temp;
-            prng.seed();s
+            prng.seed();
             // generate letters dict
             for(let letter of input_str) {
                 letters[letter] = 0;
@@ -283,7 +283,8 @@ describe('Array manipulation methods', () => {
             expect(shuffle.getPermutation(input_string)).to.be.a('string');
             shuffle.getPermutation(input_string).length.should.equal(input_string.length);
         });
-        it('should generate different results each time', () => {
+        it('should generate different results each time', function (done) {
+            this.timeout(480000);
             let shuffle = new Shuffle(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 samples = {},
@@ -295,6 +296,7 @@ describe('Array manipulation methods', () => {
                 samples[temp] = 1;
             }
             expect(Object.keys(samples).length).to.be.at.least(99990);
+            done();
         });
         it('should place each element on each position with the same probability', function(done) {
             this.timeout(480000);
@@ -401,7 +403,8 @@ describe('Array manipulation methods', () => {
             expect(shuffle.getDerangement(input_string)).to.be.a('string');
             shuffle.getDerangement(input_string).length.should.equal(input_string.length);
         });
-        it('should generate different results each time', () => {
+        it('should generate different results each time', function (done) {
+            this.timeout(480000);
             let shuffle = new Shuffle(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 samples = {},
@@ -413,6 +416,7 @@ describe('Array manipulation methods', () => {
                 samples[temp] = 1;
             }
             expect(Object.keys(samples).length).to.be.at.least(99990);
+            done();
         });
         it('should place each element on each position with the same probability', function(done) {
             this.timeout(480000);

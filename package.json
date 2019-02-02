@@ -1,6 +1,6 @@
 {
   "name": "unirand",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
@@ -37,7 +37,8 @@
     "winsorize",
     "murmur hash",
     "prng",
-    "tuchei prng"
+    "tuchei prng",
+    "seed"
   ],
   "author": "Alexey S. Kiselev <alexeys.kiselev@yahoo.com>",
   "license": "ISC",
