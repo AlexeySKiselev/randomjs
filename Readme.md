@@ -28,7 +28,7 @@ Also you can set another PRNG by calling:
 unirand.prng.set_prng('default'); // now PRNG is default JS generator equals to Math.random()
 ```
 
-####.random() and .randomInt()
+#### .random() and .randomInt()
 Returns random uniformly distributed value or array of length *n*. Returns different value each time without seed and same value with seed value.
 ```$xslt
 unirand.random(); // random value [0, 1)
@@ -39,7 +39,7 @@ unirand.randomInt(n); // uniformly distributed random integer array of size n
 ```
 Without *seed value* this method returns different values each call. With *seed value* this method returns same value each time.
 
-####.next() and .nextInt()
+#### .next() and .nextInt()
 It makes sense only for seeded generators. Otherwise that method works as `.random()`. If you want to return another random seeded value after *.random()* method, use *.next()*.
 ```$xslt
 unirand.seed(123456);
@@ -51,7 +51,7 @@ unirand.next(); // returns 0.045074593275785446
 ```
 Same results for `.nextInt()`. These methods always return single value.
 
-####.seed()
+#### .seed()
 ```$xslt
 unirand.seed('unirand'); // sets seed value for PRNG
 unirand.random(); // always 0.026891989167779684
