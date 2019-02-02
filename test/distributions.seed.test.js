@@ -41,12 +41,12 @@ describe('Random distributions with seed', () => {
             const uniform = new Uniform(1, 4);
             prng.seed('first uniform seed test');
             const uniformFirst = uniform.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(uniform.distribution(10000), uniformFirst);
             }
             prng.seed('second uniform seed test');
             const uniformSecond = uniform.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(uniform.distribution(10000), uniformSecond);
             }
             done();
@@ -72,12 +72,12 @@ describe('Random distributions with seed', () => {
             const normal = new Normal(1, 2);
             prng.seed('first normal seed test');
             const normalFirst = normal.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(normal.distribution(10000), normalFirst);
             }
             prng.seed('second normal seed test');
             const normalSecond = normal.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(normal.distribution(10000), normalSecond);
             }
             done();
@@ -103,12 +103,12 @@ describe('Random distributions with seed', () => {
             const bernoulli = new Bernoulli(0.6);
             prng.seed('first bernoulli seed test');
             const bernoulliFirst = bernoulli.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(bernoulli.distribution(10000), bernoulliFirst);
             }
             prng.seed('second bernoulli seed test');
             const bernoulliSecond = bernoulli.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(bernoulli.distribution(10000), bernoulliSecond);
             }
             done();
@@ -134,12 +134,12 @@ describe('Random distributions with seed', () => {
             const beta = new Beta(2, 5);
             prng.seed('first beta seed test');
             const betaFirst = beta.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(beta.distribution(10000), betaFirst);
             }
             prng.seed('second beta seed test');
             const betaSecond = beta.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(beta.distribution(10000), betaSecond);
             }
             done();
@@ -165,12 +165,12 @@ describe('Random distributions with seed', () => {
             const betaprime = new BetaPrime(2, 3);
             prng.seed('first betaprime seed test');
             const betaprimeFirst = betaprime.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(betaprime.distribution(10000), betaprimeFirst);
             }
             prng.seed('second betaprime seed test');
             const betaprimeSecond = betaprime.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(betaprime.distribution(10000), betaprimeSecond);
             }
             done();
@@ -196,12 +196,12 @@ describe('Random distributions with seed', () => {
             const binomial = new Binomial(20, 0.7);
             prng.seed('first binomial seed test');
             const binomialFirst = binomial.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(binomial.distribution(10000), binomialFirst);
             }
             prng.seed('second binomial seed test');
             const binomialSecond = binomial.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(binomial.distribution(10000), binomialSecond);
             }
             done();
@@ -227,12 +227,12 @@ describe('Random distributions with seed', () => {
             const cauchy = new Cauchy(1, 1);
             prng.seed('first cauchy seed test');
             const cauchyFirst = cauchy.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(cauchy.distribution(10000), cauchyFirst);
             }
             prng.seed('second cauchy seed test');
             const cauchySecond = cauchy.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(cauchy.distribution(10000), cauchySecond);
             }
             done();
@@ -258,12 +258,12 @@ describe('Random distributions with seed', () => {
             const chi = new Chi(2);
             prng.seed('first chi seed test');
             const chiFirst = chi.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(chi.distribution(10000), chiFirst);
             }
             prng.seed('second chi seed test');
             const chiSecond = chi.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(chi.distribution(10000), chiSecond);
             }
             done();
@@ -289,12 +289,12 @@ describe('Random distributions with seed', () => {
             const chisquare = new ChiSquare(2);
             prng.seed('first chisquare seed test');
             const chisquareFirst = chisquare.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(chisquare.distribution(10000), chisquareFirst);
             }
             prng.seed('second chisquare seed test');
             const chisquareSecond = chisquare.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(chisquare.distribution(10000), chisquareSecond);
             }
             done();
@@ -320,12 +320,12 @@ describe('Random distributions with seed', () => {
             const erlang = new Erlang(2, 2);
             prng.seed('first erlang seed test');
             const erlangFirst = erlang.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(erlang.distribution(10000), erlangFirst);
             }
             prng.seed('second erlang seed test');
             const erlangSecond = erlang.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(erlang.distribution(10000), erlangSecond);
             }
             done();
@@ -351,12 +351,12 @@ describe('Random distributions with seed', () => {
             const gamma = new Gamma(2, 0.5);
             prng.seed('first gamma seed test');
             const gammaFirst = gamma.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(gamma.distribution(10000), gammaFirst);
             }
             prng.seed('second gamma seed test');
             const gammaSecond = gamma.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(gamma.distribution(10000), gammaSecond);
             }
             done();
@@ -382,12 +382,12 @@ describe('Random distributions with seed', () => {
             const geometric = new Geometric(0.6);
             prng.seed('first geometric seed test');
             const geometricFirst = geometric.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(geometric.distribution(10000), geometricFirst);
             }
             prng.seed('second geometric seed test');
             const geometricSecond = geometric.distribution(10000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(geometric.distribution(10000), geometricSecond);
             }
             done();
@@ -413,12 +413,12 @@ describe('Random distributions with seed', () => {
             const negativebinomial = new NegativeBinomial(3, 0.6);
             prng.seed('first negativebinomial seed test');
             const negativebinomialFirst = negativebinomial.distribution(2000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(negativebinomial.distribution(2000), negativebinomialFirst);
             }
             prng.seed('second negativebinomial seed test');
             const negativebinomialSecond = negativebinomial.distribution(2000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(negativebinomial.distribution(2000), negativebinomialSecond);
             }
             done();
@@ -444,12 +444,12 @@ describe('Random distributions with seed', () => {
             const poisson = new Poisson(4);
             prng.seed('first poisson seed test');
             const poissonFirst = poisson.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(poisson.distribution(5000), poissonFirst);
             }
             prng.seed('second poisson seed test');
             const poissonSecond = poisson.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(poisson.distribution(5000), poissonSecond);
             }
             done();
@@ -475,12 +475,12 @@ describe('Random distributions with seed', () => {
             const exponential = new Exponential(1);
             prng.seed('first exponential seed test');
             const exponentialFirst = exponential.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(exponential.distribution(5000), exponentialFirst);
             }
             prng.seed('second exponential seed test');
             const exponentialSecond = exponential.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(exponential.distribution(5000), exponentialSecond);
             }
             done();
@@ -506,12 +506,12 @@ describe('Random distributions with seed', () => {
             const extremevalue = new Extremevalue(0, 1);
             prng.seed('first extremevalue seed test');
             const extremevalueFirst = extremevalue.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(extremevalue.distribution(5000), extremevalueFirst);
             }
             prng.seed('second extremevalue seed test');
             const extremevalueSecond = extremevalue.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(extremevalue.distribution(5000), extremevalueSecond);
             }
             done();
@@ -537,12 +537,12 @@ describe('Random distributions with seed', () => {
             const laplace = new Laplace(0, 2);
             prng.seed('first laplace seed test');
             const laplaceFirst = laplace.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(laplace.distribution(5000), laplaceFirst);
             }
             prng.seed('second laplace seed test');
             const laplaceSecond = laplace.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(laplace.distribution(5000), laplaceSecond);
             }
             done();
@@ -568,12 +568,12 @@ describe('Random distributions with seed', () => {
             const logistic = new Logistic(5, 2);
             prng.seed('first logistic seed test');
             const logisticFirst = logistic.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(logistic.distribution(5000), logisticFirst);
             }
             prng.seed('second logistic seed test');
             const logisticSecond = logistic.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(logistic.distribution(5000), logisticSecond);
             }
             done();
@@ -599,12 +599,12 @@ describe('Random distributions with seed', () => {
             const lognormal = new Lognormal(0, 1);
             prng.seed('first lognormal seed test');
             const lognormalFirst = lognormal.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(lognormal.distribution(5000), lognormalFirst);
             }
             prng.seed('second lognormal seed test');
             const lognormalSecond = lognormal.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(lognormal.distribution(5000), lognormalSecond);
             }
             done();
@@ -630,12 +630,12 @@ describe('Random distributions with seed', () => {
             const pareto = new Pareto(1, 4);
             prng.seed('first pareto seed test');
             const paretoFirst = pareto.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(pareto.distribution(5000), paretoFirst);
             }
             prng.seed('second pareto seed test');
             const paretoSecond = pareto.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(pareto.distribution(5000), paretoSecond);
             }
             done();
@@ -661,12 +661,12 @@ describe('Random distributions with seed', () => {
             const rayleigh = new Rayleigh(1);
             prng.seed('first rayleigh seed test');
             const rayleighFirst = rayleigh.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(rayleigh.distribution(5000), rayleighFirst);
             }
             prng.seed('second rayleigh seed test');
             const rayleighSecond = rayleigh.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(rayleigh.distribution(5000), rayleighSecond);
             }
             done();
@@ -692,12 +692,12 @@ describe('Random distributions with seed', () => {
             const student = new Student(6);
             prng.seed('first student seed test');
             const studentFirst = student.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(student.distribution(5000), studentFirst);
             }
             prng.seed('second student seed test');
             const studentSecond = student.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(student.distribution(5000), studentSecond);
             }
             done();
@@ -723,12 +723,12 @@ describe('Random distributions with seed', () => {
             const triangular = new Triangular(1, 3, 2);
             prng.seed('first triangular seed test');
             const triangularFirst = triangular.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(triangular.distribution(5000), triangularFirst);
             }
             prng.seed('second triangular seed test');
             const triangularSecond = triangular.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(triangular.distribution(5000), triangularSecond);
             }
             done();
@@ -754,12 +754,12 @@ describe('Random distributions with seed', () => {
             const weibull = new Weibull(1.5, 1);
             prng.seed('first weibull seed test');
             const weibullFirst = weibull.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(weibull.distribution(5000), weibullFirst);
             }
             prng.seed('second weibull seed test');
             const weibullSecond = weibull.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(weibull.distribution(5000), weibullSecond);
             }
             done();
@@ -785,12 +785,12 @@ describe('Random distributions with seed', () => {
             const bates = new Bates(10, 0, 1);
             prng.seed('first bates seed test');
             const batesFirst = bates.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(bates.distribution(5000), batesFirst);
             }
             prng.seed('second bates seed test');
             const batesSecond = bates.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(bates.distribution(5000), batesSecond);
             }
             done();
@@ -816,12 +816,12 @@ describe('Random distributions with seed', () => {
             const irwinhall = new Irwinhall(8);
             prng.seed('first irwinhall seed test');
             const irwinhallFirst = irwinhall.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(irwinhall.distribution(5000), irwinhallFirst);
             }
             prng.seed('second irwinhall seed test');
             const irwinhallSecond = irwinhall.distribution(5000);
-            for(let i = 0; i < 20; i += 1) {
+            for(let i = 0; i < 10; i += 1) {
                 compareDistributions(irwinhall.distribution(5000), irwinhallSecond);
             }
             done();

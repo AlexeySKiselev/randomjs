@@ -51,7 +51,7 @@ describe('PRNG', () =>  {
             values[Math.floor(temp * 100)] += 1;
         }
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(100000, 1000);
+            expect(values[v]).to.be.closeTo(100000, 1500);
         }
         done();
     });

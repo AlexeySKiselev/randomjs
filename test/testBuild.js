@@ -3,17 +3,13 @@
  * Created by Alexey S. Kiselev on 23.12.2017.
  */
 
-let prng = require('../lib/prng/prngProxy').default,
-    R = require('../lib/methods/irwinhall'),
-    r = new R(8);
+let unirand = require('../lib');
 
-prng.seed('unirand');
-console.log(r.random());
-console.log(r.random());
-console.log(r.distribution(10));
-console.log(r.distribution(10));
-
-
-
-
-
+unirand.seed('hshdd');
+console.log(unirand.negativebinomial(3, 0.6).randomSync());
+console.log(unirand.negativebinomial(3, 0.6).nextSync());
+console.log(unirand.negativebinomial(3, 0.6).nextSync());
+//unirand.seed();
+console.log(unirand.negativebinomial(3, 0.6).randomSync());
+console.log(unirand.negativebinomial(3, 0.6).nextSync());
+console.log(unirand.negativebinomial(3, 0.6).nextSync());

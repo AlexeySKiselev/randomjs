@@ -87,6 +87,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time and these values should be 1 <= <values> <= 5', () => {
             let uniform = new Uniform(1, 5),
                 value1 = uniform.random();
+            prng.seed();
             expect(uniform.random()).to.be.a('number');
             expect(uniform.random()).to.be.within(1, 5);
             uniform.random().should.not.equal(value1);
@@ -267,6 +268,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let normal = new Normal(1.5, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = normal.random();
                 expect(normal.random()).to.be.a('number');
@@ -477,6 +479,7 @@ describe('Random distributions without seed', () => {
             let bernoulli = new Bernoulli(0.6),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 20; i += 1){
                 value1 = bernoulli.random();
                 expect(bernoulli.random()).to.be.a('number');
@@ -621,6 +624,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let beta = new Beta(1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = beta.random();
                 expect(beta.random()).to.be.a('number');
@@ -813,6 +817,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let betaPrime = new BetaPrime(1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = betaPrime.random();
                 expect(betaPrime.random()).to.be.a('number');
@@ -968,6 +973,7 @@ describe('Random distributions without seed', () => {
             let binomial = new Binomial(2, 0.6),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = binomial.random();
                 expect(binomial.random()).to.be.a('number');
@@ -1171,6 +1177,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let cauchy = new Cauchy(1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = cauchy.random();
                 expect(cauchy.random()).to.be.a('number');
@@ -1315,6 +1322,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let chi = new Chi(2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = chi.random();
                 expect(chi.random()).to.be.a('number');
@@ -1489,6 +1497,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let chiSquare = new ChiSquare(2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = chiSquare.random();
                 expect(chiSquare.random()).to.be.a('number');
@@ -1707,6 +1716,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let erlang = new Erlang(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = erlang.random();
                 expect(erlang.random()).to.be.a('number');
@@ -1902,6 +1912,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let gamma = new Gamma(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = gamma.random();
                 expect(gamma.random()).to.be.a('number');
@@ -2075,6 +2086,7 @@ describe('Random distributions without seed', () => {
             let geometric = new Geometric(0.6),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = geometric.random();
                 expect(geometric.random()).to.be.a('number');
@@ -2288,6 +2300,7 @@ describe('Random distributions without seed', () => {
             let negativeBinomial = new NegativeBinomial(2, 0.6),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = negativeBinomial.random();
                 expect(negativeBinomial.random()).to.be.a('number');
@@ -2484,6 +2497,7 @@ describe('Random distributions without seed', () => {
             let poisson = new Poisson(2),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = poisson.random();
                 expect(poisson.random()).to.be.a('number');
@@ -2693,6 +2707,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let exponential = new Exponential(3),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = exponential.random();
                 expect(exponential.random()).to.be.a('number');
@@ -2891,6 +2906,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let extremevalue = new ExtremeValue(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = extremevalue.random();
                 expect(extremevalue.random()).to.be.a('number');
@@ -3108,6 +3124,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let laplace = new Laplace(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = laplace.random();
                 expect(laplace.random()).to.be.a('number');
@@ -3332,6 +3349,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let logistic = new Logistic(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = logistic.random();
                 expect(logistic.random()).to.be.a('number');
@@ -3534,6 +3552,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let lognormal = new Lognormal(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = lognormal.random();
                 expect(lognormal.random()).to.be.a('number');
@@ -3726,6 +3745,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let pareto = new Pareto(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = pareto.random();
                 expect(pareto.random()).to.be.a('number');
@@ -3887,6 +3907,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let rayleigh = new Rayleigh(1),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = rayleigh.random();
                 expect(rayleigh.random()).to.be.a('number');
@@ -4062,6 +4083,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let student = new Student(1),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = student.random();
                 expect(student.random()).to.be.a('number');
@@ -4252,6 +4274,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let triangular = new Triangular(1, 3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = triangular.random();
                 expect(triangular.random()).to.be.a('number');
@@ -4471,6 +4494,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let weibull = new Weibull(1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = weibull.random();
                 expect(weibull.random()).to.be.a('number');
@@ -4679,6 +4703,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let bates = new Bates(5, 1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = bates.random();
                 expect(bates.random()).to.be.a('number');
@@ -4855,6 +4880,7 @@ describe('Random distributions without seed', () => {
         it('should return different values each time', () => {
             let irwinhall = new IrwinHall(5),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = irwinhall.random();
                 expect(irwinhall.random()).to.be.a('number');
