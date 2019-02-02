@@ -53,6 +53,19 @@ export interface IAnalyzerSingleton {
 }
 
 /**
+ * Interface for a particular distribution
+ */
+export interface IDistribution {
+    constructor(...params: any): void;
+    random(): number;
+    next(): number;
+    distribution(n: number): RandomArray;
+    isError(): MethodError;
+    refresh(...params: any): void;
+    toString(): string;
+}
+
+/**
  * Random Distributions Factory Interface
  */
 export interface IRandomFactory<R, D> {
@@ -127,13 +140,18 @@ export interface IRandomFactory<R, D> {
      * normal.refresh(3, 4);
      * normal.random() // will generate random numbers with Gaussian distribution with mu = 3 and sigma = 4
      */
-    refresh(): void;
+    refresh(...params: any): void;
 
     /**
      * class .toString() method, which will output information about distribution
      * @returns string
      */
     toString(): string;
+
+    /**
+     * Returns current distribution generator
+     */
+    get_current_generator(method: string, ...params: any): IDistribution;
 }
 
 /**

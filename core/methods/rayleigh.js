@@ -10,9 +10,10 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
 
-class Rayleigh {
+class Rayleigh implements IDistribution {
     sigma: number;
 
     constructor(sigma: number): void {

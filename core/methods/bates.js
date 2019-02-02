@@ -10,9 +10,10 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 let Uniform = require('./uniform');
 
-class Bates {
+class Bates implements IDistribution {
     a: number;
     b: number;
     n: number;

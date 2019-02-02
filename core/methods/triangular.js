@@ -11,10 +11,11 @@
  * Created by Alexey S. Kiselev
  */
 
-import type {MethodError, RandomArray} from '../types';
+import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
 
-class Triangular {
+class Triangular implements IDistribution {
     a: number;
     b: number;
     c: number;

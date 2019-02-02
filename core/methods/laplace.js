@@ -10,10 +10,11 @@
  * Created by Alexey S. Kiselev
  */
 
-import type {MethodError, RandomArray} from '../types';
+import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
 
-class Laplace {
+class Laplace implements IDistribution {
     location: number;
     scale: number;
 

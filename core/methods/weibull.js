@@ -10,11 +10,12 @@
  * Created by Alexey S. Kiselev
  */
 
-import type {MethodError, RandomArray} from '../types';
+import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
-let Utils = require('../utils/utils');
+const Utils = require('../utils/utils');
 
-class Weibull {
+class Weibull implements IDistribution {
     k: number;
     lambda: number;
     gamma: Function;

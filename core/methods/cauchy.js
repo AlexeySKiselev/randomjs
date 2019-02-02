@@ -11,10 +11,11 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
 const TAN_LIMIT = 12;
 
-class Cauchy {
+class Cauchy implements IDistribution {
     location: number;
     scale: number;
 

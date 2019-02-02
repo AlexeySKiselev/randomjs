@@ -11,9 +11,11 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
-let Beta = require('./beta');
+import type { IDistribution } from '../interfaces';
 
-class BetaPrime {
+const Beta = require('./beta');
+
+class BetaPrime implements IDistribution {
     alpha: number;
     beta: number;
     betaRandom: Beta;

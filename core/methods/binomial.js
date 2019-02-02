@@ -11,9 +11,10 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
 
-class Binomial {
+class Binomial implements IDistribution {
     trials: number;
     successProb: number;
 

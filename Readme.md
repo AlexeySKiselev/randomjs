@@ -43,10 +43,10 @@ Without *seed value* this method returns different values each call. With *seed 
 It makes sense only for seeded generators. Otherwise that method works as `.random()`. If you want to return another random seeded value after *.random()* method, use *.next()*.
 ```$xslt
 unirand.seed(123456);
-unirand.random(); // returns 0.10370055818930268
-unirand.random(); // returns same 0.10370055818930268
-unirand.next(); // returns 0.45988778048194945
-unirand.next(); // returns 0.009168126853182912
+unirand.random(); // returns 0.07329190103337169
+unirand.random(); // returns same 0.07329190103337169
+unirand.next(); // returns 0.49862336413934827
+unirand.next(); // returns 0.045074593275785446
 ...
 ```
 Same results for `.nextInt()`. These methods always return single value.

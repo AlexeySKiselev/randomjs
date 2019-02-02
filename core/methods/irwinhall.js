@@ -8,9 +8,10 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
-let Uniform = require('./uniform');
+import type { IDistribution } from '../interfaces';
+const Uniform = require('./uniform');
 
-class IrwinHall {
+class IrwinHall implements IDistribution {
     n: number;
     _uniform: Uniform;
 

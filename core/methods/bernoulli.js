@@ -11,8 +11,9 @@
 
 import type {MethodError, RandomArray} from '../types';
 import prng from '../prng/prngProxy';
+import type { IDistribution } from '../interfaces';
 
-class Bernoulli {
+class Bernoulli implements IDistribution {
     p: number;
 
     constructor(p: number): void {
@@ -24,7 +25,7 @@ class Bernoulli {
      * @returns a Bernoulli distributed number
      * This method returns only "1" or "0"
      */
-    random(): 0 | 1 {
+    random(): number {
         return this._random((prng.random(): any));
     }
 
@@ -32,7 +33,7 @@ class Bernoulli {
      * Generates next seeded random number
      * @returns {number}
      */
-    next(): 0 | 1 {
+    next(): number {
         return this._random(prng.next());
     }
 
@@ -45,8 +46,8 @@ class Bernoulli {
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Bernoulli distributed numbers
      */
-    distribution(n: number): Array<0 | 1> {
-        let bernoulliArray: Array<0 | 1> = [],
+    distribution(n: number): Array<number> {
+        let bernoulliArray: Array<number> = [],
             random: RandomArray = (prng.random(n): any);
         for(let i: number = 0; i < n; i += 1){
             bernoulliArray[i] = this._random(random[i]);

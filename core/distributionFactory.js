@@ -4,33 +4,30 @@
  * Created by Alexey S. Kiselev
  */
 
-import { IRandomFactory } from './interfaces';
+import type { IRandomFactory, IDistribution } from './interfaces';
 import type { MethodError, RandomArray } from './types';
 
 class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArray>> {
-    _method: any;
+    _current_method: IDistribution;
+    _distributions: {[string]: IDistribution};
 
-    constructor(method: string, ...params: any): void {
-        let Method = require(__dirname + '/methods/' + method);
-        this._method = new Method(...params);
-        /**
-         * Add methods to this Factory class form the "Method" class
-         * Add only that methods which is not in RandomFactory class
-         * Because in this class we are re-define existing methods from "Method" class
-         * All names of created methods will be the same as in the "Method" class
-         */
-        Object.getOwnPropertyNames(Object.getPrototypeOf(this._method)).map((method: string) => {
-            if(!this.hasOwnProperty(method)){
-                if(typeof this._method[method] !== 'function') {
-                    Object.defineProperty(this, method, {
-                        __proto__: null,
-                        get: () => {
-                            return this._method[method];
-                        }
-                    });
-                }
-            }
-        });
+    constructor(): void {
+        this._distributions = {};
+    }
+
+    /**
+     * Returns current generator
+     */
+    get_current_generator(method: string, ...params: any): IDistribution {
+        const _method: string = method.slice(0, -3);
+        if (!this._distributions[_method]) {
+            const Method: Class<IDistribution> = require(__dirname + '/methods/' + method);
+            this._distributions[_method] = new Method(...params);
+        }
+
+        this._current_method = this._distributions[_method];
+        this._current_method.refresh(...params);
+        return this._current_method;
     }
 
     /**
@@ -47,7 +44,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
                 if(this.isError().error){
                     reject(this.isError());
                 } else {
-                    resolve(this._method.random());
+                    resolve(this._current_method.random());
                 }
             }, 0);
         });
@@ -67,7 +64,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
                 if(this.isError().error){
                     reject(this.isError());
                 } else {
-                    resolve(this._method.next());
+                    resolve(this._current_method.next());
                 }
             }, 0);
         });
@@ -85,7 +82,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
         if(this.isError().error){
             throw new Error(this.isError().error);
         } else
-            return this._method.random();
+            return this._current_method.random();
     }
 
     /**
@@ -100,7 +97,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
         if(this.isError().error){
             throw new Error(this.isError().error);
         } else
-            return this._method.next();
+            return this._current_method.next();
     }
 
     /**
@@ -122,7 +119,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
                 if(this.isError().error){
                     reject(this.isError());
                 } else {
-                    resolve(this._method.distribution(n, ...distParams));
+                    resolve(this._current_method.distribution(n, ...distParams));
                 }
             }, 0);
         });
@@ -144,7 +141,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
         if(this.isError().error){
             throw new Error(this.isError().error);
         } else
-            return this._method.distribution(n, ...distParams);
+            return this._current_method.distribution(n, ...distParams);
     }
 
     /**
@@ -155,7 +152,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
      * or {error: string} object with error message if error occurred
      */
     isError(): MethodError {
-        return this._method.isError();
+        return this._current_method.isError();
     }
 
     /**
@@ -170,7 +167,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
      * normal.random() // will generate random numbers with Gaussian distribution with mu = 3 and sigma = 4
      */
     refresh(...newParams: any): void {
-        this._method.refresh(...newParams);
+        this._current_method.refresh(...newParams);
     }
 
     /**
@@ -178,7 +175,7 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
      * @returns string
      */
     toString(): string {
-        return this._method.toString();
+        return this._current_method.toString();
     }
 }
 

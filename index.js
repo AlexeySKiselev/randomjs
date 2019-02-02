@@ -18,7 +18,7 @@ import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
     SampleOptions
 } from './core/types';
-import type { IPRNGProxy, ISample, IShuffle } from './core/interfaces';
+import type { IDistribution, IPRNGProxy, ISample, IShuffle } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
@@ -38,6 +38,7 @@ class RandomJS {
     next: number;
     randomInt: RandomArrayNumber;
     nextInt: number;
+    _distribution_factory: DistributionFactory;
 
     constructor(): void {
         this.analyze = null;
@@ -45,6 +46,7 @@ class RandomJS {
         this._sample = new Sample();
         this._shuffle = new Shuffle();
         this._prng = prngProxy; // default PRNG with seed
+        this._distribution_factory = new DistributionFactory();
 
         fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
             /**
@@ -52,11 +54,11 @@ class RandomJS {
              *  Uses a factory pattern for creating instances of distributions classes
              *  @returns Object corresponds to distribution
              */
-            Object.defineProperty(this, file.slice(0,-3),{
+            Object.defineProperty(this, file.slice(0, -3),{
                 __proto__: null,
                 get: () => {
-                    return (...params): DistributionFactory => {
-                        return new DistributionFactory(file, ...params);
+                    return (...params): IDistribution => {
+                        return this._distribution_factory.get_current_generator(file, ...params);
                     };
                 }
             });
@@ -251,9 +253,7 @@ module.exports = methods;
 // TODO: Generators
 // TODO: Regression
 // TODO: Prediction
-// TODO: Shuffle
 // TODO: Games
-// TODO: Pseudorandom generator
 // TODO: add Proxy to random generators
 // TODO: add F-distribution
 // TODO: add zipf distribution

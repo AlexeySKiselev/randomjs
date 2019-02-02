@@ -10,10 +10,11 @@
  * Created by Alexey S. Kiselev
  */
 
-import type {MethodError, RandomArray} from '../types';
+import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
 
-class Pareto {
+class Pareto implements IDistribution {
     xm: number;
     alpha: number;
 

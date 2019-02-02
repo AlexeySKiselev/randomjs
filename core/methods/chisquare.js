@@ -10,10 +10,11 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
-let Normal = require('./normal'),
-    Utils = require('../utils/utils');
+import type { IDistribution } from '../interfaces';
+const Normal = require('./normal');
+const Utils = require('../utils/utils');
 
-class ChiSquare {
+class ChiSquare implements IDistribution {
     degrees: number;
     normal: Normal;
 

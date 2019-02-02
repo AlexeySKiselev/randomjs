@@ -11,10 +11,10 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
-// Import Normal Distribution class
-let Normal = require('./normal');
+import type { IDistribution } from '../interfaces';
+const Normal = require('./normal');
 
-class Lognormal {
+class Lognormal implements IDistribution {
     mu: number;
     sigma: number;
     normal: Normal;

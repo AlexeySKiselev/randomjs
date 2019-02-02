@@ -10,9 +10,10 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
 
-class Student {
+class Student implements IDistribution {
     degrees: number;
     _b: number;
 

@@ -11,11 +11,12 @@
  * Created by Alexey S. Kiselev
  */
 
-import type {MethodError, RandomArray} from '../types';
+import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
-let Utils = require('../utils/utils');
+const Utils = require('../utils/utils');
 
-class Gamma {
+class Gamma implements IDistribution {
     alpha: number;
     beta: number;
 

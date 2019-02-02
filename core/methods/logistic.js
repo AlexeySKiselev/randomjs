@@ -11,9 +11,10 @@
  */
 
 import type { RandomArray, MethodError } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
 
-class Logistic {
+class Logistic implements IDistribution {
     location: number;
     scale: number;
 

@@ -5,14 +5,7 @@
 
 let unirand = require('../lib');
 
-unirand.seed(12345);
-console.log(unirand.random());
-console.log(unirand.next());
-console.log(unirand.next());
-//unirand.seed();
-console.log(unirand.normal(3, 3).randomSync());
-console.log(unirand.normal(3, 3).nextSync());
-console.log(unirand.normal(3, 3).nextSync());
-console.log(unirand.normal(3, 3).nextSync());
-console.log(unirand.normal(3, 3).nextSync());
-
+unirand.seed('unirand');
+console.log(unirand.normal(1.5, 2).random());
+console.log(unirand.normal(1, 2).random());
+console.log(unirand.normal(1, 2).random());

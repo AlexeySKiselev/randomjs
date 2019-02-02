@@ -10,11 +10,12 @@
  * Created by Alexey S. Kiselev
  */
 
-import type {MethodError, RandomArray} from '../types';
-let Gamma = require('./gamma'),
-    Poisson = require('./poisson');
+import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
+const Gamma = require('./gamma');
+const Poisson = require('./poisson');
 
-class NegativeBinomial {
+class NegativeBinomial implements IDistribution {
     numberSuccess: number;
     successProb: number;
     gamma: Gamma;

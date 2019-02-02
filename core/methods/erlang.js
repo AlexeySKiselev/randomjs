@@ -11,10 +11,11 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
-let Utils = require('../utils/utils');
+const Utils = require('../utils/utils');
 
-class Erlang {
+class Erlang implements IDistribution {
     shape: number;
     scale: number;
 

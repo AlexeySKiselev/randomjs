@@ -10,10 +10,11 @@
  * Created by Alexey S. Kiselev on 27.11.2017.
  */
 
-import type {MethodError, RandomArray} from '../types';
+import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 import prng from '../prng/prngProxy';
 
-class ExtremeValue {
+class ExtremeValue implements IDistribution {
     mu: number;
     sigma: number;
 

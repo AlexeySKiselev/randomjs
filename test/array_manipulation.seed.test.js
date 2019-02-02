@@ -7,7 +7,6 @@
 let chai = require('chai'),
     expect = chai.expect,
     {describe, it} = require('mocha'),
-    fs = require('fs'),
     prng = require('../lib/prng/prngProxy').default;
 
 chai.should();
@@ -60,7 +59,7 @@ describe('Array manipulation methods with seed', () => {
     });
     describe('Derange', () => {
         const Derange = require('../lib/array_manipulation/shuffle').default;
-        it('should generate different results each time', function(done) {
+        it('should generate same results each time with seed', function(done) {
             this.timeout(480000);
             let shuffle = new Derange(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',

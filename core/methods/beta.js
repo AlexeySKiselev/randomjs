@@ -11,11 +11,12 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import type { IDistribution } from '../interfaces';
 
 let Gamma = require('./gamma'),
     Utils = require('../utils/utils');
 
-class Beta {
+class Beta implements IDistribution {
     alpha: number;
     beta: number;
     gammaA: Gamma;
