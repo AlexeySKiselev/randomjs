@@ -31,6 +31,14 @@ class Laplace {
         return this._random(u);
     }
 
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random(prng.next());
+    }
+
     _random(u: number): number {
         if(u <= 0.5){
             return this.location + this.scale * Math.log(2 * u);

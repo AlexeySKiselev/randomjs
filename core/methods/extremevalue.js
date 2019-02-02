@@ -30,6 +30,14 @@ class ExtremeValue {
         return this._random((prng.random(): any));
     }
 
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random(prng.next());
+    }
+
     _random(u: number): number {
         return this.mu - this.sigma * Math.log(-Math.log(u));
     }

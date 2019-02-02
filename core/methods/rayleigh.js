@@ -29,6 +29,16 @@ class Rayleigh {
         return this._random(u);
     }
 
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let epsilon = 0.00000001;
+        let u: number = Math.min((prng.next(): any) + epsilon, 1 - epsilon);
+        return this._random(u);
+    }
+
     _random(u: number): number {
         return this.sigma * Math.sqrt(-2 * Math.log(u));
     }

@@ -35,6 +35,14 @@ class Triangular {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random(prng.next());
+    }
+
+    /**
      * For simplicity
      * @param {number} u
      * @private

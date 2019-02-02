@@ -50,6 +50,23 @@ class Beta {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let gammaA: number,
+            gammaB: number;
+
+        this.gammaA.refresh(this.alpha, 1);
+        gammaA = this.gammaA.next();
+
+        this.gammaB.refresh(this.beta, 1);
+        gammaB = this.gammaB.next();
+
+        return gammaA / (gammaA + gammaB);
+    }
+
+    /**
      * Generates Beta distributed numbers
      * For generating array I am not going to use .random method
      * For performance I am going to create another instance of Gamma class

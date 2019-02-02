@@ -36,6 +36,20 @@ class ChiSquare {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let res: number = 0,
+            random: number;
+        for(let i: number = 0; i < this.degrees; i += 1){
+            random = this.normal.next();
+            res += Math.pow(random, 2);
+        }
+        return res;
+    }
+
+    /**
      * Generates Chi Square distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Chi Square distributed numbers

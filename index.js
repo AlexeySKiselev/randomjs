@@ -35,6 +35,7 @@ class RandomJS {
     seed: (seed_value: ?NumberString) => void;
     prng: IPRNGProxy;
     random: number;
+    next: number;
 
     constructor(): void {
         this.analyze = null;
@@ -183,6 +184,15 @@ class RandomJS {
                 return this._prng.random(n);
             }
         }: Object));
+
+        /**
+         * Returns seeded next value [0, 1) with uniform distribution
+         */
+        Object.defineProperty(this, 'next', ({
+            value: (): number => {
+                return this._prng.next();
+            }
+        }: Object));
     }
 
     help(): void {
@@ -207,7 +217,8 @@ const methods = {
     hash: randomjs.hash,
     seed: randomjs.seed,
     prng: randomjs.prng,
-    random: randomjs.random
+    random: randomjs.random,
+    next: randomjs.next
 };
 fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
     let rand_method = file.slice(0,-3);

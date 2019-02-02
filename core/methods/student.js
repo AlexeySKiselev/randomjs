@@ -36,6 +36,19 @@ class Student {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let randomNumber: number = this._random();
+        // Limit result to get good distribution
+        while(Math.abs(randomNumber) > 12) {
+            randomNumber = this._random();
+        }
+        return randomNumber;
+    }
+
+    /**
      * Generate Student t-value with TIR algorithm
      * @returns a Student's t-distributed number
      */

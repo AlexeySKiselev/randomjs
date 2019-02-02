@@ -24,10 +24,22 @@ class Poisson {
      * @returns a Poisson distributed number
      */
     random(): number {
+        prng.random();
+        return this._random();
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random();
+    }
+
+    _random(): number {
         let res: number = 0,
             p: number = 1,
             L: number = Math.exp(-this.lambda);
-        prng.random();
         do {
             p *= prng.next();
             res += 1;
@@ -41,19 +53,10 @@ class Poisson {
      * @returns Array<number> - Poisson distributed numbers
      */
     distribution(n: number): RandomArray {
-        let poissonArray: RandomArray = [],
-            res: number,
-            p: number,
-            L: number = Math.exp(-this.lambda);
+        let poissonArray: RandomArray = [];
         prng.random();
         for(let i:number = 0; i < n; i += 1){
-            res = 0;
-            p = 1;
-            do {
-                p *= prng.next();
-                res += 1;
-            } while(p >= L);
-            poissonArray[i] = res - 1;
+            poissonArray[i] = this._random();
         }
         return poissonArray;
     }

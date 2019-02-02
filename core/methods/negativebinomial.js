@@ -39,6 +39,17 @@ class NegativeBinomial {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        this.gamma.refresh(this.numberSuccess, this.successProb / (1 - this.successProb));
+        let temp: number = this.gamma.next();
+        this.poisson.refresh(temp);
+        return this.poisson.next();
+    }
+
+    /**
      * Generates Negative Binomial distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Negative Binomial distributed numbers
@@ -49,7 +60,7 @@ class NegativeBinomial {
             random: RandomArray = this.gamma.distribution(n);
         for(let i:number = 0; i < n; i += 1){
             this.poisson.refresh(random[i]);
-            negativeBinomialArray[i] = this.poisson.distribution(n)[i];
+            negativeBinomialArray[i] = this.poisson.next();
         }
         return negativeBinomialArray;
     }

@@ -28,6 +28,14 @@ class Bernoulli {
         return this._random((prng.random(): any));
     }
 
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): 0 | 1 {
+        return this._random(prng.next());
+    }
+
     _random(u: number): 0 | 1 {
         return (u <= this.p) ? 1 : 0;
     }

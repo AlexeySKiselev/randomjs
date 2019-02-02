@@ -38,6 +38,22 @@ class Binomial {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let res: number = 0,
+            random: number;
+        for(let i: number = 0; i < this.trials; i += 1){
+            random = prng.next();
+            if(random < this.successProb) {
+                res += 1;
+            }
+        }
+        return res;
+    }
+
+    /**
      * Generates Binomial distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Binomial distributed numbers

@@ -39,6 +39,18 @@ class Cauchy {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let randomTan: number = Math.tan(Math.PI * ((prng.next(): any) - 0.5));
+        while (Math.abs(randomTan) > TAN_LIMIT) {
+            randomTan = Math.tan(Math.PI * (prng.next() - 0.5));
+        }
+        return this.location + this.scale * randomTan;
+    }
+
+    /**
      * Generates Cauchy distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Cauchy distributed numbers

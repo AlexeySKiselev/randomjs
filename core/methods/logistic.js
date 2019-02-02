@@ -31,6 +31,14 @@ class Logistic {
         return this._random(u);
     }
 
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random(prng.next());
+    }
+
     _random(u: number): number {
         return this.location + this.scale * Math.log(u / (1 - u));
     }

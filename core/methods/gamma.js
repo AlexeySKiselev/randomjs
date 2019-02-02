@@ -38,6 +38,18 @@ class Gamma {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let temp: number = 0;
+        for(let i: number = 0; i < this.alpha; i += 1){
+            temp -= Math.log(prng.next()) / this.beta;
+        }
+        return temp;
+    }
+
+    /**
      * Generates gamma distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - gamma distributed numbers

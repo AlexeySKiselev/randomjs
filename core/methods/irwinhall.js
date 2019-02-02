@@ -33,6 +33,18 @@ class IrwinHall {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let random_number: number = 0;
+        for(let k = 0; k < this.n; k += 1) {
+            random_number += this._uniform.next();
+        }
+        return random_number;
+    }
+
+    /**
      * Generates random distribution
      * @returns an array with Irwin-Hall distributed numbers
      */

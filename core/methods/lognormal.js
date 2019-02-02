@@ -33,6 +33,14 @@ class Lognormal {
         return this._random(this.normal.random());
     }
 
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random(this.normal.next());
+    }
+
     _random(u: number): number {
         return Math.exp(this.mu + this.sigma * u);
     }

@@ -32,6 +32,15 @@ class Chi {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        this.chiSquare.refresh(this.degrees);
+        return Math.sqrt(this.chiSquare.next());
+    }
+
+    /**
      * Generates Chi distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Chi distributed numbers

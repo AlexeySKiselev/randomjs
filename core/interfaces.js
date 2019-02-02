@@ -71,6 +71,7 @@ export interface IRandomFactory<R, D> {
      * @returns a random number on each call, can be integer or float
      */
     random(): R;
+    next(): R;
 
     /**
      * Required method
@@ -81,6 +82,7 @@ export interface IRandomFactory<R, D> {
      * @returns a random number on each call, can be integer or float
      */
     randomSync(): number;
+    nextSync(): number;
 
     /**
      * Required method

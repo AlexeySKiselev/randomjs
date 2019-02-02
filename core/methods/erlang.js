@@ -37,6 +37,18 @@ class Erlang {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let p: number = 1;
+        for(let i: number = 0; i < this.shape; i += 1){
+            p *= prng.next();
+        }
+        return (-this.scale) * Math.log(p);
+    }
+
+    /**
      * Generates Erlang distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Erlang distributed numbers

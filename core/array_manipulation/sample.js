@@ -7,6 +7,7 @@
 
 import ArrayManipulation from './base';
 import Shuffle from './shuffle';
+import prng from '../prng/prngProxy';
 
 import type { RandomArray, RandomArrayNumberString, RandomArrayStringObject, SampleOptions } from '../types';
 import type { ISample, IShuffle } from '../interfaces';
@@ -82,8 +83,9 @@ class Sample extends ArrayManipulation implements ISample {
         let temp: number,
             j: number = 0,
             result: RandomArrayNumberString<number | string> = [];
+        prng.random();
         for(let i = 0; i < inputArr.length; i += 1) {
-            temp = Math.floor(2 * Math.random());
+            temp = Math.floor(2 * prng.next());
             if(temp === 1) {
                 result[j] = inputArr[i];
                 j += 1;
@@ -101,8 +103,9 @@ class Sample extends ArrayManipulation implements ISample {
     _getSampleRandomSizeForString(inputStr: string): string {
         let temp: number,
             result: string = '';
+        prng.random();
         for(let i = 0; i < inputStr.length; i += 1) {
-            temp = Math.floor(2 * Math.random());
+            temp = Math.floor(2 * prng.next());
             if(temp === 1) {
                 result += inputStr[i];
             }
@@ -121,8 +124,9 @@ class Sample extends ArrayManipulation implements ISample {
         let result: Object = {},
             keys: Array<any> = Object.keys(input),
             temp: number;
+        prng.random();
         for(let i = 0; i < keys.length; i += 1) {
-            temp = Math.floor(2 * Math.random());
+            temp = Math.floor(2 * prng.next());
             if(temp === 1) {
                 result[keys[i]] += input[keys[i]];
             }
@@ -148,8 +152,9 @@ class Sample extends ArrayManipulation implements ISample {
             r: number = -1,
             result: any = [],
             m: number = 0; // elements in result
+        prng.random();
         while(m < k) {
-            r = Math.floor(Math.random() * ni);
+            r = Math.floor(prng.next() * ni);
             result[m] = [r, input[r]];
             m += 1;
             // swap chosen element and last element
@@ -185,6 +190,8 @@ class Sample extends ArrayManipulation implements ISample {
             m0: number,
             m: number;
 
+        prng.random();
+
         // 1 - O(k) complexity
         for(let idx = 0; idx < k; idx += 1) {
             a[idx] = Math.floor(idx * n / k);
@@ -193,7 +200,7 @@ class Sample extends ArrayManipulation implements ISample {
 
         // 2
         while(c > 0){
-            x = 1 + Math.floor(Math.random() * n);
+            x = 1 + Math.floor(prng.next() * n);
             l = 1 + Math.floor((x * k - 1)/ n);
             if(x > a[l - 1]) {
                 a[l - 1] += 1;
@@ -236,7 +243,7 @@ class Sample extends ArrayManipulation implements ISample {
                 m = Math.floor(a[l - 1] * n / k) - m0 + 1;
             }
             // $FlowFixMe
-            x = m0 + Math.floor(Math.random() * m);
+            x = m0 + Math.floor(prng.next() * m);
             i = l;
             // eslint-disable-next-line no-constant-condition
             while(true){
@@ -313,8 +320,9 @@ class Sample extends ArrayManipulation implements ISample {
             n: number = input.length,
             t: number = 0, // total elements
             m: number = 0; // selected elements
+        prng.random();
         while(m < k) {
-            if((n - t) * Math.random() < (k - m)) {
+            if((n - t) * prng.next() < (k - m)) {
                 result[m] = input[t];
                 m += 1;
             }
@@ -339,8 +347,9 @@ class Sample extends ArrayManipulation implements ISample {
             n: number = input.length,
             t: number = 0, // total elements
             m: number = 0; // selected elements
+        prng.random();
         while(m < k) {
-            if((n - t) * Math.random() < (k - m)) {
+            if((n - t) * prng.next() < (k - m)) {
                 result += input[t];
                 m += 1;
             }
@@ -366,8 +375,9 @@ class Sample extends ArrayManipulation implements ISample {
             n: number = keys.length,
             t: number = 0, // total elements
             m: number = 0; // selected elements
+        prng.random();
         while(m < k) {
-            if((n - t) * Math.random() < (k - m)) {
+            if((n - t) * prng.next() < (k - m)) {
                 result[keys[t]] = input[keys[t]];
                 m += 1;
             }

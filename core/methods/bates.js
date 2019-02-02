@@ -41,6 +41,22 @@ class Bates {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let m: number = 0,
+            random_number: number = 0,
+            random: number;
+        for(let k = 0; k < this.n; k += 1) {
+            m += 1;
+            random = this._uniform.next();
+            random_number += (random - random_number) / m;
+        }
+        return random_number;
+    }
+
+    /**
      * Generates random distribution
      * @returns an array with Bates distributed numbers
      */

@@ -28,11 +28,23 @@ class Normal {
      * @returns a normal distributed number
      */
     random(): number {
+        prng.random();
+        return this._random();
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random();
+    }
+
+    _random(): number {
         let U1: number,
             U2: number,
             W: number,
             mult: number;
-        prng.random();
         do {
             U1 = 2 * prng.next() - 1;
             U2 = 2 * prng.next() - 1;

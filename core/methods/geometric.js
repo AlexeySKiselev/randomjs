@@ -34,6 +34,20 @@ class Geometric {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let res: number = 1,
+            random: number = prng.next();
+        while(random >= this.successProb){
+            res += 1;
+            random = prng.next();
+        }
+        return res;
+    }
+
+    /**
      * Generates Geometric distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Geometric distributed numbers
