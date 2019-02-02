@@ -57,8 +57,9 @@ class RandomJS {
             Object.defineProperty(this, file.slice(0, -3),{
                 __proto__: null,
                 get: () => {
-                    return (...params): IDistribution => {
-                        return this._distribution_factory.get_current_generator(file, ...params);
+                    return (...params): DistributionFactory => {
+                        this._distribution_factory.set_current_generator(file, ...params);
+                        return this._distribution_factory;
                     };
                 }
             });

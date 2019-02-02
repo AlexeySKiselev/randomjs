@@ -149,9 +149,9 @@ export interface IRandomFactory<R, D> {
     toString(): string;
 
     /**
-     * Returns current distribution generator
+     * Sets current distribution generator
      */
-    get_current_generator(method: string, ...params: any): IDistribution;
+    set_current_generator(method: string, ...params: any): void;
 }
 
 /**

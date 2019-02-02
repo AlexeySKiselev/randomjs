@@ -16,9 +16,9 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
     }
 
     /**
-     * Returns current generator
+     * Sets current generator
      */
-    get_current_generator(method: string, ...params: any): IDistribution {
+    set_current_generator(method: string, ...params: any): void {
         const _method: string = method.slice(0, -3);
         if (!this._distributions[_method]) {
             const Method: Class<IDistribution> = require(__dirname + '/methods/' + method);
@@ -27,7 +27,6 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
 
         this._current_method = this._distributions[_method];
         this._current_method.refresh(...params);
-        return this._current_method;
     }
 
     /**
