@@ -2716,7 +2716,7 @@ describe('Random distributions without seed', () => {
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
         });
-        describe('With real generated data (lambda = 4)', () => {
+        describe('With real generated data (lambda = 1)', () => {
             let exponential = new Exponential(1),
                 distribution,
                 analyzer,
@@ -3749,7 +3749,7 @@ describe('Random distributions without seed', () => {
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
         });
-        describe('With real generated data (mu = 0, b = 2)', () => {
+        describe('With real generated data (xm = 1, alpha = 4)', () => {
             let pareto = new Pareto(1, 4),
                 distribution,
                 analyzer,

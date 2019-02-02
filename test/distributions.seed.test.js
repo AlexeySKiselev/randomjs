@@ -18,7 +18,6 @@ const compareDistributions = (distA, distB, accuracy = 0.000001) => {
     for(let i = 0; i < distA.length; i += 1) {
         expect(distA[i]).to.be.closeTo(distB[i], accuracy);
     }
-
 };
 
 describe('Random distributions with seed', () => {
@@ -413,14 +412,417 @@ describe('Random distributions with seed', () => {
             this.timeout(480000);
             const negativebinomial = new NegativeBinomial(3, 0.6);
             prng.seed('first negativebinomial seed test');
-            const negativebinomialFirst = negativebinomial.distribution(10000);
+            const negativebinomialFirst = negativebinomial.distribution(2000);
             for(let i = 0; i < 20; i += 1) {
-                compareDistributions(negativebinomial.distribution(10000), negativebinomialFirst);
+                compareDistributions(negativebinomial.distribution(2000), negativebinomialFirst);
             }
             prng.seed('second negativebinomial seed test');
-            const negativebinomialSecond = negativebinomial.distribution(10000);
+            const negativebinomialSecond = negativebinomial.distribution(2000);
             for(let i = 0; i < 20; i += 1) {
-                compareDistributions(negativebinomial.distribution(10000), negativebinomialSecond);
+                compareDistributions(negativebinomial.distribution(2000), negativebinomialSecond);
+            }
+            done();
+        });
+    });
+    describe('Poisson distribution (lambda = 4)', () => {
+        const Poisson = require('../lib/methods/poisson');
+        it('should return same value each time', () => {
+            const poisson = new Poisson(4);
+            prng.seed('first poisson seed test');
+            const poissonFirst = poisson.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(poisson.random()).to.be.closeTo(poissonFirst, 0.000001);
+            }
+            prng.seed('second poisson seed test');
+            const poissonSecond = poisson.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(poisson.random()).to.be.closeTo(poissonSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const poisson = new Poisson(4);
+            prng.seed('first poisson seed test');
+            const poissonFirst = poisson.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(poisson.distribution(5000), poissonFirst);
+            }
+            prng.seed('second poisson seed test');
+            const poissonSecond = poisson.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(poisson.distribution(5000), poissonSecond);
+            }
+            done();
+        });
+    });
+    describe('Exponential distribution (lambda = 1)', () => {
+        const Exponential = require('../lib/methods/exponential');
+        it('should return same value each time', () => {
+            const exponential = new Exponential(1);
+            prng.seed('first exponential seed test');
+            const exponentialFirst = exponential.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(exponential.random()).to.be.closeTo(exponentialFirst, 0.000001);
+            }
+            prng.seed('second exponential seed test');
+            const exponentialSecond = exponential.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(exponential.random()).to.be.closeTo(exponentialSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const exponential = new Exponential(1);
+            prng.seed('first exponential seed test');
+            const exponentialFirst = exponential.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(exponential.distribution(5000), exponentialFirst);
+            }
+            prng.seed('second exponential seed test');
+            const exponentialSecond = exponential.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(exponential.distribution(5000), exponentialSecond);
+            }
+            done();
+        });
+    });
+    describe('Extreme Value (Gumbel-type) distribution (mu = 0, sigma = 1)', () => {
+        const Extremevalue = require('../lib/methods/extremevalue');
+        it('should return same value each time', () => {
+            const extremevalue = new Extremevalue(0, 1);
+            prng.seed('first extremevalue seed test');
+            const extremevalueFirst = extremevalue.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(extremevalue.random()).to.be.closeTo(extremevalueFirst, 0.000001);
+            }
+            prng.seed('second extremevalue seed test');
+            const extremevalueSecond = extremevalue.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(extremevalue.random()).to.be.closeTo(extremevalueSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const extremevalue = new Extremevalue(0, 1);
+            prng.seed('first extremevalue seed test');
+            const extremevalueFirst = extremevalue.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(extremevalue.distribution(5000), extremevalueFirst);
+            }
+            prng.seed('second extremevalue seed test');
+            const extremevalueSecond = extremevalue.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(extremevalue.distribution(5000), extremevalueSecond);
+            }
+            done();
+        });
+    });
+    describe('Laplace distribution (mu = 0, b = 2)', () => {
+        const Laplace = require('../lib/methods/laplace');
+        it('should return same value each time', () => {
+            const laplace = new Laplace(0, 2);
+            prng.seed('first laplace seed test');
+            const laplaceFirst = laplace.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(laplace.random()).to.be.closeTo(laplaceFirst, 0.000001);
+            }
+            prng.seed('second laplace seed test');
+            const laplaceSecond = laplace.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(laplace.random()).to.be.closeTo(laplaceSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const laplace = new Laplace(0, 2);
+            prng.seed('first laplace seed test');
+            const laplaceFirst = laplace.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(laplace.distribution(5000), laplaceFirst);
+            }
+            prng.seed('second laplace seed test');
+            const laplaceSecond = laplace.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(laplace.distribution(5000), laplaceSecond);
+            }
+            done();
+        });
+    });
+    describe('Logistic distribution (mu = 5, s = 2)', () => {
+        const Logistic = require('../lib/methods/logistic');
+        it('should return same value each time', () => {
+            const logistic = new Logistic(5, 2);
+            prng.seed('first logistic seed test');
+            const logisticFirst = logistic.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(logistic.random()).to.be.closeTo(logisticFirst, 0.000001);
+            }
+            prng.seed('second logistic seed test');
+            const logisticSecond = logistic.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(logistic.random()).to.be.closeTo(logisticSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const logistic = new Logistic(5, 2);
+            prng.seed('first logistic seed test');
+            const logisticFirst = logistic.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(logistic.distribution(5000), logisticFirst);
+            }
+            prng.seed('second logistic seed test');
+            const logisticSecond = logistic.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(logistic.distribution(5000), logisticSecond);
+            }
+            done();
+        });
+    });
+    describe('Lognormal distribution (mu = 0, sigma = 1)', () => {
+        const Lognormal = require('../lib/methods/lognormal');
+        it('should return same value each time', () => {
+            const lognormal = new Lognormal(0, 1);
+            prng.seed('first lognormal seed test');
+            const lognormalFirst = lognormal.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(lognormal.random()).to.be.closeTo(lognormalFirst, 0.000001);
+            }
+            prng.seed('second lognormal seed test');
+            const lognormalSecond = lognormal.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(lognormal.random()).to.be.closeTo(lognormalSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const lognormal = new Lognormal(0, 1);
+            prng.seed('first lognormal seed test');
+            const lognormalFirst = lognormal.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(lognormal.distribution(5000), lognormalFirst);
+            }
+            prng.seed('second lognormal seed test');
+            const lognormalSecond = lognormal.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(lognormal.distribution(5000), lognormalSecond);
+            }
+            done();
+        });
+    });
+    describe('Pareto distribution (xm = 1, alpha = 4)', () => {
+        const Pareto = require('../lib/methods/pareto');
+        it('should return same value each time', () => {
+            const pareto = new Pareto(1, 4);
+            prng.seed('first pareto seed test');
+            const paretoFirst = pareto.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(pareto.random()).to.be.closeTo(paretoFirst, 0.000001);
+            }
+            prng.seed('second pareto seed test');
+            const paretoSecond = pareto.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(pareto.random()).to.be.closeTo(paretoSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const pareto = new Pareto(1, 4);
+            prng.seed('first pareto seed test');
+            const paretoFirst = pareto.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(pareto.distribution(5000), paretoFirst);
+            }
+            prng.seed('second pareto seed test');
+            const paretoSecond = pareto.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(pareto.distribution(5000), paretoSecond);
+            }
+            done();
+        });
+    });
+    describe('Rayleigh distribution (sigma = 1)', () => {
+        const Rayleigh = require('../lib/methods/rayleigh');
+        it('should return same value each time', () => {
+            const rayleigh = new Rayleigh(1);
+            prng.seed('first rayleigh seed test');
+            const rayleighFirst = rayleigh.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(rayleigh.random()).to.be.closeTo(rayleighFirst, 0.000001);
+            }
+            prng.seed('second rayleigh seed test');
+            const rayleighSecond = rayleigh.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(rayleigh.random()).to.be.closeTo(rayleighSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const rayleigh = new Rayleigh(1);
+            prng.seed('first rayleigh seed test');
+            const rayleighFirst = rayleigh.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(rayleigh.distribution(5000), rayleighFirst);
+            }
+            prng.seed('second rayleigh seed test');
+            const rayleighSecond = rayleigh.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(rayleigh.distribution(5000), rayleighSecond);
+            }
+            done();
+        });
+    });
+    describe('Student\'s t-distribution (v = 6)', () => {
+        const Student = require('../lib/methods/student');
+        it('should return same value each time', () => {
+            const student = new Student(6);
+            prng.seed('first student seed test');
+            const studentFirst = student.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(student.random()).to.be.closeTo(studentFirst, 0.000001);
+            }
+            prng.seed('second student seed test');
+            const studentSecond = student.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(student.random()).to.be.closeTo(studentSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const student = new Student(6);
+            prng.seed('first student seed test');
+            const studentFirst = student.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(student.distribution(5000), studentFirst);
+            }
+            prng.seed('second student seed test');
+            const studentSecond = student.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(student.distribution(5000), studentSecond);
+            }
+            done();
+        });
+    });
+    describe('Triangular distribution (a = 1, b = 3, c = 2)', () => {
+        const Triangular = require('../lib/methods/triangular');
+        it('should return same value each time', () => {
+            const triangular = new Triangular(1, 3, 2);
+            prng.seed('first triangular seed test');
+            const triangularFirst = triangular.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(triangular.random()).to.be.closeTo(triangularFirst, 0.000001);
+            }
+            prng.seed('second triangular seed test');
+            const triangularSecond = triangular.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(triangular.random()).to.be.closeTo(triangularSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const triangular = new Triangular(1, 3, 2);
+            prng.seed('first triangular seed test');
+            const triangularFirst = triangular.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(triangular.distribution(5000), triangularFirst);
+            }
+            prng.seed('second triangular seed test');
+            const triangularSecond = triangular.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(triangular.distribution(5000), triangularSecond);
+            }
+            done();
+        });
+    });
+    describe('Weibull distribution (lambda = 1, k = 1.5)', () => {
+        const Weibull = require('../lib/methods/weibull');
+        it('should return same value each time', () => {
+            const weibull = new Weibull(1.5, 1);
+            prng.seed('first weibull seed test');
+            const weibullFirst = weibull.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(weibull.random()).to.be.closeTo(weibullFirst, 0.000001);
+            }
+            prng.seed('second weibull seed test');
+            const weibullSecond = weibull.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(weibull.random()).to.be.closeTo(weibullSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const weibull = new Weibull(1.5, 1);
+            prng.seed('first weibull seed test');
+            const weibullFirst = weibull.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(weibull.distribution(5000), weibullFirst);
+            }
+            prng.seed('second weibull seed test');
+            const weibullSecond = weibull.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(weibull.distribution(5000), weibullSecond);
+            }
+            done();
+        });
+    });
+    describe('Bates distribution (n = 10, a = 0, b = 1)', () => {
+        const Bates = require('../lib/methods/bates');
+        it('should return same value each time', () => {
+            const bates = new Bates(10, 0, 1);
+            prng.seed('first bates seed test');
+            const batesFirst = bates.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(bates.random()).to.be.closeTo(batesFirst, 0.000001);
+            }
+            prng.seed('second bates seed test');
+            const batesSecond = bates.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(bates.random()).to.be.closeTo(batesSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const bates = new Bates(10, 0, 1);
+            prng.seed('first bates seed test');
+            const batesFirst = bates.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(bates.distribution(5000), batesFirst);
+            }
+            prng.seed('second bates seed test');
+            const batesSecond = bates.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(bates.distribution(5000), batesSecond);
+            }
+            done();
+        });
+    });
+    describe('Irwin-Hall distribution (n = 8)', () => {
+        const Irwinhall = require('../lib/methods/irwinhall');
+        it('should return same value each time', () => {
+            const irwinhall = new Irwinhall(8);
+            prng.seed('first irwinhall seed test');
+            const irwinhallFirst = irwinhall.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(irwinhall.random()).to.be.closeTo(irwinhallFirst, 0.000001);
+            }
+            prng.seed('second irwinhall seed test');
+            const irwinhallSecond = irwinhall.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(irwinhall.random()).to.be.closeTo(irwinhallSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const irwinhall = new Irwinhall(8);
+            prng.seed('first irwinhall seed test');
+            const irwinhallFirst = irwinhall.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(irwinhall.distribution(5000), irwinhallFirst);
+            }
+            prng.seed('second irwinhall seed test');
+            const irwinhallSecond = irwinhall.distribution(5000);
+            for(let i = 0; i < 20; i += 1) {
+                compareDistributions(irwinhall.distribution(5000), irwinhallSecond);
             }
             done();
         });

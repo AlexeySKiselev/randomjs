@@ -4,10 +4,10 @@
  */
 
 let prng = require('../lib/prng/prngProxy').default,
-    R = require('../lib/methods/negativebinomial'),
-    r = new R(3, 0.6);
+    R = require('../lib/methods/irwinhall'),
+    r = new R(8);
 
-prng.seed();
+prng.seed('unirand');
 console.log(r.random());
 console.log(r.random());
 console.log(r.distribution(10));
