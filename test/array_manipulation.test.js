@@ -14,7 +14,19 @@ chai.should();
 prng.seed();
 
 describe('Array manipulation methods', () => {
+    beforeEach(() => {
+        prng.seed();
+    });
+    before(() => {
+        prng.seed();
+    });
     describe('Sample', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Sample = require('../lib/array_manipulation/sample').default;
         it('requires at least one correct argument', () => {
             let zeroParams = () => {
@@ -230,6 +242,12 @@ describe('Array manipulation methods', () => {
         });
     });
     describe('Shuffle', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Shuffle = require('../lib/array_manipulation/shuffle').default;
         it('requires at least one correct argument', () => {
             let zeroParams = () => {
@@ -342,6 +360,12 @@ describe('Array manipulation methods', () => {
         });
     });
     describe('Derange', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Shuffle = require('../lib/array_manipulation/shuffle').default;
         it('requires at least one correct argument', () => {
             let zeroParams = () => {
