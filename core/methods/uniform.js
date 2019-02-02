@@ -10,6 +10,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 
 class Uniform {
     min: number;
@@ -25,7 +26,19 @@ class Uniform {
      * Uses core Math.random() method but with [min, max] range
      */
     random(): number {
-        return this.min + Math.random()*(this.max - this.min);
+        return this._random((prng.random(): any));
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random(prng.next());
+    }
+
+    _random(u: number): number {
+        return this.min + u * (this.max - this.min);
     }
 
     /**
@@ -33,9 +46,10 @@ class Uniform {
      * @param n: number - number of elements in resulting array
      */
     distribution(n: number): RandomArray {
-        let uniformArray: RandomArray = [];
-        for(let i: number = 0; i < n; i += 1){
-            uniformArray[i] = this.random();
+        let uniformArray: RandomArray = [],
+            random: RandomArray = (prng.random(n): any);
+        for(let i = 0; i < n; i += 1) {
+            uniformArray[i] = this._random(random[i]);
         }
         return uniformArray;
     }

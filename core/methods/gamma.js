@@ -12,6 +12,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 let Utils = require('../utils/utils');
 
 class Gamma {
@@ -28,9 +29,22 @@ class Gamma {
      * @returns a Gamma distributed number
      */
     random(): number {
+        let temp: number = 0,
+            random: RandomArray = (prng.random(this.alpha): any);
+        for(let i: number = 0; i < this.alpha; i += 1){
+            temp -= Math.log(random[i]) / this.beta;
+        }
+        return temp;
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
         let temp: number = 0;
         for(let i: number = 0; i < this.alpha; i += 1){
-            temp -= Math.log(Math.random()) / this.beta;
+            temp -= Math.log(prng.next()) / this.beta;
         }
         return temp;
     }
@@ -41,9 +55,15 @@ class Gamma {
      * @returns Array<number> - gamma distributed numbers
      */
     distribution(n: number): RandomArray {
-        let gammaArray: RandomArray = [];
+        const gammaArray: RandomArray = [];
+        const random: RandomArray = (prng.random(n * this.alpha): any);
+        let temp: number;
         for(let i: number = 0; i < n; i += 1) {
-            gammaArray[i] = this.random();
+            temp = 0;
+            for(let j: number = 0; j < this.alpha; j += 1){
+                temp -= Math.log(random[i * this.alpha + j]) / this.beta;
+            }
+            gammaArray[i] = temp;
         }
         return gammaArray;
     }

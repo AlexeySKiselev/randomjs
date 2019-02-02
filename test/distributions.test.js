@@ -6,9 +6,11 @@
 // Import Mocha tool for tests
 let chai = require('chai'),
     expect = chai.expect,
-    {describe, it} = require('mocha');
+    {describe, it, beforeEach, before} = require('mocha'),
+    prng = require('../lib/prng/prngProxy').default;
 
 chai.should();
+prng.seed();
 
 // Calculate mean value of array
 function meanValue(arr) {
@@ -19,9 +21,21 @@ function meanValue(arr) {
     return res / arr.length;
 }
 
-describe('Random distributions', () => {
+describe('Random distributions without seed', () => {
+    beforeEach(() => {
+        prng.seed();
+    });
+    before(() => {
+        prng.seed();
+    });
     // Uniform distribution
     describe('Uniform distribution',() => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Uniform = require('../lib/methods/uniform'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -85,6 +99,7 @@ describe('Random distributions', () => {
         it('should return different values each time and these values should be 1 <= <values> <= 5', () => {
             let uniform = new Uniform(1, 5),
                 value1 = uniform.random();
+            prng.seed();
             expect(uniform.random()).to.be.a('number');
             expect(uniform.random()).to.be.within(1, 5);
             uniform.random().should.not.equal(value1);
@@ -117,6 +132,12 @@ describe('Random distributions', () => {
             expect(max).to.be.at.most(5);
         });
         describe('With real generated data (a = 1, b = 4)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let uniform = new Uniform(1, 4),
                 distribution,
                 analyzer,
@@ -130,6 +151,7 @@ describe('Random distributions', () => {
                 entropy = [],
                 kurtosis = [];
 
+            prng.seed();
             for(let i = 0; i < 20; i += 1) {
                 distribution = uniform.distribution(300000);
                 analyzer = Common.getInstance(distribution),
@@ -206,6 +228,12 @@ describe('Random distributions', () => {
 
     // Normal Distribution
     describe('Normal distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Normal = require('../lib/methods/normal'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -265,6 +293,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let normal = new Normal(1.5, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = normal.random();
                 expect(normal.random()).to.be.a('number');
@@ -289,6 +318,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(300);
         });
         describe('With real generated data (mu = 1, sigma = 2)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let normal = new Normal(1, 2),
                 distribution,
                 mu = 1,
@@ -304,6 +339,7 @@ describe('Random distributions', () => {
                 entropy = [],
                 kurtosis = [];
 
+            prng.seed();
             for(let i = 0; i < 20; i += 1) {
                 distribution = normal.distribution(300000);
                 analyzer = Common.getInstance(distribution),
@@ -411,6 +447,12 @@ describe('Random distributions', () => {
 
     // Bernoulli distribution
     describe('Bernoulli distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Bernoulli = require('../lib/methods/bernoulli'),
             Common = require('../lib/analyzer/common');
         it('requires one numerical argument', () => {
@@ -475,6 +517,7 @@ describe('Random distributions', () => {
             let bernoulli = new Bernoulli(0.6),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 20; i += 1){
                 value1 = bernoulli.random();
                 expect(bernoulli.random()).to.be.a('number');
@@ -512,6 +555,12 @@ describe('Random distributions', () => {
             expect(correct).to.be.equal(true);
         });
         describe('With real generated data (p = 0.6)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let bernoulli = new Bernoulli(0.6),
                 distribution,
                 analyzer,
@@ -519,6 +568,7 @@ describe('Random distributions', () => {
                 variance = [],
                 skewness = [];
 
+            prng.seed();
             for(let i = 0; i < 20; i += 1) {
                 distribution = bernoulli.distribution(300000);
                 analyzer = Common.getInstance(distribution);
@@ -544,6 +594,12 @@ describe('Random distributions', () => {
 
     // Beta distribution
     describe('Beta distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Beta = require('../lib/methods/beta'),
             Common = require('../lib/analyzer/common');
         it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
@@ -619,6 +675,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let beta = new Beta(1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = beta.random();
                 expect(beta.random()).to.be.a('number');
@@ -643,6 +700,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (alpha = 2, beta = 5)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let beta = new Beta(2, 5),
                 distribution,
                 analyzer,
@@ -654,6 +717,7 @@ describe('Random distributions', () => {
                 entropy = [],
                 kurtosis = [];
 
+            prng.seed();
             for(let i = 0; i < 20; i += 1) {
                 distribution = beta.distribution(300000);
                 analyzer = Common.getInstance(distribution);
@@ -733,6 +797,12 @@ describe('Random distributions', () => {
 
     // Beta Prime distribution
     describe('Beta Prime distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let BetaPrime = require('../lib/methods/betaprime'),
             Common = require('../lib/analyzer/common');
         it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
@@ -811,6 +881,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let betaPrime = new BetaPrime(1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = betaPrime.random();
                 expect(betaPrime.random()).to.be.a('number');
@@ -834,7 +905,13 @@ describe('Random distributions', () => {
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
         });
-        describe('With real generated data (alpha = 1.5, beta = 3)', () => {
+        describe('With real generated data (alpha = 5, beta = 3)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let betaPrime = new BetaPrime(5, 3),
                 distribution,
                 analyzer,
@@ -842,6 +919,7 @@ describe('Random distributions', () => {
                 max = [],
                 mean = [];
 
+            prng.seed();
             for(let i = 0; i < 20; i += 1) {
                 distribution = betaPrime.distribution(300000);
                 analyzer = Common.getInstance(distribution);
@@ -882,6 +960,12 @@ describe('Random distributions', () => {
 
     // Binomial distribution
     describe('Binomial distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Binomial = require('../lib/methods/binomial'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -966,6 +1050,7 @@ describe('Random distributions', () => {
             let binomial = new Binomial(2, 0.6),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = binomial.random();
                 expect(binomial.random()).to.be.a('number');
@@ -1003,6 +1088,12 @@ describe('Random distributions', () => {
             expect(correct).to.be.equal(true);
         });
         describe('With real generated data (p = 0.7, n = 20)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let binomial = new Binomial(20, 0.7),
                 distribution,
                 analyzer,
@@ -1016,6 +1107,7 @@ describe('Random distributions', () => {
                 entropy = [],
                 kurtosis = [];
 
+            prng.seed();
             for(let i = 0; i < 20; i += 1) {
                 distribution = binomial.distribution(300000);
                 analyzer = Common.getInstance(distribution);
@@ -1101,6 +1193,12 @@ describe('Random distributions', () => {
 
     // Cauchy distribution
     describe('Cauchy distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Cauchy = require('../lib/methods/cauchy'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -1169,6 +1267,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let cauchy = new Cauchy(1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = cauchy.random();
                 expect(cauchy.random()).to.be.a('number');
@@ -1193,6 +1292,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(300);
         });
         describe('With real generated data (x = 1, gamma = 1)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let cauchy = new Cauchy(1, 1),
                 distribution,
                 analyzer,
@@ -1254,6 +1359,12 @@ describe('Random distributions', () => {
 
     // Chi distribution
     describe('Chi distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Chi = require('../lib/methods/chi'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -1313,6 +1424,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let chi = new Chi(2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = chi.random();
                 expect(chi.random()).to.be.a('number');
@@ -1337,6 +1449,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(300);
         });
         describe('With real generated data (k = 2)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let chi = new Chi(2),
                 distribution,
                 analyzer,
@@ -1428,6 +1546,12 @@ describe('Random distributions', () => {
 
     // Chi Square distribution
     describe('Chi Square distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let ChiSquare = require('../lib/methods/chisquare'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -1487,6 +1611,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let chiSquare = new ChiSquare(2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = chiSquare.random();
                 expect(chiSquare.random()).to.be.a('number');
@@ -1511,6 +1636,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(300);
         });
         describe('With real generated data (k = 2)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let chiSquare = new ChiSquare(2),
                 distribution,
                 analyzer,
@@ -1616,6 +1747,12 @@ describe('Random distributions', () => {
 
     // Erlang distribution
     describe('Erlang distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Erlang = require('../lib/methods/erlang'),
             Common = require('../lib/analyzer/common');
         it('requires two numerical arguments with mu > 0 and k > 0', () => {
@@ -1705,6 +1842,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let erlang = new Erlang(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = erlang.random();
                 expect(erlang.random()).to.be.a('number');
@@ -1729,6 +1867,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(300);
         });
         describe('With real generated data (k = 2, mu = 2)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let erlang = new Erlang(2, 2),
                 distribution,
                 analyzer,
@@ -1811,6 +1955,12 @@ describe('Random distributions', () => {
 
     // Gamma distribution
     describe('Gamma distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Gamma = require('../lib/methods/gamma'),
             Common = require('../lib/analyzer/common');
         it('requires two numerical arguments with alpha > 0 and beta > 0', () => {
@@ -1900,6 +2050,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let gamma = new Gamma(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = gamma.random();
                 expect(gamma.random()).to.be.a('number');
@@ -1924,6 +2075,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(300);
         });
         describe('With real generated data (alpha = 2, beta = 0.5)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let gamma = new Gamma(2, 0.5),
                 distribution,
                 analyzer,
@@ -2006,6 +2163,12 @@ describe('Random distributions', () => {
 
     // Geometric distribution
     describe('Geometric distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Geometric = require('../lib/methods/geometric'),
             Common = require('../lib/analyzer/common');
         it('requires one numerical argument with 0 <= p <= 1', () => {
@@ -2073,6 +2236,7 @@ describe('Random distributions', () => {
             let geometric = new Geometric(0.6),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = geometric.random();
                 expect(geometric.random()).to.be.a('number');
@@ -2110,6 +2274,12 @@ describe('Random distributions', () => {
             expect(correct).to.be.equal(true);
         });
         describe('With real generated data (p = 0.6)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let geometric = new Geometric(0.6),
                 distribution,
                 analyzer,
@@ -2203,6 +2373,12 @@ describe('Random distributions', () => {
 
     // Negative Binomial distribution
     describe('Negative Binomial distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let NegativeBinomial = require('../lib/methods/negativebinomial'),
             Common = require('../lib/analyzer/common');
         it('requires two numerical arguments with n > 0 and 0 <= p <= 1', () => {
@@ -2286,6 +2462,7 @@ describe('Random distributions', () => {
             let negativeBinomial = new NegativeBinomial(2, 0.6),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = negativeBinomial.random();
                 expect(negativeBinomial.random()).to.be.a('number');
@@ -2323,6 +2500,12 @@ describe('Random distributions', () => {
             expect(correct).to.be.equal(true);
         });
         describe('With real generated data (r = 3, p = 0.6)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let nbinomial = new NegativeBinomial(3, 0.6),
                 distribution,
                 analyzer,
@@ -2414,6 +2597,12 @@ describe('Random distributions', () => {
 
     // Poisson distribution
     describe('Poisson distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Poisson = require('../lib/methods/poisson'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -2482,6 +2671,7 @@ describe('Random distributions', () => {
             let poisson = new Poisson(2),
                 value1,
                 countRandoms = {};
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = poisson.random();
                 expect(poisson.random()).to.be.a('number');
@@ -2519,6 +2709,12 @@ describe('Random distributions', () => {
             expect(correct).to.be.equal(true);
         });
         describe('With real generated data (lambda = 4)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let poisson = new Poisson(4),
                 distribution,
                 analyzer,
@@ -2624,6 +2820,12 @@ describe('Random distributions', () => {
 
     // Exponential distribution
     describe('Exponential distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Exponential = require('../lib/methods/exponential'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -2691,6 +2893,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let exponential = new Exponential(3),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = exponential.random();
                 expect(exponential.random()).to.be.a('number');
@@ -2714,7 +2917,13 @@ describe('Random distributions', () => {
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
         });
-        describe('With real generated data (lambda = 4)', () => {
+        describe('With real generated data (lambda = 1)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let exponential = new Exponential(1),
                 distribution,
                 analyzer,
@@ -2821,6 +3030,12 @@ describe('Random distributions', () => {
 
     // Extreme Value (Gumbel-type) distribution
     describe('Extreme Value (Gumbel-type) distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let ExtremeValue = require('../lib/methods/extremevalue'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -2889,6 +3104,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let extremevalue = new ExtremeValue(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = extremevalue.random();
                 expect(extremevalue.random()).to.be.a('number');
@@ -2913,6 +3129,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (mu = 0, sigma = 1)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let extremeValue = new ExtremeValue(0, 1),
                 distribution,
                 analyzer,
@@ -3022,6 +3244,12 @@ describe('Random distributions', () => {
 
     // Laplace distribution
     describe('Laplace distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Laplace = require('../lib/methods/laplace'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -3106,6 +3334,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let laplace = new Laplace(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = laplace.random();
                 expect(laplace.random()).to.be.a('number');
@@ -3130,6 +3359,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (mu = 0, b = 2)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let laplace = new Laplace(0, 2),
                 distribution,
                 analyzer,
@@ -3246,6 +3481,12 @@ describe('Random distributions', () => {
 
     // Logistic distribution
     describe('Logistic distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Logistic = require('../lib/methods/logistic'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -3330,6 +3571,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let logistic = new Logistic(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = logistic.random();
                 expect(logistic.random()).to.be.a('number');
@@ -3354,6 +3596,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (mu = 5, s = 2)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let logistic = new Logistic(5, 2),
                 distribution,
                 analyzer,
@@ -3464,6 +3712,12 @@ describe('Random distributions', () => {
 
     // Lognormal distribution
     describe('Lognormal distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Lognormal = require('../lib/methods/lognormal'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -3532,6 +3786,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let lognormal = new Lognormal(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = lognormal.random();
                 expect(lognormal.random()).to.be.a('number');
@@ -3556,6 +3811,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (mu = 0, sigma = 1)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let lognormal = new Lognormal(0, 1),
                 distribution,
                 analyzer,
@@ -3642,6 +3903,12 @@ describe('Random distributions', () => {
 
     // Pareto distribution
     describe('Pareto distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Pareto = require('../lib/methods/pareto'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -3724,6 +3991,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let pareto = new Pareto(3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = pareto.random();
                 expect(pareto.random()).to.be.a('number');
@@ -3747,7 +4015,13 @@ describe('Random distributions', () => {
             expect(randomArray).to.have.lengthOf(500);
             expect(countDiffs).to.be.at.least(200);
         });
-        describe('With real generated data (mu = 0, b = 2)', () => {
+        describe('With real generated data (xm = 1, alpha = 4)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let pareto = new Pareto(1, 4),
                 distribution,
                 analyzer,
@@ -3826,6 +4100,12 @@ describe('Random distributions', () => {
 
     // Rayleigh distribution
     describe('Rayleigh distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Rayleigh = require('../lib/methods/rayleigh'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -3885,6 +4165,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let rayleigh = new Rayleigh(1),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = rayleigh.random();
                 expect(rayleigh.random()).to.be.a('number');
@@ -3909,6 +4190,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (sigma = 1)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let rayleigh = new Rayleigh(1),
                 distribution,
                 analyzer,
@@ -4001,6 +4288,12 @@ describe('Random distributions', () => {
 
     // Student's t-distribution
     describe('Student\'s t-distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Student = require('../lib/methods/student'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -4060,6 +4353,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let student = new Student(1),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = student.random();
                 expect(student.random()).to.be.a('number');
@@ -4084,6 +4378,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (v = 6)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let student = new Student(6),
                 distribution,
                 analyzer,
@@ -4166,6 +4466,12 @@ describe('Random distributions', () => {
 
     // Triangular distribution
     describe('Triangular distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Triangular = require('../lib/methods/triangular'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -4250,6 +4556,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let triangular = new Triangular(1, 3, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = triangular.random();
                 expect(triangular.random()).to.be.a('number');
@@ -4274,6 +4581,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (a = 1, b = 3, c = 2)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let triangular = new Triangular(1, 3, 2),
                 distribution,
                 analyzer,
@@ -4387,6 +4700,12 @@ describe('Random distributions', () => {
 
     // Weibull distribution
     describe('Weibull distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Weibull = require('../lib/methods/weibull'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -4469,6 +4788,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let weibull = new Weibull(1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = weibull.random();
                 expect(weibull.random()).to.be.a('number');
@@ -4493,6 +4813,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (lambda = 1, k = 1.5)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let weibull = new Weibull(1.5, 1),
                 distribution,
                 analyzer,
@@ -4606,6 +4932,12 @@ describe('Random distributions', () => {
 
     // Bates distribution
     describe('Bates distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Bates = require('../lib/methods/bates'),
             Common = require('../lib/analyzer/common');
         it('requires minimum one numerical argument with n >= 1', () => {
@@ -4677,6 +5009,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let bates = new Bates(5, 1, 2),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = bates.random();
                 expect(bates.random()).to.be.a('number');
@@ -4701,6 +5034,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (n = 10, a = 0, b = 1)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let bates = new Bates(10, 0, 1),
                 distribution,
                 analyzer,
@@ -4800,6 +5139,12 @@ describe('Random distributions', () => {
 
     // Irwin-Hall distribution
     describe('Irwin-Hall distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let IrwinHall = require('../lib/methods/irwinhall'),
             Common = require('../lib/analyzer/common'),
             Percentile = require('../lib/analyzer/percentiles');
@@ -4853,6 +5198,7 @@ describe('Random distributions', () => {
         it('should return different values each time', () => {
             let irwinhall = new IrwinHall(5),
                 value1;
+            prng.seed();
             for(let i = 0; i < 10; i += 1){
                 value1 = irwinhall.random();
                 expect(irwinhall.random()).to.be.a('number');
@@ -4877,6 +5223,12 @@ describe('Random distributions', () => {
             expect(countDiffs).to.be.at.least(200);
         });
         describe('With real generated data (n = 8)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
             let irwinhall = new IrwinHall(8),
                 distribution,
                 analyzer,

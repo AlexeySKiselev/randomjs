@@ -9,11 +9,16 @@ import AnalyzerFactory from './core/analyzerFactory';
 import Sample from './core/array_manipulation/sample';
 import Shuffle from './core/array_manipulation/shuffle';
 import Winsorize from './core/array_manipulation/winsorize';
+import murmur3 from './core/utils/hash';
+import prngProxy from './core/prng/prngProxy';
 
 const Bernoulli = require('./core/methods/bernoulli');
 
-import type { PercentileInput, RandomArray, RandomArrayString, SampleOptions } from './core/types';
-import type { ISample, IShuffle } from './core/interfaces';
+import type {
+    NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
+    SampleOptions
+} from './core/types';
+import type { IPRNGProxy, ISample, IShuffle } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
@@ -25,12 +30,21 @@ class RandomJS {
     derange: any;
     chance: (trueProb: number) => boolean;
     winsorize: (input: RandomArray, limits: any) => RandomArray;
+    hash: (data: NumberString, seed: ?number) => number;
+    _prng: IPRNGProxy;
+    seed: (seed_value: ?NumberString) => void;
+    prng: IPRNGProxy;
+    random: RandomArrayNumber;
+    next: number;
+    randomInt: RandomArrayNumber;
+    nextInt: number;
 
     constructor(): void {
         this.analyze = null;
         this.utils = null;
         this._sample = new Sample();
         this._shuffle = new Shuffle();
+        this._prng = prngProxy; // default PRNG with seed
 
         fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
             /**
@@ -133,6 +147,72 @@ class RandomJS {
                 return _winsorize.winsorize(input, limits, mutate);
             }
         }: Object));
+
+        /**
+         * Hash function
+         */
+        Object.defineProperty(this, 'hash', ({
+            __proto__: null,
+            value: (data: NumberString, seed: ?number): number => {
+                return murmur3(data, seed);
+            }
+        }: Object));
+
+        /**
+         * PRNG seed
+         */
+        Object.defineProperty(this, 'seed', ({
+            __proto__: null,
+            value: (seed_value: ?NumberString): void => {
+                this._prng.seed(seed_value);
+            }
+        }: Object));
+
+        /**
+         * Sets PRNG
+         */
+        Object.defineProperty(this, 'prng', ({
+            __proto__: null,
+            get: (): IPRNGProxy => {
+                return this._prng;
+            }
+        }: Object));
+
+        /**
+         * Returns seeded random value [0, 1) with uniform distribution
+         */
+        Object.defineProperty(this, 'random', ({
+            value: (n: number = 1): RandomArrayNumber => {
+                return this._prng.random(n);
+            }
+        }: Object));
+
+        /**
+         * Returns seeded next value [0, 1) with uniform distribution
+         */
+        Object.defineProperty(this, 'next', ({
+            value: (): number => {
+                return this._prng.next();
+            }
+        }: Object));
+
+        /**
+         * Returns seeded random integer value [0, 2^32) with uniform distribution
+         */
+        Object.defineProperty(this, 'randomInt', ({
+            value: (n: number = 1): RandomArrayNumber => {
+                return this._prng.randomInt(n);
+            }
+        }: Object));
+
+        /**
+         * Returns seeded next integer value [0, 2^32) with uniform distribution
+         */
+        Object.defineProperty(this, 'nextInt', ({
+            value: (): number => {
+                return this._prng.nextInt();
+            }
+        }: Object));
     }
 
     help(): void {
@@ -153,7 +233,12 @@ const methods = {
     shuffle: randomjs.shuffle,
     derange: randomjs.derange,
     chance: randomjs.chance,
-    winsorize: randomjs.winsorize
+    winsorize: randomjs.winsorize,
+    hash: randomjs.hash,
+    seed: randomjs.seed,
+    prng: randomjs.prng,
+    random: randomjs.random,
+    next: randomjs.next
 };
 fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
     let rand_method = file.slice(0,-3);

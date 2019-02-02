@@ -10,6 +10,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 
 class Geometric {
     successProb: number;
@@ -23,9 +24,25 @@ class Geometric {
      * @returns a Geometric distributed number
      */
     random(): number {
-        let res: number = 1;
-        while(Math.random() >= this.successProb){
+        let res: number = 1,
+            random: number = (prng.random(): any);
+        while(random >= this.successProb){
             res += 1;
+            random = prng.next();
+        }
+        return res;
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let res: number = 1,
+            random: number = prng.next();
+        while(random >= this.successProb){
+            res += 1;
+            random = prng.next();
         }
         return res;
     }
@@ -36,9 +53,17 @@ class Geometric {
      * @returns Array<number> - Geometric distributed numbers
      */
     distribution(n: number): RandomArray {
-        let geometricArray: RandomArray = [];
-        for(let i:number = 0; i < n; i += 1){
-            geometricArray[i] = this.random();
+        let geometricArray: RandomArray = [],
+            random: number = (prng.random(): any),
+            res: number;
+        for(let i = 0; i < n; i += 1){
+            res = 1;
+            random = prng.next();
+            while(random >= this.successProb){
+                res += 1;
+                random = prng.next();
+            }
+            geometricArray[i] = res;
         }
         return geometricArray;
     }

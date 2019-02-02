@@ -39,15 +39,28 @@ class BetaPrime {
     }
 
     /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let betaVariance: number;
+        this.betaRandom.refresh(this.alpha, this.beta);
+        betaVariance = this.betaRandom.next();
+
+        return betaVariance / (1 - betaVariance);
+    }
+
+    /**
      * Generates Beta Prime distributed numbers
      * @param n: number - Number of elements in resulting array, n > 0
      * @returns Array<number> - Beta Prime distributed numbers
      */
     distribution(n: number): RandomArray {
-        let betaPrimeArray: RandomArray = [];
-
+        this.betaRandom.refresh(this.alpha, this.beta);
+        let betaPrimeArray: RandomArray = [],
+            betaVariance: RandomArray = this.betaRandom.distribution(n);
         for(let i: number = 0; i < n; i += 1){
-            betaPrimeArray[i] = this.random();
+            betaPrimeArray[i] = betaVariance[i] / (1 - betaVariance[i]);
         }
         return betaPrimeArray;
     }

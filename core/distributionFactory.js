@@ -55,6 +55,26 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
 
     /**
      * Required method
+     * Method .next(): Promise<number> generates a next seeded random number due to distribution
+     * This method is asynchronous, contains method .then(data: number => {}) and
+     * .catch(err: {error: string} => {}) corresponds to error in random distribution
+     * Error can occurs with incorrect input values, served by .isError() method
+     * @returns a random number on each call, can be integer or float
+     */
+    next(): Promise<number> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if(this.isError().error){
+                    reject(this.isError());
+                } else {
+                    resolve(this._method.next());
+                }
+            }, 0);
+        });
+    }
+
+    /**
+     * Required method
      * Method .randomSync(): number generates a random number due to distribution
      * This method is synchronous
      * Produces a random number or throw an error message
@@ -66,6 +86,21 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
             throw new Error(this.isError().error);
         } else
             return this._method.random();
+    }
+
+    /**
+     * Required method
+     * Method .nextSync(): number generates a seeded next random number due to distribution
+     * This method is synchronous
+     * Produces a random number or throw an error message
+     * Error can occurs with incorrect input values, served by .isError() method
+     * @returns a random number on each call, can be integer or float
+     */
+    nextSync(): number {
+        if(this.isError().error){
+            throw new Error(this.isError().error);
+        } else
+            return this._method.next();
     }
 
     /**

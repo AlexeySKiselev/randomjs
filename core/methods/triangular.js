@@ -12,6 +12,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 
 class Triangular {
     a: number;
@@ -29,7 +30,24 @@ class Triangular {
      * @returns a Triangular distributed number
      */
     random(): number {
-        let u = Math.random();
+        let u: number = (prng.random(): any);
+        return this._random(u);
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random(prng.next());
+    }
+
+    /**
+     * For simplicity
+     * @param {number} u
+     * @private
+     */
+    _random(u: number): number {
         if(u <= ((this.c - this.a) / (this.b - this.a))){
             return this.a + Math.sqrt(u * (this.c - this.a) * (this.b - this.a));
         } else {
@@ -43,9 +61,10 @@ class Triangular {
      * @returns Array<number> - Triangular distributed numbers
      */
     distribution(n: number): RandomArray {
-        let triangularArray: RandomArray = [];
+        let triangularArray: RandomArray = [],
+            random: RandomArray = (prng.random(n): any);
         for(let i: number = 0; i < n; i += 1){
-            triangularArray[i] = this.random();
+            triangularArray[i] = this._random(random[i]);
         }
         return triangularArray;
     }

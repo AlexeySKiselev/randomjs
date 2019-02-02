@@ -10,6 +10,7 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import prng from '../prng/prngProxy';
 
 class Poisson {
     lambda: number;
@@ -23,11 +24,24 @@ class Poisson {
      * @returns a Poisson distributed number
      */
     random(): number {
+        prng.random();
+        return this._random();
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random();
+    }
+
+    _random(): number {
         let res: number = 0,
             p: number = 1,
             L: number = Math.exp(-this.lambda);
         do {
-            p *= Math.random();
+            p *= prng.next();
             res += 1;
         } while(p >= L);
         return res - 1;
@@ -40,8 +54,9 @@ class Poisson {
      */
     distribution(n: number): RandomArray {
         let poissonArray: RandomArray = [];
+        prng.random();
         for(let i:number = 0; i < n; i += 1){
-            poissonArray[i] = this.random();
+            poissonArray[i] = this._random();
         }
         return poissonArray;
     }

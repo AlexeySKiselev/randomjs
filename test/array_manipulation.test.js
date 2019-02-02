@@ -7,12 +7,26 @@
 let chai = require('chai'),
     expect = chai.expect,
     {describe, it} = require('mocha'),
-    fs = require('fs');
+    fs = require('fs'),
+    prng = require('../lib/prng/prngProxy').default;
 
 chai.should();
+prng.seed();
 
 describe('Array manipulation methods', () => {
+    beforeEach(() => {
+        prng.seed();
+    });
+    before(() => {
+        prng.seed();
+    });
     describe('Sample', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Sample = require('../lib/array_manipulation/sample').default;
         it('requires at least one correct argument', () => {
             let zeroParams = () => {
@@ -67,6 +81,7 @@ describe('Array manipulation methods', () => {
             let sample = new Sample(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 samples = {};
+            prng.seed();
             for(let i = 0; i < 1000; i += 1) {
                 samples[sample.getSample(input_str, 4)] = 1;
             }
@@ -78,6 +93,7 @@ describe('Array manipulation methods', () => {
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 letters = {},
                 temp;
+            prng.seed();
             // generate letters dict
             for(let letter of input_str) {
                 letters[letter] = 0;
@@ -99,6 +115,7 @@ describe('Array manipulation methods', () => {
             let sample = new Sample(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 samples = {};
+            prng.seed();
             for(let i = 0; i < 1000; i += 1) {
                 samples[sample.getSample(input_str, 16)] = 1;
             }
@@ -110,6 +127,7 @@ describe('Array manipulation methods', () => {
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 letters = {},
                 temp;
+            prng.seed();
             // generate letters dict
             for(let letter of input_str) {
                 letters[letter] = 0;
@@ -133,7 +151,7 @@ describe('Array manipulation methods', () => {
                 input_arr = [],
                 temp,
                 correctOrders = 0;
-
+            prng.seed();
             // function for checking correct order
             let checkOrder = (input) => {
                 for(let i = 1; i < input.length; i += 1) {
@@ -224,6 +242,12 @@ describe('Array manipulation methods', () => {
         });
     });
     describe('Shuffle', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Shuffle = require('../lib/array_manipulation/shuffle').default;
         it('requires at least one correct argument', () => {
             let zeroParams = () => {
@@ -259,17 +283,20 @@ describe('Array manipulation methods', () => {
             expect(shuffle.getPermutation(input_string)).to.be.a('string');
             shuffle.getPermutation(input_string).length.should.equal(input_string.length);
         });
-        it('should generate different results each time', () => {
+        it('should generate different results each time', function (done) {
+            this.timeout(480000);
             let shuffle = new Shuffle(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 samples = {},
                 temp;
+            prng.seed();
             for(let i = 0; i < 100000; i += 1) {
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                 temp = shuffle.getPermutation(input_str);
                 samples[temp] = 1;
             }
             expect(Object.keys(samples).length).to.be.at.least(99990);
+            done();
         });
         it('should place each element on each position with the same probability', function(done) {
             this.timeout(480000);
@@ -277,6 +304,7 @@ describe('Array manipulation methods', () => {
                 input_str = 'abcdefghijklmnopqrstuvwxyz',
                 letters = {},
                 temp;
+            prng.seed();
             // generate letters dict
             for(let letter of input_str) {
                 letters[letter] = {};
@@ -315,7 +343,7 @@ describe('Array manipulation methods', () => {
                     return true;
                 },
                 temp;
-
+            prng.seed();
             for(let i = 0; i < 100000; i += 1) {
                 letters = {};
                 input_str = 'abcdefghijklmnopqrstuvwxyz';
@@ -334,6 +362,12 @@ describe('Array manipulation methods', () => {
         });
     });
     describe('Derange', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
         let Shuffle = require('../lib/array_manipulation/shuffle').default;
         it('requires at least one correct argument', () => {
             let zeroParams = () => {
@@ -369,17 +403,20 @@ describe('Array manipulation methods', () => {
             expect(shuffle.getDerangement(input_string)).to.be.a('string');
             shuffle.getDerangement(input_string).length.should.equal(input_string.length);
         });
-        it('should generate different results each time', () => {
+        it('should generate different results each time', function (done) {
+            this.timeout(480000);
             let shuffle = new Shuffle(),
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
                 samples = {},
                 temp;
+            prng.seed();
             for(let i = 0; i < 100000; i += 1) {
                 input_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                 temp = shuffle.getDerangement(input_str);
                 samples[temp] = 1;
             }
             expect(Object.keys(samples).length).to.be.at.least(99990);
+            done();
         });
         it('should place each element on each position with the same probability', function(done) {
             this.timeout(480000);
@@ -387,6 +424,7 @@ describe('Array manipulation methods', () => {
                 input_str = 'abcdefghijklmnopqrstuvwxyz',
                 letters = {},
                 temp;
+            prng.seed();
             // generate letters dict
             for(let letter of input_str) {
                 letters[letter] = {};
@@ -425,7 +463,7 @@ describe('Array manipulation methods', () => {
                     return true;
                 },
                 temp;
-
+            prng.seed();
             for(let i = 0; i < 100000; i += 1) {
                 letters = {};
                 input_str = 'abcdefghijklmnopqrstuvwxyz';
@@ -444,6 +482,7 @@ describe('Array manipulation methods', () => {
         });
         it('should not has fixed points', function (done) {
             this.timeout(480000);
+            prng.seed();
             let shuffle = new Shuffle(),
                 input_arr = [],
                 checkDerangement = (input) => {

@@ -9,7 +9,8 @@
  * Created by Alexey S. Kiselev
  */
 
-import type { MethodError } from '../types';
+import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 
 class Bernoulli {
     p: number;
@@ -24,10 +25,19 @@ class Bernoulli {
      * This method returns only "1" or "0"
      */
     random(): 0 | 1 {
-        if(Math.random() <= this.p){
-            return 1;
-        }
-        return 0;
+        return this._random((prng.random(): any));
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): 0 | 1 {
+        return this._random(prng.next());
+    }
+
+    _random(u: number): 0 | 1 {
+        return (u <= this.p) ? 1 : 0;
     }
 
     /**
@@ -36,9 +46,10 @@ class Bernoulli {
      * @returns Array<number> - Bernoulli distributed numbers
      */
     distribution(n: number): Array<0 | 1> {
-        let bernoulliArray: Array<0 | 1> = [];
+        let bernoulliArray: Array<0 | 1> = [],
+            random: RandomArray = (prng.random(n): any);
         for(let i: number = 0; i < n; i += 1){
-            bernoulliArray[i] = this.random();
+            bernoulliArray[i] = this._random(random[i]);
         }
         return bernoulliArray;
     }

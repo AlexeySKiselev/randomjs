@@ -24,9 +24,22 @@ class IrwinHall {
      * @returns a Irwin-Hall distributed number
      */
     random(): number {
+        let random_number: number = 0,
+            random: RandomArray = this._uniform.distribution(this.n);
+        for(let k = 0; k < this.n; k += 1) {
+            random_number += random[k];
+        }
+        return random_number;
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
         let random_number: number = 0;
-        for(let k = 1; k <= this.n; k += 1) {
-            random_number += this._uniform.random();
+        for(let k = 0; k < this.n; k += 1) {
+            random_number += this._uniform.next();
         }
         return random_number;
     }
@@ -36,9 +49,15 @@ class IrwinHall {
      * @returns an array with Irwin-Hall distributed numbers
      */
     distribution(n: number): RandomArray {
-        let irwinHallArray: RandomArray = [];
+        let irwinHallArray: RandomArray = [],
+            random_number: number,
+            random: RandomArray = this._uniform.distribution(n * this.n);
         for(let i: number = 0; i < n; i += 1){
-            irwinHallArray[i] = this.random();
+            random_number = 0;
+            for(let k = 0; k < this.n; k += 1) {
+                random_number += random[i * this.n + k];
+            }
+            irwinHallArray[i] = random_number;
         }
         return irwinHallArray;
     }

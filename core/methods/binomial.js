@@ -10,7 +10,8 @@
  * Created by Alexey S. Kiselev
  */
 
-import type {MethodError, RandomArray} from '../types';
+import type { MethodError, RandomArray } from '../types';
+import prng from '../prng/prngProxy';
 
 class Binomial {
     trials: number;
@@ -26,9 +27,26 @@ class Binomial {
      * @returns a Binomial distributed number
      */
     random(): number {
-        let res: number = 0;
+        let res: number = 0,
+            random: RandomArray = (prng.random(this.trials): any);
         for(let i: number = 0; i < this.trials; i += 1){
-            if(Math.random() < this.successProb) {
+            if(random[i] < this.successProb) {
+                res += 1;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let res: number = 0,
+            random: number;
+        for(let i: number = 0; i < this.trials; i += 1){
+            random = prng.next();
+            if(random < this.successProb) {
                 res += 1;
             }
         }
@@ -41,9 +59,17 @@ class Binomial {
      * @returns Array<number> - Binomial distributed numbers
      */
     distribution(n: number): RandomArray {
-        let binomialArray: RandomArray = [];
+        let binomialArray: RandomArray = [],
+            random: RandomArray = (prng.random(n * this.trials): any),
+            res: number;
         for(let i:number = 0; i < n; i += 1){
-            binomialArray[i] = this.random();
+            res = 0;
+            for(let k: number = 0; k < this.trials; k += 1){
+                if(random[i * this.trials + k] < this.successProb) {
+                    res += 1;
+                }
+            }
+            binomialArray[i] = res;
         }
         return binomialArray;
     }

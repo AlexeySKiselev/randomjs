@@ -10,6 +10,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 
 class Exponential {
     lambda: number;
@@ -23,7 +24,19 @@ class Exponential {
      * @returns a exponential distributed number
      */
     random(): number {
-        return (-Math.log(Math.random()) / this.lambda);
+        return this._random((prng.random(): any));
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        return this._random(prng.next());
+    }
+
+    _random(u: number): number {
+        return -Math.log(u) / this.lambda;
     }
 
     /**
@@ -32,9 +45,10 @@ class Exponential {
      * @returns Array<number> - exponential distributed numbers
      */
     distribution(n: number): RandomArray {
-        let exponentialArray: RandomArray = [];
+        let exponentialArray: RandomArray = [],
+            random = (prng.random(n): any);
         for(let i: number = 0; i < n; i += 1){
-            exponentialArray[i] = this.random();
+            exponentialArray[i] = this._random(random[i]);
         }
         return exponentialArray;
     }

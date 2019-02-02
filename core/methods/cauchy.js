@@ -11,6 +11,8 @@
  */
 
 import type { MethodError, RandomArray } from '../types';
+import prng from '../prng/prngProxy';
+const TAN_LIMIT = 12;
 
 class Cauchy {
     location: number;
@@ -29,9 +31,21 @@ class Cauchy {
      * @returns a normal distributed number
      */
     random(): number {
-        let randomTan: number = Math.tan(Math.PI * (Math.random() - 0.5));
-        if(Math.abs(randomTan) > 12) {
-            return this.random();
+        let randomTan: number = Math.tan(Math.PI * ((prng.random(): any) - 0.5));
+        while (Math.abs(randomTan) > TAN_LIMIT) {
+            randomTan = Math.tan(Math.PI * (prng.next() - 0.5));
+        }
+        return this.location + this.scale * randomTan;
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let randomTan: number = Math.tan(Math.PI * ((prng.next(): any) - 0.5));
+        while (Math.abs(randomTan) > TAN_LIMIT) {
+            randomTan = Math.tan(Math.PI * (prng.next() - 0.5));
         }
         return this.location + this.scale * randomTan;
     }
@@ -42,9 +56,15 @@ class Cauchy {
      * @returns Array<number> - Cauchy distributed numbers
      */
     distribution(n: number): RandomArray {
-        let cauchyArray: RandomArray = [];
+        let cauchyArray: RandomArray = [],
+            random: RandomArray = (prng.random(n): any),
+            randomTan: number;
         for(let i: number = 0; i < n; i += 1){
-            cauchyArray[i] = this.random();
+            randomTan = Math.tan(Math.PI * (random[i] - 0.5));
+            while (Math.abs(randomTan) > TAN_LIMIT) {
+                randomTan = Math.tan(Math.PI * (prng.next() - 0.5));
+            }
+            cauchyArray[i] = this.location + this.scale * randomTan;
         }
         return cauchyArray;
     }

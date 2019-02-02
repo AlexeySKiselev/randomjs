@@ -31,10 +31,27 @@ class Bates {
      */
     random(): number {
         let m: number = 0,
-            random_number: number = 0;
-        for(let k = 1; k <= this.n; k += 1) {
+            random_number: number = 0,
+            random: RandomArray = this._uniform.distribution(this.n);
+        for(let k = 0; k < this.n; k += 1) {
             m += 1;
-            random_number += (this._uniform.random() - random_number) / m;
+            random_number += (random[k] - random_number) / m;
+        }
+        return random_number;
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        let m: number = 0,
+            random_number: number = 0,
+            random: number;
+        for(let k = 0; k < this.n; k += 1) {
+            m += 1;
+            random = this._uniform.next();
+            random_number += (random - random_number) / m;
         }
         return random_number;
     }
@@ -44,9 +61,18 @@ class Bates {
      * @returns an array with Bates distributed numbers
      */
     distribution(n: number): RandomArray {
-        let batesArray: RandomArray = [];
+        let batesArray: RandomArray = [],
+            random: RandomArray = this._uniform.distribution(n * this.n),
+            m: number,
+            random_number: number;
         for(let i: number = 0; i < n; i += 1){
-            batesArray[i] = this.random();
+            m = 0;
+            random_number = 0;
+            for(let k = 0; k < this.n; k += 1) {
+                m += 1;
+                random_number += (random[i * this.n + k] - random_number) / m;
+            }
+            batesArray[i] = random_number;
         }
         return batesArray;
     }

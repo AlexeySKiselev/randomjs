@@ -6,7 +6,7 @@
 
 import type {
     RandomArray, RandomArrayString, AnalyzerPublicMethods, AnalyzerPublicProperties, MethodError,
-    RandomArrayStringObject, SampleOptions, PercentileInput
+    RandomArrayStringObject, SampleOptions, PercentileInput, NumberString, RandomArrayNumber
 } from './types';
 
 /**
@@ -71,6 +71,7 @@ export interface IRandomFactory<R, D> {
      * @returns a random number on each call, can be integer or float
      */
     random(): R;
+    next(): R;
 
     /**
      * Required method
@@ -81,6 +82,7 @@ export interface IRandomFactory<R, D> {
      * @returns a random number on each call, can be integer or float
      */
     randomSync(): number;
+    nextSync(): number;
 
     /**
      * Required method
@@ -154,4 +156,30 @@ export interface IShuffle {
  */
 export interface IWinsorize {
     winsorize(input: RandomArray, limits: PercentileInput<number>, mutate: boolean): RandomArray;
+}
+
+/**
+ * PRNG Interface
+ */
+export interface IPRNG {
+    seed(seed_value: ?NumberString): void;
+    random(n: ?number): RandomArrayNumber;
+    randomInt(n: ?number): RandomArrayNumber;
+    next(): number;
+    nextInt():  number;
+}
+
+/**
+ * PRNG Factory Interface
+ */
+
+export interface IPRNGProxy extends IPRNG {
+    set_prng(prng_name: string): void;
+}
+
+/**
+ * Hash interface
+ */
+export interface IHash {
+    hash(data: NumberString, seed: number): number;
 }

@@ -7,6 +7,7 @@
  */
 
 import ArrayManipulation from './base';
+import prng from '../prng/prngProxy';
 
 import type { IShuffle } from '../interfaces';
 import type { RandomArrayString, RandomArrayNumberString } from '../types';
@@ -75,8 +76,9 @@ class Shuffle extends ArrayManipulation implements IShuffle {
     _getSimplePermutationForArray<T>(input: RandomArrayNumberString<T>): RandomArrayNumberString<T> {
         let currentIndex: number = input.length,
             randomIndex: number;
+        prng.random();
         while(currentIndex !== 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
+            randomIndex = Math.floor(prng.next() * currentIndex);
             currentIndex -= 1;
 
             // $FlowFixMe - Destructuring swap is faster
@@ -112,6 +114,8 @@ class Shuffle extends ArrayManipulation implements IShuffle {
             rat: number,
             t: number;
 
+        prng.random();
+
         // Initialize indexes array
         for(let i = 0; i < input.length; i += 1) {
             indexes[i] = i;
@@ -119,14 +123,14 @@ class Shuffle extends ArrayManipulation implements IShuffle {
 
         while(ni >= 2) {
             r1 = indexes[ni - 1];
-            x2 = Math.floor(Math.random() * (ni - 1));
+            x2 = Math.floor(prng.next() * (ni - 1));
             r2 = indexes[x2];
 
             // $FlowFixMe - Destructuring swap is faster
             [input[r1], input[r2]] = [input[r2], input[r1]];
             ni -= 1;
             rat = (ni <= 32) ? this._derangeBranches[ni] : (1 / ni);
-            t = Math.random();
+            t = prng.next();
 
             if(t < rat) {
                 ni -= 1;

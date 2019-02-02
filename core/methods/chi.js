@@ -27,7 +27,17 @@ class Chi {
      * @returns a Chi distributed number
      */
     random(): number {
+        this.chiSquare.refresh(this.degrees);
         return Math.sqrt(this.chiSquare.random());
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
+        this.chiSquare.refresh(this.degrees);
+        return Math.sqrt(this.chiSquare.next());
     }
 
     /**
@@ -36,9 +46,11 @@ class Chi {
      * @returns Array<number> - Chi distributed numbers
      */
     distribution(n: number): RandomArray {
-        let chiArray: RandomArray = [];
+        this.chiSquare.refresh(this.degrees);
+        let chiArray: RandomArray = [],
+            random: RandomArray = this.chiSquare.distribution(n);
         for(let i:number = 0; i < n; i += 1){
-            chiArray[i] = this.random();
+            chiArray[i] = Math.sqrt(random[i]);
         }
         return chiArray;
     }

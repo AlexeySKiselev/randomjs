@@ -11,6 +11,7 @@
  */
 
 import type {MethodError, RandomArray} from '../types';
+import prng from '../prng/prngProxy';
 let Utils = require('../utils/utils');
 
 class Erlang {
@@ -27,9 +28,22 @@ class Erlang {
      * @returns a Erlang distributed number
      */
     random(): number {
+        let p: number = 1,
+            random: RandomArray = (prng.random(this.shape): any);
+        for(let i: number = 0; i < this.shape; i += 1){
+            p *= random[i];
+        }
+        return (-this.scale) * Math.log(p);
+    }
+
+    /**
+     * Generates next seeded random number
+     * @returns {number}
+     */
+    next(): number {
         let p: number = 1;
         for(let i: number = 0; i < this.shape; i += 1){
-            p *= Math.random();
+            p *= prng.next();
         }
         return (-this.scale) * Math.log(p);
     }
@@ -40,9 +54,15 @@ class Erlang {
      * @returns Array<number> - Erlang distributed numbers
      */
     distribution(n: number): RandomArray {
-        let erlangArray: RandomArray = [];
-        for(let i:number = 0; i < n; i += 1){
-            erlangArray[i] = this.random();
+        let erlangArray: RandomArray = [],
+            p: number,
+            random: RandomArray = (prng.random(n * this.shape): any);
+        for(let i: number = 0; i < n; i += 1){
+            p = 1;
+            for(let k: number = 0; k < this.shape; k += 1){
+                p *= random[i * this.shape + k];
+            }
+            erlangArray[i] = (-this.scale) * Math.log(p);
         }
         return erlangArray;
     }
