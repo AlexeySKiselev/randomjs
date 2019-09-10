@@ -83,7 +83,7 @@ let randomNumber = unirand.normal(mu, sigma).randomSync();
 // for seeded generator
 let randomNext = unirand.normal(mu, sigma).nextSync();
 ```
-For any generator `.random()` and `.next()` are *synchronous*, while `.randomSync()` and `.nextSync()` - *asynchronous*.
+For any generator `.random()` and `.next()` are *asynchronous*, while `.randomSync()` and `.nextSync()` - *synchronous*.
 
 ### Random distribution
 Generates random distribution (array with *n* random numbers). For example, if you want to generate random number with *normal distribution*:
