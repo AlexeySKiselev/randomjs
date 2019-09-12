@@ -4,6 +4,8 @@
  * Created by Alexey S. Kiselev
  */
 
+const distributionMethods = require(__dirname + '/methods');
+
 import type { IRandomFactory, IDistribution } from './interfaces';
 import type { MethodError, RandomArray } from './types';
 
@@ -19,13 +21,12 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
      * Sets current generator
      */
     set_current_generator(method: string, ...params: any): void {
-        const _method: string = method.slice(0, -3);
-        if (!this._distributions[_method]) {
-            const Method: Class<IDistribution> = require(__dirname + '/methods/' + method);
-            this._distributions[_method] = new Method(...params);
+        if (!this._distributions[method]) {
+            const Method: Class<IDistribution> = distributionMethods[method];
+            this._distributions[method] = new Method(...params);
         }
 
-        this._current_method = this._distributions[_method];
+        this._current_method = this._distributions[method];
         this._current_method.refresh(...params);
     }
 
@@ -80,8 +81,8 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
     randomSync(): number {
         if(this.isError().error){
             throw new Error(this.isError().error);
-        } else
-            return this._current_method.random();
+        }
+        return this._current_method.random();
     }
 
     /**
@@ -95,8 +96,8 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
     nextSync(): number {
         if(this.isError().error){
             throw new Error(this.isError().error);
-        } else
-            return this._current_method.next();
+        }
+        return this._current_method.next();
     }
 
     /**
@@ -139,8 +140,8 @@ class RandomFactory implements IRandomFactory<Promise<number>, Promise<RandomArr
         }
         if(this.isError().error){
             throw new Error(this.isError().error);
-        } else
-            return this._current_method.distribution(n, ...distParams);
+        }
+        return this._current_method.distribution(n, ...distParams);
     }
 
     /**

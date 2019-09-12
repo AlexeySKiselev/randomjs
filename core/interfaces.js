@@ -6,7 +6,8 @@
 
 import type {
     RandomArray, RandomArrayString, AnalyzerPublicMethods, AnalyzerPublicProperties, MethodError,
-    RandomArrayStringObject, SampleOptions, PercentileInput, NumberString, RandomArrayNumber
+    RandomArrayStringObject, SampleOptions, PercentileInput, NumberString, RandomArrayNumber,
+    RandomArrayNumberString, KFoldOptions
 } from './types';
 
 /**
@@ -206,3 +207,10 @@ export interface IPRNGProxy extends IPRNG {
 export interface IHash {
     hash(data: NumberString, seed: number): number;
 }
+
+/**
+ * k-fold method interface
+ */
+export interface IKFold {
+    getKFold(input: RandomArrayNumberString<any>, k: number, options: KFoldOptions): RandomArrayStringObject<any>;
+} 

@@ -12,18 +12,18 @@ class ArrayManipulation {
      * @private
      */
     _validateInput(input: any, allowObjects: boolean = true): void {
-        if(typeof input === 'string' || Array.isArray(input)) {
+        if(Array.isArray(input) || typeof input === 'string') {
             if(input.length === 0) {
-                throw new TypeError('Sample: input length must be greater then zero');
+                throw new TypeError('Input length must be greater then zero');
             }
-        } else if(typeof input === 'object' && allowObjects) {
+        } else if(allowObjects && typeof input === 'object') {
             if(Object.keys(input).length === 0) {
-                throw new TypeError('Sample: input object must have at least one key');
+                throw new TypeError('Input object must have at least one key');
             }
         } else if(allowObjects) {
-            throw new TypeError('Sample: input must be array, string or object');
+            throw new TypeError('Input must be array, string or object');
         } else
-            throw new TypeError('Sample: input must be array or string');
+            throw new TypeError('Input must be array or string');
     }
 }
 
