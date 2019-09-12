@@ -54,6 +54,11 @@ export type SampleOptions = {
     shuffle: ?boolean
 };
 
+export type KFoldOptions = {
+    type: 'list' | 'set',
+    derange: ?boolean
+}
+
 /**
  * Percentile input
  */

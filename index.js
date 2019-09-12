@@ -3,28 +3,31 @@
  * Created by Alexey S. Kiselev
  */
 
-import fs from 'fs';
 import DistributionFactory from './core/distributionFactory';
 import AnalyzerFactory from './core/analyzerFactory';
 import Sample from './core/array_manipulation/sample';
 import Shuffle from './core/array_manipulation/shuffle';
 import Winsorize from './core/array_manipulation/winsorize';
+import KFold from './core/array_manipulation/kfold';
 import murmur3 from './core/utils/hash';
 import prngProxy from './core/prng/prngProxy';
 
-const Bernoulli = require('./core/methods/bernoulli');
+const distributionMethods = require('./core/methods');
+const Bernoulli = distributionMethods.bernoulli;
 
 import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
-    SampleOptions
+    SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject
 } from './core/types';
-import type { IDistribution, IPRNGProxy, ISample, IShuffle } from './core/interfaces';
+import type { IPRNGProxy, ISample, IShuffle, IKFold } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
     utils: any;
     sample: any;
     _sample: ISample;
+    kfold: any;
+    _kfold: IKFold;
     shuffle: any;
     _shuffle: IShuffle;
     derange: any;
@@ -45,20 +48,21 @@ class RandomJS {
         this.utils = null;
         this._sample = new Sample();
         this._shuffle = new Shuffle();
+        this._kfold = new KFold();
         this._prng = prngProxy; // default PRNG with seed
         this._distribution_factory = new DistributionFactory();
 
-        fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
+        Object.keys(distributionMethods).forEach((method: string) => {
             /**
              *  Add a "random" method which contains different distribution methods
              *  Uses a factory pattern for creating instances of distributions classes
              *  @returns Object corresponds to distribution
              */
-            Object.defineProperty(this, file.slice(0, -3),{
+            Object.defineProperty(this, method, {
                 __proto__: null,
                 get: () => {
                     return (...params): DistributionFactory => {
-                        this._distribution_factory.set_current_generator(file, ...params);
+                        this._distribution_factory.set_current_generator(method, ...params);
                         return this._distribution_factory;
                     };
                 }
@@ -103,6 +107,20 @@ class RandomJS {
                     return this._sample.getSample(input, k, Object.assign(defaultOptions, options));
                 }
 
+            }
+        }: Object));
+
+        /**
+         * k-fold method
+         */
+        Object.defineProperty(this, 'kfold', ({
+            __proto__: null,
+            value: (input: RandomArrayNumberString<any>, k: number, options: KFoldOptions): RandomArrayStringObject<any> => {
+                const defaultOptions: KFoldOptions = {
+                    type: 'list',
+                    derange: false
+                };
+                return this._kfold.getKFold(input, k, Object.assign(defaultOptions, options));
             }
         }: Object));
 
@@ -233,6 +251,7 @@ const methods = {
     analyze: randomjs.analyze,
     utils: randomjs.utils,
     sample: randomjs.sample,
+    kfold: randomjs.kfold,
     shuffle: randomjs.shuffle,
     derange: randomjs.derange,
     chance: randomjs.chance,
@@ -243,8 +262,7 @@ const methods = {
     random: randomjs.random,
     next: randomjs.next
 };
-fs.readdirSync(__dirname + '/core/methods').forEach((file: string) => {
-    let rand_method = file.slice(0,-3);
+Object.keys(distributionMethods).forEach((rand_method: string) => {
     methods[rand_method] = Object.getOwnPropertyDescriptor(randomjs, rand_method).get();
 });
 

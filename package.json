@@ -1,12 +1,12 @@
 {
   "name": "unirand",
-  "version": "2.4.5",
+  "version": "2.5.1",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
     "mocha": "node node_modules/mocha/bin/mocha test/*.test.js",
-    "lint": "eslint --config .eslintrc.json ./",
-    "build:node": "gulp build:node --watch",
+    "lint": "node node_modules/eslint/bin/eslint --config .eslintrc.json ./",
+    "build:node": "node node_modules/gulp/bin/gulp build:node --watch",
     "test": "node node_modules/npm-run-all/bin/run-s build:node mocha",
     "nyc-coverage": "node node_modules/nyc/bin/nyc --reporter=text mocha",
     "test-coverage": "node node_modules/npm-run-all/bin/run-s build:node nyc-coverage",
@@ -54,7 +54,7 @@
     "eslint-plugin-flowtype": "^2.40.1",
     "eslint-plugin-mocha": "^4.11.0",
     "flow": "^0.2.3",
-    "flow-bin": "^0.62.0",
+    "flow-bin": "^0.75.0",
     "flowtype": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
@@ -65,6 +65,5 @@
     "npm-run-all": "^4.1.2",
     "nyc": "^11.3.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

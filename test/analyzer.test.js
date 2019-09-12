@@ -78,8 +78,6 @@ describe('Analyzer', () => {
             expect(methods3).to.not.equal(methods4);
         });
         it('should has "publicMethods" property classes', () => {
-            let common = Common.getInstance([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
-                percentile = new Percentile([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
             expect(Common).to.have.property('publicMethods');
             expect(Percentile).to.have.property('publicMethods');
         });

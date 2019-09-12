@@ -204,8 +204,8 @@ describe('Array manipulation methods', () => {
             this.timeout(480000);
             let sample = new Sample(),
                 input_arr = [],
-                temp,
-                correctOrders = 0;
+                correctOrders = 0,
+                temp; // eslint-disable-line no-unused-vars
 
             // function for checking correct order
             let checkOrder = (input) => {
@@ -640,6 +640,151 @@ describe('Array manipulation methods', () => {
             compareArrays(beforeData2, afterData2).should.equal(false);
             winsorize.winsorize(beforeData2, limit2, false);
             compareArrays(beforeData2, afterData2).should.equal(false);
+        });
+    });
+    describe('k-fold', () => {
+        const KFold = require('../lib/array_manipulation/kfold').default;
+        const generateInput = () => {
+            const res = [];
+            const n = 1000 + Math.floor(prng.next() * 9000);
+            for (let i = 0; i < n; i += 1) {
+                res[i] = Math.floor(prng.next() * 10000);
+            }
+            return res;
+        };
+        it('requires at least two correct arguments', () => {
+            let zeroParams = () => {
+                let kfold = new KFold();
+                return kfold.getKFold();
+            };
+            zeroParams.should.throw(Error);
+
+            let oneParam =  () => {
+                let kfold = new KFold();
+                return kfold.getKFold([1, 2, 3, 4, 5]);
+            };
+            oneParam.should.throw(Error);
+
+            let badParam1 =  () => {
+                let kfold = new KFold();
+                return kfold.getKFold(1);
+            };
+            badParam1.should.throw(TypeError);
+
+            let badParam2 =  () => {
+                let kfold = new KFold();
+                return kfold.getKFold({1: 2, 3: 4, 5: 6});
+            };
+            badParam2.should.throw(TypeError);
+
+            let goodParams =  () => {
+                let kfold = new KFold();
+                return kfold.getKFold([1, 2, 3, 4, 5], 2);
+            };
+            goodParams.should.not.throw(Error);
+
+            let badParam3 =  () => {
+                let kfold = new KFold();
+                return kfold.getKFold([1, 2, 3, 4, 5], -1);
+            };
+            badParam3.should.throw(Error);
+
+            let badParam4 = () => {
+                let kfold = new KFold();
+                return kfold.getKFold([1, 2, 3, 4, 5], ['a', 0.9]);
+            };
+            badParam4.should.throw(Error);
+
+            let badParam5 = () => {
+                let kfold = new KFold();
+                return kfold.getKFold([1, 2, 3, 4, 5], 10);
+            };
+            badParam5.should.throw(Error);
+        });
+        it('requires correct options', () => {
+            let wrongType = () => {
+                let kfold = new KFold();
+                return kfold.getKFold([1, 2, 3, 4, 5], 2, {
+                    type: 'abc'
+                });
+            };
+            wrongType.should.throw(Error);
+
+            let goodType = () => {
+                let kfold = new KFold();
+                return kfold.getKFold([1, 2, 3, 4, 5], 2, {
+                    type: 'list'
+                });
+            };
+            goodType.should.not.throw(Error);
+
+            let goodType2 = () => {
+                let kfold = new KFold();
+                return kfold.getKFold([1, 2, 3, 4, 5], 2, {
+                    type: 'set'
+                });
+            };
+            goodType2.should.not.throw(Error);
+        });
+        it('should have exactly k folds', function(done) {
+            this.timeout(480000);
+            const kfold = new KFold();
+            let randomInput;
+            let res;
+            let k;
+            for (let i = 0; i < 10000; i += 1) {
+                randomInput = generateInput();
+                k = 2 + Math.floor(randomInput.length * prng.next() * 0.95);
+                res = kfold.getKFold(randomInput, k, {type: 'list'});
+                res.length.should.equal(k);
+            }
+            done();
+        });
+        it('should have folds differ at most one element', function(done) {
+            this.timeout(480000);
+            const kfold = new KFold();
+            let randomInput;
+            let res;
+            let k;
+            const checkFolds = (folds) => {
+                let max = 0;
+                let min = Infinity;
+                for (let i = 0; i < folds.length; i += 1) {
+                    max = Math.max(max, folds[i].length);
+                    min = Math.min(min, folds[i].length);
+                }
+
+                return max - min <= 1;
+            };
+            for (let i = 0; i < 10000; i += 1) {
+                randomInput = generateInput();
+                k = 2 + Math.floor(randomInput.length * prng.next() * 0.95);
+                res = kfold.getKFold(randomInput, k, {type: 'list'});
+                checkFolds(res).should.equal(true);
+            }
+            done();
+        });
+        it('should have folds with sum of elements equals to input length', function(done) {
+            this.timeout(480000);
+            const kfold = new KFold();
+            let randomInput;
+            let res;
+            let k;
+            const checkFolds = (folds) => {
+                let res = 0;
+                for (let i = 0; i < folds.length; i += 1) {
+                    res += folds[i].length;
+                }
+
+                return res;
+            };
+            for (let i = 0; i < 10000; i += 1) {
+                randomInput = generateInput();
+                k = 2 + Math.floor(randomInput.length * prng.next() * 0.95);
+                res = kfold.getKFold(randomInput, k, {type: 'list'});
+                checkFolds(res).should.equal(randomInput.length);
+            }
+            done();
         });
     });
 });
