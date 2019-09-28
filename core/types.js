@@ -73,3 +73,14 @@ export type NumberString = number | string;
  * Array<number> or number
  */
 export type RandomArrayNumber = RandomArray | number;
+
+/**
+ * kfold crossvalidation 
+ */
+export type KFoldCrossValidationItem = {
+    id: number,
+    test: RandomArrayStringObject<any>,
+    data: RandomArrayStringObject<any>
+};
+
+export type KFoldCrossValidation = Array<KFoldCrossValidationItem>;

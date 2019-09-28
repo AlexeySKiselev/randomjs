@@ -786,5 +786,74 @@ describe('Array manipulation methods', () => {
             }
             done();
         });
+        it('should have correct output structure for type "crossvalidation"', () => {
+            const kfold = new KFold();
+            const randomInput = generateInput();
+            const res = kfold.getKFold(randomInput, 10, {
+                type: 'crossvalidation'
+            });
+
+            expect(res.length).to.be.equal(10);
+            expect(Array.isArray(res)).to.be.equal(true);
+            expect(res[0].id).to.be.equal(0);
+            expect(res[0].test).to.be.not.equal(undefined);
+            expect(res[0].data).to.be.not.equal(undefined);
+            expect(Object.keys(res[0]).length).to.be.equal(3);
+            expect(Array.isArray(res[0].test)).to.be.equal(true);
+            expect(Array.isArray(res[0].data)).to.be.equal(true);
+            for (let i = 0; i < res.length; i += 1) {
+                expect(res[i].test.length + res[i].data.length).to.be.equal(randomInput.length);
+            }
+        });
+        it('should generate correct data for type "crossvalidation"', function(done) {
+            this.timeout(480000);
+            const kfold = new KFold();
+            let input = [];
+            let res;
+            const checkExistance = (data, test) => {
+                let ht = {};
+                let fail = false;
+                for (let i = 0; i < test.length; i += 1) {
+                    ht[test[i]] = 1;
+                }
+                for (let i = 0; i < data.length; i += 1) {
+                    if (ht[data[i]]) {
+                        fail = true;
+                        break;
+                    }
+                }
+                expect(fail).to.be.equal(false);
+            };
+
+            const checkUniqueness = (data, test) => {
+                const ht = {};
+                for (let i = 0; i < data.length; i += 1) {
+                    ht[data[i]] = 1;
+                }
+                
+                for (let i = 0; i < test.length; i += 1) {
+                    ht[test[i]] = 1;
+                }
+
+                expect(Object.keys(ht).length).to.be.equal(data.length + test.length);
+            };
+
+            for (let i = 0; i < 5000; i += 1) {
+                input[i] = i;
+            }
+
+            for (let i = 0; i < 400; i += 1) {
+                res = kfold.getKFold(input, 200, {
+                    type: 'crossvalidation'
+                });
+
+                for (let j = 0; j < res.length; j += 1) {
+                    checkUniqueness(res[j].data, res[j].test);
+                    checkExistance(res[j].data, res[j].test);
+                }
+            }
+
+            done();
+        });
     });
 });

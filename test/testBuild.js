@@ -6,4 +6,7 @@
 let unirand = require('../lib');
 
 unirand.seed();
-console.log(unirand.laplace(1, 2).distributionSync(4));
+console.log(unirand.kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, {
+    derange: true,
+    type: 'crossvalidation'
+}));
