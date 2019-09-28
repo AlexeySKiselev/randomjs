@@ -4,7 +4,7 @@
 # Unirand
 A JavaScript module for generating seeded random distributions and its statistical analysis.
 
-Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with ~600 tests*.
+Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with 600+ tests*.
 
 [Supported distributions](./core/methods/)
 
@@ -17,7 +17,7 @@ const unirand = require('unirand')
 ```
 
 ### PRNG
-Unirand supports different PRNGs: *default JS generator, tuchei sedded generator*. By default unirand uses **tuchei** generator.
+Unirand supports different PRNGs: *default JS generator, tuchei seeded generator*. By default unirand uses **tuchei** generator.
 Our seeded generator supports *seed*, *random*, *next* methods.
 A name of current using PRNG is stored in:
 ```javascript
@@ -158,8 +158,8 @@ Sample method is **3 times faster** for arrays and **7 times faster** for string
 ### k-fold
 Splits array into *k* subarrays. Requires at least 2 arguments: array itself and *k*. Also supports *options*.
 
-- *type*: output type, **list** (default) for output like `[<fold>, <fold>, <fold>, ...]`, **set** for output like `{0: <fold>, 1: <fold>, 2: <fold>, ...}`
-- *derange*: items will be shuffled as *random permutation* (default) or *random derangement*
+- *type*: output type, **list** (default) for output like `[<fold>, <fold>, <fold>, ...]`, **set** for output like `{0: <fold>, 1: <fold>, 2: <fold>, ...}`, **crossvalidation** for output like `[{test: <fold>, data: <remaining folds>}, ...]`
+- *derange*: items will be shuffled as *random permutation* (default, `derange: false`) or *random derangement* (`derange: true`)
 ```javascript
 const kfold = unirand.kfold;
 kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3); // [ [ 9, 8, 2, 10 ], [ 1, 7, 3 ], [ 4, 5, 6 ] ]
@@ -168,7 +168,17 @@ kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3); // [ [ 9, 8, 2, 10 ], [ 1, 7, 3 ], [ 
 kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, {
     type: 'set',
     derange: true
-}); // { '0': [ 8, 10, 7, 1 ], '1': [ 6, 4, 9 ], '2': [ 5, 2, 3 ] }
+});
+// { '0': [ 8, 10, 7, 1 ], '1': [ 6, 4, 9 ], '2': [ 5, 2, 3 ] }
+
+// cross validation
+kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, {
+    type: 'crossvalidation',
+    derange: true
+})
+// [ { id: 0, test: [ 5, 6, 9, 7 ], data: [ 4, 1, 10, 2, 8, 3 ] },
+//  { id: 1, test: [ 4, 1, 10 ], data: [ 5, 6, 9, 7, 2, 8, 3 ] },
+//  { id: 2, test: [ 2, 8, 3 ], data: [ 5, 6, 9, 7, 4, 1, 10 ] } ]
 ```
 For permutation unirand uses seeded PRNG. With *seed* k-fold will always return same result.
 
@@ -197,7 +207,7 @@ Winsorization is the transformation of statistics by limiting extreme values in 
 Parameters:
 - *input*: array of numbers
 - *limits*: single number, represent same value trimming value from left and right (should be 0 < limit < 0.5), or an array \[left trim value, right trim value\] (values should be 0 < left trim value < right trim value < 1)
-- *mutate*: <true|false> value (default *true*). If true - mutate ofiginal array, otherwise - no
+- *mutate*: <true|false> value (default *true*). If true - mutate original array, otherwise - no
 
 ```javascript
 const winsorize = unirand.winsorize;
