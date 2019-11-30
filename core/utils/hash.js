@@ -75,10 +75,7 @@ class Hash implements IHash{
 
 const hash = new Hash();
 const murmur3 = (data: NumberString, seed: ?number): number => {
-    if (!seed) {
-        seed = Math.floor(Math.random() * (0x100000000 | 0));
-    }
-    return hash.hash(data, seed);
+    return hash.hash(data, seed || 0);
 };
 
 export default murmur3;

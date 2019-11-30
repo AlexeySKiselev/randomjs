@@ -28,6 +28,7 @@ describe('Random distributions without seed', () => {
     before(() => {
         prng.seed();
     });
+
     // Uniform distribution
     describe('Uniform distribution',() => {
         beforeEach(() => {
@@ -5324,6 +5325,282 @@ describe('Random distributions without seed', () => {
                         sum += analyzer.pdf.probabilities[j];
                         if(analyzer.pdf.values[j] >= values[i]) {
                             expect(sum).to.be.closeTo(probs[i], 0.03);
+                            j += 1;
+                            break;
+                        }
+                        j += 1;
+                    }
+                }
+            });
+        });
+    });
+
+    // Zipf distribution
+    describe('Zipf distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
+        let Zipf = require('../lib/methods/zipf'),
+            Common = require('../lib/analyzer/common');
+        it('requires two numerical arguments', () => {
+            let zeroParams = () => {
+                let zipf = new Zipf();
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            zeroParams.should.throw(Error);
+
+            let oneParam = () => {
+                let zipf = new Zipf(2);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            oneParam.should.throw(Error);
+
+            let twoParams = () => {
+                let zipf = new Zipf(1, 5);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            twoParams.should.not.throw(Error);
+        });
+        it('requires correct alpha value' , () => {
+            let badAlphaParam = () => {
+                let zipf = new Zipf(-1, 4);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            badAlphaParam.should.throw(Error);
+
+            let zeroAlpha = () => {
+                let zipf = new Zipf(0, 4);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            zeroAlpha.should.not.throw(Error);
+
+            let floatAlpha = () => {
+                let zipf = new Zipf(0.5, 4);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            floatAlpha.should.not.throw(Error);
+
+            let integerAlpha = () => {
+                let zipf = new Zipf(1, 4);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            integerAlpha.should.not.throw(Error);
+
+            let biggerIntegerAlpha = () => {
+                let zipf = new Zipf(3, 4);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            biggerIntegerAlpha.should.not.throw(Error);
+        });
+        it('requires correct shape value' , () => {
+            let badShapeParam = () => {
+                let zipf = new Zipf(1, -4);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            badShapeParam.should.throw(Error);
+
+            let zeroShape = () => {
+                let zipf = new Zipf(1, 0);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            zeroShape.should.throw(Error);
+
+            let oneShape = () => {
+                let zipf = new Zipf(1, 1);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            oneShape.should.throw(Error);
+
+            let goodShape = () => {
+                let zipf = new Zipf(1, 4);
+                if(zipf.isError().error)
+                    throw new Error(zipf.isError().error);
+            };
+            goodShape.should.not.throw(Error);
+        });
+        it('should has methods: .random, .distribution, .refresh, .isError', () => {
+            let zipf = new Zipf(1, 5);
+            expect(zipf).to.have.property('random');
+            expect(zipf).to.respondsTo('random');
+            expect(zipf).to.have.property('distribution');
+            expect(zipf).to.respondsTo('distribution');
+            expect(zipf).to.have.property('refresh');
+            expect(zipf).to.respondsTo('refresh');
+            expect(zipf).to.have.property('isError');
+            expect(zipf).to.respondsTo('isError');
+        });
+        it('should correctly update params for initial alpha=1, shape=4 .refresh(0.5, 5) method',() => {
+            let zipf = new Zipf(1, 4);
+            zipf.alpha.should.equal(1);
+            zipf.shape.should.equal(4);
+            zipf.refresh(0.5, 5);
+            zipf.alpha.should.equal(0.5);
+            zipf.shape.should.equal(5);
+        });
+        it('should be able to return different values', () => {
+            let zipf = new Zipf(0.2, 10),
+                values = {};
+            prng.seed();
+            for(let i = 0; i < 10; i += 1){
+                values[zipf.random()] = 1;
+                expect(zipf.random()).to.be.a('number');
+            }
+            let res = Object.keys(values).length > 1;
+            res.should.equal(true);
+        });
+        it('should generate an array with random values with length of 500', () => {
+            let zipf = new Zipf(0.1, 10),
+                randomArray = zipf.distribution(100),
+                countDiffs = 0,
+                last,
+                delta = 1;
+            // Check all values
+            randomArray.map(rand => {
+                if(last && Math.abs(rand - last) >= delta){
+                    countDiffs += 1;
+                }
+                last = rand;
+            });
+            expect(randomArray).to.be.an('array');
+            expect(randomArray).to.have.lengthOf(100);
+            expect(countDiffs).to.be.at.least(30);
+        });
+        it('should generate bounded values 1 <= value <= shape', () => {
+            let zipf = new Zipf(0.2, 30),
+                minValue = Infinity,
+                maxValue = -Infinity,
+                temp;
+            prng.seed();
+            for(let i = 0; i < 1000; i += 1){
+                temp = zipf.random();
+                minValue = Math.min(temp, minValue);
+                maxValue = Math.max(temp, maxValue);
+                expect(temp).to.be.a('number');
+            }
+            expect(maxValue).to.be.at.most(30);
+            expect(minValue).to.be.at.least(1);
+        });
+        describe('With real generated data (alpha=0.5, shape=20)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
+            let zipf = new Zipf(0.5, 20),
+                distribution,
+                analyzer,
+                min = [],
+                max = [],
+                mean = [],
+                variance = [],
+                entropy = [];
+
+            for(let i = 0; i < 30; i += 1) {
+                distribution = zipf.distribution(300000);
+                analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                min.push(analyzer.min);
+                max.push(analyzer.max);
+                mean.push(analyzer.mean);
+                variance.push(analyzer.variance);
+                entropy.push(analyzer.entropy);
+            }
+
+            it('should has min value close to 1', () => {
+                expect(analyzer.min).to.be.a('number');
+                expect(meanValue(min)).to.be.closeTo(1, 0.5);
+            });
+            it('should has max value close to shape', () => {
+                expect(analyzer.max).to.be.a('number');
+                expect(meanValue(max)).to.be.closeTo(20, 0.5);
+            });
+            it('should has correct mean value', () => {
+                expect(analyzer.mean).to.be.a('number');
+                expect(meanValue(mean)).to.be.closeTo(zipf.mean, 0.05);
+            });
+            it('should has correct variance value', () => {
+                expect(analyzer.variance).to.be.a('number');
+                expect(meanValue(variance)).to.be.closeTo(zipf.variance, 0.05);
+            });
+            it('should has correct entropy value', () => {
+                expect(analyzer.entropy).to.be.a('number');
+                expect(meanValue(entropy)).to.be.closeTo(zipf.entropy, 0.05);
+            });
+            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+                let analyzer = Common.getInstance(distribution),
+                    sum = 0;
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.values).to.be.an('array');
+                expect(analyzer.pdf.values[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(200);
+                expect(analyzer.pdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                for(let el of analyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has cdf array with 200 elements and last element close to 1', () => {
+                let analyzer = Common.getInstance(distribution);
+                expect(analyzer.cdf.probabilities).to.be.an('array');
+                expect(analyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.cdf.values).to.be.an('array');
+                expect(analyzer.cdf.values[0]).to.be.a('number');
+                expect(analyzer.cdf.probabilities.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(200);
+                expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                expect(analyzer.cdf.probabilities[199]).to.be.closeTo(1, 0.01);
+            });
+            it('should has correct cdf curve', () => {
+                // Step: 0.5
+                let analyzer = Common.getInstance(distribution, {
+                        pdf: 1000
+                    }),
+                    values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+                    probs = [ 0.13166114852895808,
+                        0.22475963947259356,
+                        0.3007742390176028,
+                        0.36660481328208183,
+                        0.4254854689033712,
+                        0.4792359077108271,
+                        0.5289991443303643,
+                        0.5755483898021821,
+                        0.6194354393118348,
+                        0.6610703501823583,
+                        0.700767680103977,
+                        0.7387749798764817,
+                        0.7752912123386076,
+                        0.8104791344060732,
+                        0.8444738967790864,
+                        0.8773891839113258,
+                        0.9093217028627981,
+                        0.9403545331773433,
+                        0.9705596721893553,
+                        1 ],
+                    j = 0,
+                    sum = 0;
+                for(let i in values) {
+                    while(j < analyzer.pdf.probabilities.length) {
+                        sum += analyzer.pdf.probabilities[j];
+                        if(analyzer.pdf.values[j] >= values[i]) {
+                            expect(sum).to.be.closeTo(probs[i], 0.05);
                             j += 1;
                             break;
                         }

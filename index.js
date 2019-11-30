@@ -268,12 +268,10 @@ Object.keys(distributionMethods).forEach((rand_method: string) => {
 
 module.exports = methods;
 
-// TODO: Create a check-values external function
 // TODO: Generators
 // TODO: Regression
 // TODO: Prediction
 // TODO: Games
-// TODO: add Proxy to random generators
 // TODO: add F-distribution
-// TODO: add zipf distribution
 // TODO: add utils
+// TODO: precise float computing

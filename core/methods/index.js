@@ -25,6 +25,7 @@ const student = require('./student');
 const triangular = require('./triangular');
 const uniform = require('./uniform');
 const weibull = require('./weibull');
+const zipf = require('./zipf');
 
 module.exports = {
     bates,
@@ -52,5 +53,6 @@ module.exports = {
     student,
     triangular,
     uniform,
-    weibull
+    weibull,
+    zipf
 };

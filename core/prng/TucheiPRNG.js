@@ -70,7 +70,7 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
     }
 
     /**
-     * Prepare intial values for calculating random value
+     * Prepare initial values for calculating random value
      * @private
      */
     _prepare_initial(): void {

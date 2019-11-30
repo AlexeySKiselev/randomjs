@@ -1,6 +1,6 @@
 {
   "name": "unirand",
-  "version": "2.5.2",
+  "version": "2.6.0",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
@@ -31,10 +31,12 @@
     "beta",
     "shuffle",
     "derangement",
+    "permutation",
     "sampling",
     "random number generator",
     "analyzis",
     "winsorize",
+    "zipf",
     "murmur hash",
     "prng",
     "tuchei prng",

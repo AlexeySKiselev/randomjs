@@ -28,11 +28,10 @@ class Weibull implements IDistribution {
 
     /**
      * Generates a random number
-     * @returns a Triangular distributed number
+     * @returns a Weibull distributed number
      */
     random(): number {
-        let u: number = (prng.random(): any);
-        return this._random(u);
+        return this._random(prng.random());
     }
 
     /**

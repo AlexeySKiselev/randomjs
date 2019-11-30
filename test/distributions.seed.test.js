@@ -827,4 +827,36 @@ describe('Random distributions with seed', () => {
             done();
         });
     });
+    describe('Zipf distribution (alpha = 0.5, shape = 20)', () => {
+        const Zipf = require('../lib/methods/zipf');
+        it('should return same value each time', () => {
+            const zipf = new Zipf(0.5, 20);
+            prng.seed('first zipf seed test');
+            const zipfFirst = zipf.random();
+            for (let i = 0; i < 1000; i += 1) {
+                expect(zipf.random()).to.be.closeTo(zipfFirst, 0.000001);
+            }
+            prng.seed('second zipf seed test');
+            const zipfSecond = zipf.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(zipf.random()).to.be.closeTo(zipfSecond, 0.000001);
+            }
+        });
+
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const zipf = new Zipf(0.5, 20);
+            prng.seed('first zipf seed test');
+            const zipfFirst = zipf.distribution(5000);
+            for(let i = 0; i < 10; i += 1) {
+                compareDistributions(zipf.distribution(5000), zipfFirst);
+            }
+            prng.seed('second zipf seed test');
+            const zipfSecond = zipf.distribution(5000);
+            for(let i = 0; i < 10; i += 1) {
+                compareDistributions(zipf.distribution(5000), zipfSecond);
+            }
+            done();
+        });
+    });
 });
