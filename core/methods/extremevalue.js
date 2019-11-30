@@ -7,7 +7,7 @@
  * @param mu <number> - location, any value
  * @param sigma <number> - scale, sigma > 0
  * @returns Extreme Value distributed numbers
- * Created by Alexey S. Kiselev on 27.11.2017.
+ * Created by Alexey S. Kiselev
  */
 
 import type { MethodError, RandomArray } from '../types';
