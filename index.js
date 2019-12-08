@@ -9,7 +9,7 @@ import Sample from './core/array_manipulation/sample';
 import Shuffle from './core/array_manipulation/shuffle';
 import Winsorize from './core/array_manipulation/winsorize';
 import KFold from './core/array_manipulation/kfold';
-import murmur3 from './core/utils/hash';
+import hashProxy from './core/utils/hash';
 import prngProxy from './core/prng/prngProxy';
 
 const distributionMethods = require('./core/methods');
@@ -17,7 +17,7 @@ const Bernoulli = distributionMethods.bernoulli;
 
 import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
-    SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject
+    SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions
 } from './core/types';
 import type { IPRNGProxy, ISample, IShuffle, IKFold } from './core/interfaces';
 
@@ -33,7 +33,7 @@ class RandomJS {
     derange: any;
     chance: (trueProb: number) => boolean;
     winsorize: (input: RandomArray, limits: any) => RandomArray;
-    hash: (data: NumberString, seed: ?number) => number;
+    hash: (data: NumberString, seed: ?RandomArrayNumber) => RandomArrayNumber;
     _prng: IPRNGProxy;
     seed: (seed_value: ?NumberString) => void;
     prng: IPRNGProxy;
@@ -174,8 +174,22 @@ class RandomJS {
          */
         Object.defineProperty(this, 'hash', ({
             __proto__: null,
-            value: (data: NumberString, seed: ?number): number => {
-                return murmur3(data, seed);
+            value: (data: NumberString, seed: ?RandomArrayNumber, options: ?HashOptions): RandomArrayNumber => {
+                let opts;
+                if (typeof seed === 'object' && !Array.isArray(seed)) { // seed is option
+                    opts = Object.assign({
+                        algorithm: 'murmur',
+                        modulo: undefined
+                    }, seed);
+                    hashProxy.setHashFunction(opts.algorithm);
+                    return hashProxy.hash(data, 0, opts.modulo);
+                }
+                opts = Object.assign({
+                    algorithm: 'murmur',
+                    modulo: undefined
+                }, options);
+                hashProxy.setHashFunction(opts.algorithm);
+                return hashProxy.hash(data, seed, opts.modulo);
             }
         }: Object));
 

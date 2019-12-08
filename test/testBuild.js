@@ -4,4 +4,4 @@
  * Created by Alexey S. Kiselev
  */
 
-let unirand = require('../lib/');
+const unirand = require('../lib/');

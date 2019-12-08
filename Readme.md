@@ -168,10 +168,45 @@ unirand.hash('unirand'); // string input
 unirand.hash(123456); // numerical input
 ```  
 
-Also supports different `seed values`. By default, `seed` value is zero.
+Also supports different `seed` values. By default, `seed` value is zero.
 
 ```javascript
 unirand.hash('unirand', 123);
+```
+`Seed` can be array, meaning that `.hash` returns array of hash values for different seeds:
+```javascript
+unirand.hash('unirand', [1, 2, 3, 4]); // output [<hash1>, <hash2>, <hash3>, <hash4>]
+```
+
+Also supports different hash algorithms:
+* Murmur3 - `unirand.hash('unirand', 0, {algorithm: 'murmur'})`
+* Jenkins - `unirand.hash('unirand', 0, {algorithm: 'jenkins'})`
+
+Alternate usage:
+```javascript
+unirand.hash('unirand', {
+    algorithm: 'murmur'
+});
+// or
+unirand.hash('unirand', 123, {
+    algorithm: 'jenkins'
+});
+// or
+unirand.hash('unirand', [1, 2, 3], {
+    algorithm: 'murmur'
+}); // outputs array of hash values
+```
+
+If You want to bound hash values, You can use option `modulo` (*0x080000000* by default):
+```javascript
+unirand.hash('unirand', 123, {
+    algorithm: 'jenkins',
+    modulo: 1234
+});
+// or
+unirand.hash('unirand', 123, {
+    modulo: 1234
+}); // will use murmur3 algorithm as default value
 ```
 
 ### Sample
