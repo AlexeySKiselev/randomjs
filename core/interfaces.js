@@ -216,7 +216,7 @@ export interface IHashProxy {
     listHashFunctions(): Array<string>;
     hashFunctionName(): string;
     getDefaultHashFunctionName(): string;
-    hash(data: NumberString, seed: RandomArrayNumber): RandomArrayNumber;
+    hash(data: NumberString, seed: RandomArrayNumber, modulo: ?number): RandomArrayNumber;
 }
 
 /**

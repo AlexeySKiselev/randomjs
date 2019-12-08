@@ -17,9 +17,9 @@ const Bernoulli = distributionMethods.bernoulli;
 
 import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
-    SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject
+    SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions
 } from './core/types';
-import type { IPRNGProxy, IHashProxy, ISample, IShuffle, IKFold } from './core/interfaces';
+import type { IPRNGProxy, ISample, IShuffle, IKFold } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
@@ -174,8 +174,22 @@ class RandomJS {
          */
         Object.defineProperty(this, 'hash', ({
             __proto__: null,
-            value: (data: NumberString, seed: ?RandomArrayNumber): RandomArrayNumber => {
-                return hashProxy.hash(data, seed);
+            value: (data: NumberString, seed: ?RandomArrayNumber, options: ?HashOptions): RandomArrayNumber => {
+                let opts;
+                if (typeof seed === 'object' && !Array.isArray(seed)) { // seed is option
+                    opts = Object.assign({
+                        algorithm: 'murmur',
+                        modulo: undefined
+                    }, seed);
+                    hashProxy.setHashFunction(opts.algorithm);
+                    return hashProxy.hash(data, 0, opts.modulo);
+                }
+                opts = Object.assign({
+                    algorithm: 'murmur',
+                    modulo: undefined
+                }, options);
+                hashProxy.setHashFunction(opts.algorithm);
+                return hashProxy.hash(data, seed, opts.modulo);
             }
         }: Object));
 

@@ -9,6 +9,7 @@ import type { NumberString, RandomArrayNumber } from '../../types';
 import type { IHash, IHashProxy } from '../../interfaces';
 
 import Murmur3Hash from './murmur3';
+import JenkinsHash from './jenkins';
 
 const DEFAULT_HASH_FUNCTION = 'murmur';
 
@@ -24,7 +25,8 @@ class HashProxy implements IHashProxy {
 
         this._allowedHashFunctions = {
             'default': Murmur3Hash,
-            'murmur': Murmur3Hash
+            'murmur': Murmur3Hash,
+            'jenkins': JenkinsHash
         };
 
         this._currentHashFunctionName = DEFAULT_HASH_FUNCTION;
@@ -75,24 +77,42 @@ class HashProxy implements IHashProxy {
      * Return simple hash number
      * @param {NumberString} data
      * @param {number} seed
+     * @param {number} modulo
      * @returns {number} hash number
      * @private
      */
-    _hashNumber(data: NumberString, seed: number): number {
-        return this._currentHashFunction.hash(data, seed || 0);
+    _hashNumber(data: NumberString, seed: number, modulo: ?number): number {
+        if (!modulo) {
+            return this._currentHashFunction.hash(data, seed || 0);
+        }
+        return this._mod(this._currentHashFunction.hash(data, seed || 0), modulo);
+    }
+
+    /**
+     * Implement modulo by relying on the fact that the negative remainder
+     * is always p numbers away from a positive reminder
+     * Ex: -5 % 3 | -5 = -2 * 3 + 1 and -5 = -1 * 3 + (-2) | -2 + 3 = 1
+     * @param {number} value
+     * @param {number} p
+     * @private
+     */
+    _mod(value: number, p: number): number {
+        const r: number = value % p;
+        return r < 0 ? r + p : r;
     }
 
     /**
      * Return array of hash numbers
      * @param {NumberString} data
      * @param {Array<number>} seed - array of seed numbers
+     * @param {number} modulo
      * @return {Array<number>}
      * @private
      */
-    _hashArray(data: NumberString, seed: Array<number>): Array<number> {
+    _hashArray(data: NumberString, seed: Array<number>, modulo: ?number): Array<number> {
         const res: Array<number> = [];
         for (let i = 0; i < seed.length; i += 1) {
-            res[i] = this._hashNumber(data, seed[i]);
+            res[i] = this._hashNumber(data, seed[i], modulo);
         }
 
         return res;
@@ -102,13 +122,14 @@ class HashProxy implements IHashProxy {
      * Hash
      * @param {NumberString} data - data to hash
      * @param {RandomArrayNumber} seed
+     * @param {number} modulo
      * @returns {RandomArrayNumber} hash, can return array of hashes for different seeds
      */
-    hash(data: NumberString, seed: RandomArrayNumber): RandomArrayNumber {
+    hash(data: NumberString, seed: RandomArrayNumber, modulo: ?number): RandomArrayNumber {
         if (Array.isArray(seed)) {
-            return this._hashArray(data, seed);
+            return this._hashArray(data, seed, modulo);
         }
-        return this._hashNumber(data, seed);
+        return this._hashNumber(data, seed, modulo);
     }
 }
 

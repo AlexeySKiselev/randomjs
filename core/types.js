@@ -59,6 +59,10 @@ export type KFoldOptions = {
     derange: ?boolean
 }
 
+export type HashOptions = {
+    algorithm: string
+}
+
 /**
  * Percentile input
  */
