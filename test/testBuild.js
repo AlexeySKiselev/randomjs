@@ -4,4 +4,8 @@
  * Created by Alexey S. Kiselev
  */
 
-let unirand = require('../lib/');
+const unirand = require('../lib/');
+
+console.log(unirand.hash('unirand'));
+console.log(unirand.hash('unirand', [0, 1, 2, 3]));
+console.log(unirand.hash('unirand', 200));

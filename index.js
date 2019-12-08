@@ -9,7 +9,7 @@ import Sample from './core/array_manipulation/sample';
 import Shuffle from './core/array_manipulation/shuffle';
 import Winsorize from './core/array_manipulation/winsorize';
 import KFold from './core/array_manipulation/kfold';
-import murmur3 from './core/utils/hash';
+import hashProxy from './core/utils/hash';
 import prngProxy from './core/prng/prngProxy';
 
 const distributionMethods = require('./core/methods');
@@ -19,7 +19,7 @@ import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
     SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject
 } from './core/types';
-import type { IPRNGProxy, ISample, IShuffle, IKFold } from './core/interfaces';
+import type { IPRNGProxy, IHashProxy, ISample, IShuffle, IKFold } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
@@ -33,7 +33,7 @@ class RandomJS {
     derange: any;
     chance: (trueProb: number) => boolean;
     winsorize: (input: RandomArray, limits: any) => RandomArray;
-    hash: (data: NumberString, seed: ?number) => number;
+    hash: (data: NumberString, seed: ?RandomArrayNumber) => RandomArrayNumber;
     _prng: IPRNGProxy;
     seed: (seed_value: ?NumberString) => void;
     prng: IPRNGProxy;
@@ -174,8 +174,8 @@ class RandomJS {
          */
         Object.defineProperty(this, 'hash', ({
             __proto__: null,
-            value: (data: NumberString, seed: ?number): number => {
-                return murmur3(data, seed);
+            value: (data: NumberString, seed: ?RandomArrayNumber): RandomArrayNumber => {
+                return hashProxy.hash(data, seed);
             }
         }: Object));
 

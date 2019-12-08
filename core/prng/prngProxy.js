@@ -2,6 +2,7 @@
 /**
  * PRNG proxy
  * Creates PRN generators or Math.random by default
+ * Created by Alexey S. Kiselev
  */
 
 import type { NumberString, RandomArrayNumber } from '../types';
@@ -16,7 +17,7 @@ const DEFAULT_GENERATOR = 'tuchei';
 class PRNGProxy implements IPRNGProxy {
 
     _generators: {[string]: IPRNG};
-    _allowed_generators: {[string]: any};
+    _allowed_generators: {[string]: IPRNG};
     _current_generator_name: string;
     _current_generator: IPRNG;
     _seed: ?NumberString;
@@ -103,20 +104,23 @@ class PRNGProxy implements IPRNGProxy {
      * @param {string} prng_name: name of generator on initialization
      */
     set_prng(prng_name: string = 'default'): void {
-        if (this._allowed_generators[prng_name]) {
-            if (!this._generators[prng_name]) {
-                this._generators[prng_name] = new this._allowed_generators[prng_name]();
-            }
-            this._current_generator_name = prng_name;
-            this._current_generator = this._generators[prng_name];
-            this._current_generator.seed(this._seed);
+        // if current generator is the same - do nothing
+        if (this._current_generator_name === prng_name || !this._allowed_generators[prng_name]) {
+            return;
         }
+
+        if (!this._generators[prng_name]) {
+            this._generators[prng_name] = new this._allowed_generators[prng_name]();
+        }
+        this._current_generator_name = prng_name;
+        this._current_generator = this._generators[prng_name];
+        this._current_generator.seed(this._seed);
     }
 }
 
-const prng_proxy = new PRNGProxy();
+const prng_proxy: IPRNGProxy = new PRNGProxy();
 
-const prng = (prng_name: string = 'default'): IPRNGProxy => {
+const prng: Function<IPRNGProxy> = (prng_name: string = 'default'): IPRNGProxy => {
     prng_proxy.set_prng(prng_name);
     return prng_proxy;
 };

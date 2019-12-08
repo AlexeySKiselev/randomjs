@@ -5,7 +5,7 @@
  */
 import type { IPRNG } from '../interfaces';
 import type { NumberString, RandomArrayNumber } from '../types';
-import murmur3 from '../utils/hash';
+import hashProxy from '../utils/hash';
 
 class BasicPRNG implements IPRNG {
 
@@ -75,7 +75,7 @@ class BasicPRNG implements IPRNG {
      * Sets random seed
      */
     static random_seed(): number {
-        let _seed: number = murmur3(Date.now() + Math.floor(Math.random() * BasicPRNG.modulo));
+        let _seed: number = hashProxy.hash(Date.now() + Math.floor(Math.random() * BasicPRNG.modulo));
         _seed = _seed % BasicPRNG.modulo;
         if (_seed < 0) {
             _seed += BasicPRNG.modulo - 1;

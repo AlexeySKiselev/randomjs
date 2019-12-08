@@ -209,6 +209,17 @@ export interface IHash {
 }
 
 /**
+ * Hash proxy interface
+ */
+export interface IHashProxy {
+    setHashFunction(name: string): void;
+    listHashFunctions(): Array<string>;
+    hashFunctionName(): string;
+    getDefaultHashFunctionName(): string;
+    hash(data: NumberString, seed: RandomArrayNumber): RandomArrayNumber;
+}
+
+/**
  * k-fold method interface
  */
 export interface IKFold {
