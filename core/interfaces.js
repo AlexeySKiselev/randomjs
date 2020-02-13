@@ -209,6 +209,14 @@ export interface IHash {
 }
 
 /**
+ * Smooth interface
+ */
+export interface ISmooth {
+    smooth(data: RandomArray, options: ?{[string]: any}): RandomArray;
+    getName(): string;
+}
+
+/**
  * Hash proxy interface
  */
 export interface IHashProxy {
@@ -217,6 +225,18 @@ export interface IHashProxy {
     hashFunctionName(): string;
     getDefaultHashFunctionName(): string;
     hash(data: NumberString, seed: RandomArrayNumber, modulo: ?number): RandomArrayNumber;
+}
+
+/**
+ * Smooth proxy interface
+ */
+export interface ISmoothProxy {
+    smooth(data: RandomArray, options: ?{[string]: any}): Promise<RandomArray>;
+    smoothSync(data: RandomArray, options: ?{[string]: any}): RandomArray;
+    getAlgorithmName(): string;
+    setSmoothAlgorithm(name: string): void;
+    listSmoothAlgorithms(): Array<string>;
+    getDefaultAlgorithmName(): string;
 }
 
 /**

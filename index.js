@@ -10,6 +10,7 @@ import Shuffle from './core/array_manipulation/shuffle';
 import Winsorize from './core/array_manipulation/winsorize';
 import KFold from './core/array_manipulation/kfold';
 import hashProxy from './core/utils/hash';
+import smoothProxy from './core/array_manipulation/smooth';
 import prngProxy from './core/prng/prngProxy';
 
 const distributionMethods = require('./core/methods');
@@ -17,7 +18,7 @@ const Bernoulli = distributionMethods.bernoulli;
 
 import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
-    SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions
+    SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions, SmoothData
 } from './core/types';
 import type { IPRNGProxy, ISample, IShuffle, IKFold } from './core/interfaces';
 
@@ -194,6 +195,26 @@ class RandomJS {
         }: Object));
 
         /**
+         * Async Smooth
+         */
+        Object.defineProperty(this, 'smooth', ({
+            __proto__: null,
+            value: (data: RandomArray, options: ?{[string]: any}): Promise<SmoothData> => {
+                return smoothProxy.smooth(data, options);
+            }
+        }: Object));
+
+        /**
+         * Sync Smooth
+         */
+        Object.defineProperty(this, 'smoothSync', ({
+            __proto__: null,
+            value: (data: RandomArray, options: ?{[string]: any}): SmoothData => {
+                return smoothProxy.smoothSync(data, options);
+            }
+        }: Object));
+
+        /**
          * PRNG seed
          */
         Object.defineProperty(this, 'seed', ({
@@ -271,6 +292,8 @@ const methods = {
     chance: randomjs.chance,
     winsorize: randomjs.winsorize,
     hash: randomjs.hash,
+    smooth: randomjs.smooth,
+    smoothSync: randomjs.smoothSync,
     seed: randomjs.seed,
     prng: randomjs.prng,
     random: randomjs.random,
@@ -281,11 +304,3 @@ Object.keys(distributionMethods).forEach((rand_method: string) => {
 });
 
 module.exports = methods;
-
-// TODO: Generators
-// TODO: Regression
-// TODO: Prediction
-// TODO: Games
-// TODO: add F-distribution
-// TODO: add utils
-// TODO: precise float computing

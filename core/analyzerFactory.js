@@ -6,9 +6,10 @@
  * Created by Alexey S. Kiselev
  */
 
-import fs from 'fs';
 import { IAnalyzerMethods, IAnalyzerSingleton } from './interfaces';
 import type {RandomArray, AnalyzerPublicMethods, AnalyzerPublicProperties} from './types';
+
+const AnalyzerMethodsMapper: {[string]: IAnalyzerSingleton} = require('./analyzer');
 
 class AnalyzerFactory implements IAnalyzerMethods {
     /**
@@ -70,29 +71,28 @@ class AnalyzerFactory implements IAnalyzerMethods {
          * TODO: Implement light version, where all long calculations must be in particular method
          */
 
-        fs.readdirSync(__dirname + '/core/analyzer').forEach((file: string) => {
-            let Methods: IAnalyzerSingleton = require(__dirname + '/core/analyzer/' + file),
-                methodsClass: Promise<IAnalyzerMethods> = new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        /**
-                         * If input is not array:
-                         * @returns rejected Promise with error
-                         */
-                        if(!Array.isArray(this.randomArray)) {
-                            reject('Input must be an Array!');
-                        } else if(randomArray.length < 3) {
-                            reject('Analyzer.Common: input randomArray is too small, that is no reason to analyze');
-                        } else  {
-                            resolve(Methods.getInstance(this.randomArray, options));
-                        }
-                    }, 0);
-                });
+        Object.keys(AnalyzerMethodsMapper).forEach((mKey: string) => {
+            let methodsClass: Promise<IAnalyzerMethods> = new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    /**
+                     * If input is not array:
+                     * @returns rejected Promise with error
+                     */
+                    if(!Array.isArray(this.randomArray)) {
+                        reject('Analyzer: Input must be an Array!');
+                    } else if(randomArray.length < 3) {
+                        reject('Analyzer.Common: input randomArray is too small, that is no reason to analyze');
+                    } else  {
+                        resolve(AnalyzerMethodsMapper[mKey].getInstance(this.randomArray, options));
+                    }
+                }, 0);
+            });
 
             // Write properties and function to object for sync checking type of method
-            for(let prop in Methods.publicMethods) {
+            for(let prop in AnalyzerMethodsMapper[mKey].publicMethods) {
                 this._methodsTypes[prop] = 'property';
             }
-            for(let prop in Methods.publicFunctions) {
+            for(let prop in AnalyzerMethodsMapper[mKey].publicFunctions) {
                 this._methodsTypes[prop] = 'function';
             }
             this._importedClasses.push(methodsClass);
@@ -213,7 +213,7 @@ class AnalyzerFactory implements IAnalyzerMethods {
                     return PromiseMethods.catch.bind(obj);
                 } else if(typeof method !== 'string') {
                     /**
-                     * If we call class as a function (randomjs.analyze(<random_array>)):
+                     * If we call class as a function (unirand.analyze(<random_array>)):
                      * @returns resolved Promise with object contains all methods
                      */
                     return PromiseMethods

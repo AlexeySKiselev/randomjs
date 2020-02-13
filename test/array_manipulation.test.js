@@ -8,7 +8,8 @@ let chai = require('chai'),
     expect = chai.expect,
     {describe, it} = require('mocha'),
     fs = require('fs'),
-    prng = require('../lib/prng/prngProxy').default;
+    prng = require('../lib/prng/prngProxy').default,
+    smoothProxy = require('../lib/array_manipulation/smooth').default;
 
 chai.should();
 prng.seed();
@@ -854,6 +855,277 @@ describe('Array manipulation methods', () => {
             }
 
             done();
+        });
+    });
+    describe('Smooth', () => {
+        const data = [];
+        // generate data
+        for (let i = 0; i < 100; i += 1) {
+            data[i] = Math.random() * 200;
+        }
+        describe('SmoothProxy', () => {
+            it('should have .smooth and .smoothSync methods', () => {
+                expect(smoothProxy).to.have.property('smooth');
+                expect(smoothProxy).to.respondsTo('smooth');
+                expect(smoothProxy).to.have.property('smoothSync');
+                expect(smoothProxy).to.respondsTo('smoothSync');
+            });
+            it('.smooth method should return result with same size', () => {
+                const res = smoothProxy.smoothSync(data);
+                expect(Array.isArray(res)).to.be.equal(true);
+                expect(res.length).to.be.equal(data.length);
+            });
+            it('.smooth method should be asynchronous', (done) => {
+                let smoothPromise = smoothProxy.smooth(data);
+                smoothPromise.then((res) => {
+                    expect(res.length).to.be.equal(100);
+                    done();
+                });
+            });
+            it('should throw error for data with too small size', () => {
+                let badDataSize = () => {
+                    return smoothProxy.smoothSync([1, 2]);
+                };
+                badDataSize.should.throw(Error);
+
+                let goodDataSize = () => {
+                    return smoothProxy.smoothSync([1, 2, 3, 4, 5, 6]);
+                };
+                goodDataSize.should.not.throw(Error);
+            });
+            it('should throw Error with bad non-allowed algorithm', () => {
+                let badAlgorithm = () => {
+                    return smoothProxy.smoothSync([1, 2, 3, 4, 5], {
+                        algorithm: 'anfsgskfsdmf'
+                    });
+                };
+                badAlgorithm.should.throw(Error);
+
+                let goodAlgorithm = () => {
+                    return smoothProxy.smoothSync([1, 2, 3, 4, 5, 6], {
+                        algorithm: 'moving_average'
+                    });
+                };
+                goodAlgorithm.should.not.throw(Error);
+
+                expect(smoothProxy.getDefaultAlgorithmName()).to.be.equal('moving_average');
+            });
+            it('should return diff data for options.diff=true', () => {
+                const res = smoothProxy.smoothSync(data, {
+                    diff: true
+                });
+                expect(res).to.have.property('smoothData');
+                expect(res.smoothData.length).to.be.equal(data.length);
+                expect(res).to.have.property('diff');
+                expect(res.diff).to.have.property('diffData');
+                expect(res.diff.diffData.length).to.be.equal(data.length);
+                expect(res.diff).to.have.property('min');
+                expect(res.diff).to.have.property('variance');
+                expect(res.diff).to.have.property('quartiles');
+            });
+        });
+        describe('Moving average algorithm', () => {
+            smoothProxy.setSmoothAlgorithm('moving_average');
+            const movingAverage = smoothProxy._currentSmoothAlgorithm;
+            expect(movingAverage.getName()).to.be.equal('Moving Average');
+            it('should have .smooth method', () => {
+                expect(movingAverage).to.have.property('smooth');
+                expect(movingAverage).to.respondsTo('smooth');
+            });
+            it('should not throw error for all policies', () => {
+                const policies = movingAverage._policies;
+                for(let p of Object.keys(policies)) {
+                    let res = () => {
+                        let r = movingAverage.smooth(data, {
+                            policy: p
+                        });
+                        expect(r.length).to.be.equal(data.length);
+                        for(let i = 0; i < r.length; i += 1) {
+                            if (typeof r[i] !== 'number') {
+                                throw new Error();
+                            }
+                        }
+                    };
+                    res.should.not.throw(Error);
+                }
+            });
+            it('should throw error with wrong options', () => {
+                const badOptions1 = () => {
+                    movingAverage.smooth(data, {
+                        weights: [0.1, 0.3, 0.4]
+                    });
+                };
+                badOptions1.should.throw(Error);
+                const badOptions2 = () => {
+                    movingAverage.smooth(data, {
+                        weights: [0.1, 0.3, 0.4, 0.4]
+                    });
+                };
+                badOptions2.should.throw(Error);
+                const goodOptions1 = () => {
+                    let r = movingAverage.smooth(data, {
+                        weights: [0.1, 0.3, 0.4, 0.1, 0.1]
+                    });
+                    expect(r.length).to.be.equal(data.length);
+                };
+                goodOptions1.should.not.throw(Error);
+                const badOptions3 = () => {
+                    movingAverage.smooth(data, {
+                        weights: 'abc'
+                    });
+                };
+                badOptions3.should.throw(Error);
+                const badOptions4 = () => {
+                    movingAverage.smooth(data, {
+                        weights: 1
+                    });
+                };
+                badOptions4.should.throw(Error);
+                const badOptions5 = () => {
+                    movingAverage.smooth(data, {
+                        weights: []
+                    });
+                };
+                badOptions5.should.throw(Error);
+                const badOptions6 = () => {
+                    movingAverage.smooth(data, {
+                        weights: [0.1, 0.2, 0.4, 0.2, 0.1],
+                        centerIndex: 'abc'
+                    });
+                };
+                badOptions6.should.throw(Error);
+                const badOptions7 = () => {
+                    movingAverage.smooth(data, {
+                        weights: [0.1, 0.2, 0.4, 0.2, 0.1],
+                        centerIndex: -1
+                    });
+                };
+                badOptions7.should.throw(Error);
+                const badOptions8 = () => {
+                    movingAverage.smooth(data, {
+                        weights: [0.1, 0.2, 0.4, 0.2, 0.1],
+                        centerIndex: 5
+                    });
+                };
+                badOptions8.should.throw(Error);
+                const goodOptions2 = () => {
+                    let r = movingAverage.smooth(data, {
+                        weights: [0.1, 0.2, 0.4, 0.2, 0.1],
+                        centerIndex: 4
+                    });
+                    expect(r.length).to.be.equal(data.length);
+                };
+                goodOptions2.should.not.throw(Error);
+                const goodOptions3 = () => {
+                    let r = movingAverage.smooth(data, {
+                        weights: [0.1, 0.2, 0.4, 0.2, 0.1],
+                        centerIndex: 0
+                    });
+                    expect(r.length).to.be.equal(data.length);
+                };
+                goodOptions3.should.not.throw(Error);
+                const goodOptions4 = () => {
+                    let r = movingAverage.smooth(data, {
+                        order: 3
+                    });
+                    expect(r.length).to.be.equal(data.length);
+                };
+                goodOptions4.should.not.throw(Error);
+                const badOptions9 = () => {
+                    movingAverage.smooth(data, {
+                        order: 1
+                    });
+                };
+                badOptions9.should.throw(Error);
+                const badOptions10 = () => {
+                    movingAverage.smooth(data, {
+                        order: 0
+                    });
+                };
+                badOptions10.should.throw(Error);
+                const badOptions11 = () => {
+                    movingAverage.smooth(data, {
+                        order: -1
+                    });
+                };
+                badOptions11.should.throw(Error);
+                const badOptions12 = () => {
+                    movingAverage.smooth(data, {
+                        order: [0, 1]
+                    });
+                };
+                badOptions12.should.throw(Error);
+                const badOptions13 = () => {
+                    movingAverage.smooth(data, {
+                        order: 'abc'
+                    });
+                };
+                badOptions13.should.throw(Error);
+                const badOptions14 = () => {
+                    movingAverage.smooth([1, 2, 3, 4], {
+                        order: 5
+                    });
+                };
+                badOptions14.should.throw(Error);
+                const badOptions15 = () => {
+                    movingAverage.smooth([1, 2, 3, 4], {
+                        weights: [0.1, 0.2, 0.4, 0.2, 0.1]
+                    });
+                };
+                badOptions15.should.throw(Error);
+            });
+            it('should not throw error for small data size', () => {
+                const goodF1 = () => {
+                    movingAverage.smooth([1, 2, 3], {
+                        weights: [0.3, 0.3, 0.4]
+                    });
+                };
+                goodF1.should.not.throw(Error);
+                const goodF2 = () => {
+                    movingAverage.smooth([1, 2, 3, 4], {
+                        weights: [0.3, 0.3, 0.4]
+                    });
+                };
+                goodF2.should.not.throw(Error);
+                const goodF3 = () => {
+                    movingAverage.smooth([1, 2, 3, 4, 5], {
+                        weights: [0.3, 0.3, 0.4]
+                    });
+                };
+                goodF3.should.not.throw(Error);
+                const goodF4 = () => {
+                    movingAverage.smooth([1, 2, 3, 4, 5], {
+                        weights: [0.2, 0.3, 0.3, 0.2]
+                    });
+                };
+                goodF4.should.not.throw(Error);
+                const goodF5 = () => {
+                    movingAverage.smooth([1, 2, 3, 4, 5, 6], {
+                        weights: [0.2, 0.3, 0.3, 0.2]
+                    });
+                };
+                goodF5.should.not.throw(Error);
+                const goodF6 = () => {
+                    movingAverage.smooth([1, 2, 3, 4, 5, 6, 7], {
+                        weights: [0.2, 0.3, 0.3, 0.2]
+                    });
+                };
+                goodF6.should.not.throw(Error);
+                const goodF7 = () => {
+                    movingAverage.smooth([1, 2, 3, 4, 5], {
+                        weights: [0.2, 0.3, 0, 0.3, 0.2],
+                        centerIndex: 0
+                    });
+                };
+                goodF7.should.not.throw(Error);
+                const goodF8 = () => {
+                    movingAverage.smooth([1, 2, 3, 4, 5], {
+                        weights: [0.2, 0.3, 0, 0.3, 0.2],
+                        centerIndex: 4
+                    });
+                };
+                goodF8.should.not.throw(Error);
+            });
         });
     });
 });

@@ -7,9 +7,10 @@
 
 import type { RandomArray, AnalyzerPDF } from '../types';
 import { AnalyzerPublicMethod, AnalyzerSingleton } from '../decorators';
+import type { IAnalyzerSingleton } from '../interfaces';
 
 @AnalyzerSingleton
-class Common {
+class Common implements IAnalyzerSingleton {
     /**
      * Main input Array
      */

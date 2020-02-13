@@ -7,16 +7,17 @@
 
 import type { PercentileInput, RandomArray } from '../types';
 import { AnalyzerPublicMethod, AnalyzerPublicFunction, AnalyzerSingleton } from '../decorators';
+import type { IAnalyzerSingleton } from '../interfaces';
 
 @AnalyzerSingleton
-class Percentiles {
+class Percentiles implements IAnalyzerSingleton {
     /**
      * Main input Array
      */
     randomArray: RandomArray;
 
     constructor(randomArray: RandomArray): void {
-        this.randomArray = randomArray.sort((a, b) => {
+        this.randomArray = randomArray.slice().sort((a, b) => {
             return a - b;
         });
     }

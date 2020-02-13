@@ -274,6 +274,141 @@ derange(<array|string>); // will output random derangement of input
 ```
 There are approximately n!/e derangements for array with *n* elements. 
 
+### Smooth data
+Smooth method return an array contains smoothed data using different algorithms and strategies for smoothing.
+
+```javascript
+const asyncSmoothedData = await unirand.smooth(data: Array<number>, ?options); // Asynchronous smoothing
+const syncSmoothedData = unirand.smoothSync(data: Array<number>, ?options); // Synchronous smoothing
+
+// method return Array<number> of smoothed data
+// @example
+// for data [2, 6, 9, 4, 6, 7, 3, 2, 4, 7] .smooth method will return [4.375, 5, 5.75, 6.375, 5.75, 4.75, 4.25, 4, 4.5, 5.25]
+```
+
+![Smoothed data example](https://github.com/AlexeySKiselev/randomjs/blob/master/smooth.png "Smoothed data example")
+
+You can also specify `options` for smoothing. Multiple options are allowed:
+
+##### Policy or pre-defined algorithm
+
+Unirand provides different well known pre-defined algorithms (*default - 2x4-MA*) You can choose for smoothing:
+
+```javascript
+const smoothedData = unirand.smoothSync(data, {
+    policy: '2x4-MA' // will implement 4-MA followed by 2-MA algorithm for smoothing
+});
+``` 
+Allowed policies:
+1. *3-MA* - centered moving average of 3th order
+2. *5-MA* - centered moving average of 5th order
+3. *2x4-MA* - 4-MA followed by 2-MA
+4. *2x8-MA* - 8-MA followed by 2-MA
+5. *2x12-MA* - 12-MA followed by 2-MA
+6. *3x3-MA* - 3-MA followed by 3-MA
+7. *3x5-MA* - 5-MA followed by 3-MA
+8. *H5-MA* - Henderson’s weighted moving average
+9. *H9-MA* - Henderson’s weighted moving average
+10. *H13-MA* - Henderson’s weighted moving average
+11. *H23-MA* - Henderson’s weighted moving average
+12. *S15-MA* - Spencer’s weighted moving average
+13. *S21-MA* - Spencer’s weighted moving average
+
+##### Custom weights
+
+Instead of policy You can specify Your own custom weights:
+
+```javascript
+const smoothedData = unirand.smoothSync(data, {
+    weights: [0.1, 0.2, 0.3, 0.4] // will be treated as [0.1, 0.2, 0, 0.3, 0.4]
+});
+// or
+const smoothedData = unirand.smoothSync(data, {
+    weights: [0.1, 0.2, 0.3, 0.2, 0.2]
+});
+// Important: sum of weights must be equal to 1
+// will return centered weighted moving average
+```
+
+If You want to get non-centered moving average You can point `centerIndex` option. Without `centerIndex` option unirand will treated weights as centered weights.
+
+```javascript
+const smoothedData = unirand.smoothSync(data, {
+    weights: [0.1, 0.2, 0.3, 0.4],
+    centerIndex: 3 // must be 0 <= centerIndex < weights.length
+});
+```
+
+##### Custom order
+
+You can point moving average order. Unirand will calculate m-ordered moving average.
+
+```javascript
+const smoothedData = unirand.smoothSync(data, {
+    order: 5 // will calculate moving average for five point including current one,  (y[i-2] + y[i-1] + y[i] + y[i+1] + y[i+2]) / 5
+});
+// for even orders
+const smoothedData = unirand.smoothSync(data, {
+    order: 4 // (y[i-2] + y[i-1] + y[i] + y[i+1]) / 4
+});
+// or if You want centered moving average
+const smoothedData = unirand.smoothSync(data, {
+    order: 4,
+    centered: true // (y[i-2] + y[i-1] + y[i+1] + y[i+2]) / 4
+});
+```
+
+##### Analize diff
+
+Unirand allow You to get diff between real and smoothed data (allowed for other all possible options). Unirand will return smoothed data, diff and result of diff analysis:
+```javascript
+const smoothedData = unirand.smoothSync(data, {
+    diff: true
+});
+// or
+const smoothedData = unirand.smoothSync(data, {
+    policy: '2x4-MA',
+    diff: true
+});
+// or
+const smoothedData = unirand.smoothSync(data, {
+    weights: [0.1, 0.2, 0.3, 0.4],
+    centerIndex: 3,
+    diff: true
+});
+// or
+const smoothedData = unirand.smoothSync(data, {
+    order: 4,
+    centered: true,
+    diff: true
+});
+// for example data: 
+const data = [2, 6, 9, 4, 6, 7, 3, 2, 4, 7];
+// unirand will return
+{ 
+    smoothData: [ 4.375, 5, 5.75, 6.375, 5.75, 4.75, 4.25, 4, 4.5, 5.25 ],
+    diff: { 
+        diffData: [ -2.375, 1, 3.25, -2.375, 0.25, 2.25, -1.25, -2, -0.5, 1.75 ],
+        min: -2.375,
+        max: 3.25,
+        mean: 3.552713678800501e-17,
+        mode: [ -2.375 ],
+        variance: 4.09375,
+        standard_deviation: 2.023301757029831,
+        entropy: 1.8495713674278502,
+        skewness: 0.21525076336911947,
+        kurtosis: 1.692241451870844,
+        pdf: { values: [Array], probabilities: [Array] },
+        cdf: { values: [Array], probabilities: [Array] },
+        quartiles: { q1: -2.09375, q2: -0.125, q3: 1.1875 },
+        median: -0.125,
+        interquartile_range: 3.28125
+    }
+}
+```
+
+By default diff option is `false`. Does not mutate original array.
+
 ### Winsorize
 Winsorization replaces extreme data values with less extreme values.
 Winsorization is the transformation of statistics by limiting extreme values in the statistical data to reduce the effect of possibly spurious outliers.
