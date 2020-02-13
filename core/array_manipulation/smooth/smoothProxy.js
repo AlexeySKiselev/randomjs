@@ -54,8 +54,16 @@ class SmoothProxy implements ISmoothProxy {
         return this._currentSmoothAlgorithm.smooth(data, options);
     }
 
-    async smooth(data: RandomArray, options: ?{[string]: any} = {}): Promise<SmoothData> {
-        return this.smoothSync(data, options);
+    smooth(data: RandomArray, options: ?{[string]: any} = {}): Promise<SmoothData> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                try {
+                    resolve(this.smoothSync(data, options));
+                } catch (e) {
+                    reject(e.message);
+                }
+            }, 0);
+        });
     }
 
     /**
