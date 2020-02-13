@@ -30,7 +30,7 @@ describe('Analyzer', () => {
         promise
             .catch((err) => {
                 rejected = true;
-                expect(err).to.be.equal('Input must be an Array!');
+                expect(err).to.be.equal('Analyzer: Input must be an Array!');
                 done();
             });
         expect(rejected).to.be.equal(false);
