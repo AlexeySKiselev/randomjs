@@ -18,7 +18,7 @@ const Bernoulli = distributionMethods.bernoulli;
 
 import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
-    SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions
+    SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions, SmoothData
 } from './core/types';
 import type { IPRNGProxy, ISample, IShuffle, IKFold } from './core/interfaces';
 
@@ -199,7 +199,7 @@ class RandomJS {
          */
         Object.defineProperty(this, 'smooth', ({
             __proto__: null,
-            value: async (data: RandomArray, options: ?{[string]: any}): RandomArray => {
+            value: (data: RandomArray, options: ?{[string]: any}): Promise<SmoothData> => {
                 return smoothProxy.smooth(data, options);
             }
         }: Object));
@@ -209,7 +209,7 @@ class RandomJS {
          */
         Object.defineProperty(this, 'smoothSync', ({
             __proto__: null,
-            value: (data: RandomArray, options: ?{[string]: any}): RandomArray => {
+            value: (data: RandomArray, options: ?{[string]: any}): SmoothData => {
                 return smoothProxy.smoothSync(data, options);
             }
         }: Object));
