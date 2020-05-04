@@ -227,8 +227,9 @@ class Common implements IAnalyzerSingleton {
          */
         let cumulative_step: number = values_step;
         for(let i = 1; i < pdf.length; i += 1) {
-            if(pdf[i] !== 0)
+            if(pdf[i] > 0.000001) {
                 break;
+            }
             cumulative_step += values_step;
         }
 
@@ -251,7 +252,7 @@ class Common implements IAnalyzerSingleton {
 
             // Calculate entropy
             cumulative_step += values_step;
-            if(pdf[i] !== 0 && pdf[i] !== 1) {
+            if(pdf[i] > 0.000001 && pdf[i] < 0.999999) {
                 this._entropy -= (cumulative_step === 0)?0:(pdf[i] * Math.log(pdf[i] / cumulative_step));
                 cumulative_step = 0;
             }

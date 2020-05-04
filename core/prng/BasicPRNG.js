@@ -4,7 +4,7 @@
  *  Generates random numbers with seed
  */
 import type { IPRNG } from '../interfaces';
-import type { NumberString, RandomArrayNumber } from '../types';
+import type {NumberString, RandomArray, RandomArrayNumber} from '../types';
 import hashProxy from '../utils/hash';
 
 class BasicPRNG implements IPRNG {
@@ -16,13 +16,26 @@ class BasicPRNG implements IPRNG {
     }
 
     /**
-     * Random number generator with seed\
-     * @abstract
+     * Random number generator with seed
      * @returns {number} random number
      */
-    // eslint-disable-next-line
     random(n: ?number = 1): RandomArrayNumber {
-        throw new Error('Unassigned method');
+        this._prepare_initial();
+
+        if (typeof n !== 'number') {
+            return this.next();
+        }
+
+        if (n <= 1) {
+            return this.next();
+        }
+
+        const random_array: RandomArray = [];
+        for (let i = 0; i < n; i += 1) {
+            random_array[i] = this.next();
+        }
+
+        return random_array;
     }
 
     /**
@@ -40,20 +53,33 @@ class BasicPRNG implements IPRNG {
      * Next integer random value
      * Returns only single random value
      * Does not support seed
-     * @abstract
      * @returns {number}
      */
     nextInt(): number {
-        throw new Error('Unassigned method');
+        return this._nextInt();
     }
 
     /**
      * Generates random integer [0, 2^32)
      * @returns {number}
      */
-    // eslint-disable-next-line
     randomInt(n: ?number = 1): RandomArrayNumber {
-        throw new Error('Unassigned method');
+        this._prepare_initial();
+
+        if (typeof n !== 'number') {
+            return this.nextInt();
+        }
+
+        if (n <= 1) {
+            return this.nextInt();
+        }
+
+        const random_array: RandomArray = [];
+        for (let i = 0; i < n; i += 1) {
+            random_array[i] = this.nextInt();
+        }
+
+        return random_array;
     }
 
     /**
@@ -81,6 +107,19 @@ class BasicPRNG implements IPRNG {
             _seed += BasicPRNG.modulo - 1;
         }
         return _seed;
+    }
+
+    /**
+     * Prepare initial values for calculating random value
+     * @private
+     */
+    _prepare_initial(): void {
+        if (this._no_seed === true) {
+            this._initialize();
+            this._set_random_seed();
+        } else {
+            this._get_from_state();
+        }
     }
 }
 

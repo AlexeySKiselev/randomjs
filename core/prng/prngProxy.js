@@ -11,6 +11,7 @@ import type { IPRNG, IPRNGProxy } from '../interfaces';
 import BasicPRNG from './BasicPRNG';
 import TucheiPRNG from './TucheiPRNG';
 import DefaultPRNG from './DefaultPRNG';
+import XorshiftPRNG from './XorshiftPRNG';
 
 const DEFAULT_GENERATOR = 'tuchei';
 
@@ -28,7 +29,8 @@ class PRNGProxy implements IPRNGProxy {
         this._seed = undefined;
         this._allowed_generators = {
             'default': DefaultPRNG,
-            'tuchei': TucheiPRNG
+            'tuchei': TucheiPRNG,
+            'xorshift': XorshiftPRNG
         };
 
         this._generators = {
@@ -43,11 +45,8 @@ class PRNGProxy implements IPRNGProxy {
      * A list of allowed generators
      * @returns {Array<string>} a list of generators
      */
-    static get generators(): Array<string> {
-        return [
-            'default',
-            'tychei'
-        ];
+    get generators(): Array<string> {
+        return Object.keys(this._allowed_generators);
     }
 
     /**
@@ -104,8 +103,12 @@ class PRNGProxy implements IPRNGProxy {
      * @param {string} prng_name: name of generator on initialization
      */
     set_prng(prng_name: string = 'default'): void {
+        if (!this._allowed_generators[prng_name]) {
+            throw new Error(`PRNG ${prng_name} is not allowed`);
+        }
+
         // if current generator is the same - do nothing
-        if (this._current_generator_name === prng_name || !this._allowed_generators[prng_name]) {
+        if (this._current_generator_name === prng_name) {
             return;
         }
 

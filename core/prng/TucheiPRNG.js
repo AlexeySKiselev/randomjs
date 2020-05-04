@@ -4,7 +4,7 @@
  */
 import BasicPRNG from './BasicPRNG';
 import type { IPRNG } from '../interfaces';
-import type { NumberString, RandomArray, RandomArrayNumber } from '../types';
+import type { NumberString } from '../types';
 
 class TucheiPRNG extends BasicPRNG implements IPRNG {
 
@@ -70,58 +70,11 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
     }
 
     /**
-     * Prepare initial values for calculating random value
-     * @private
+     * @override
+     * @returns {number}
      */
-    _prepare_initial(): void {
-        if (this._no_seed === true) {
-            this._initialize();
-            this._set_random_seed();
-        } else {
-            this._get_from_state();
-        }
-    }
-
-    random(n: ?number = 1): RandomArrayNumber {
-        this._prepare_initial();
-
-        if (typeof n !== 'number') {
-            return this.next();
-        }
-
-        if (n <= 1) {
-            return this.next();
-        }
-
-        const random_array: RandomArray = [];
-        for (let i = 0; i < n; i += 1) {
-            random_array[i] = this.next();
-        }
-
-        return random_array;
-    }
-
     next(): number {
-        return (this.nextInt() >>> 0) / 0x100000000;
-    }
-
-    randomInt(n: ?number = 1): RandomArrayNumber {
-        this._prepare_initial();
-
-        if (typeof n !== 'number') {
-            return this.nextInt();
-        }
-
-        if (n <= 1) {
-            return this.nextInt();
-        }
-
-        const random_array: RandomArray = [];
-        for (let i = 0; i < n; i += 1) {
-            random_array[i] = this.nextInt();
-        }
-
-        return random_array;
+        return (this._nextInt() >>> 0) / 0x100000000;
     }
 
     seed(seed_value: ?NumberString): void {
@@ -138,7 +91,7 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
             this._seed = seed_value;
             for (let i = 0; i < this._seed.length + 20; i += 1) {
                 this._b ^= this._seed.charCodeAt(i) | 0;
-                this.next();
+                this._nextInt();
             }
             this._setState(this._a, this._b, this._c, this._d);
             this._no_seed = false;
@@ -148,7 +101,7 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
         }
     }
 
-    nextInt(): number {
+    _nextInt(): number {
         let a = this._a,
             b = this._b,
             c = this._c,
