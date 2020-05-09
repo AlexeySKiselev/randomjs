@@ -12,6 +12,7 @@ import BasicPRNG from './BasicPRNG';
 import TucheiPRNG from './TucheiPRNG';
 import DefaultPRNG from './DefaultPRNG';
 import XorshiftPRNG from './XorshiftPRNG';
+import KissPRNG from './KissPRNG';
 
 const DEFAULT_GENERATOR = 'tuchei';
 
@@ -30,7 +31,8 @@ class PRNGProxy implements IPRNGProxy {
         this._allowed_generators = {
             'default': DefaultPRNG,
             'tuchei': TucheiPRNG,
-            'xorshift': XorshiftPRNG
+            'xorshift': XorshiftPRNG,
+            'kiss': KissPRNG
         };
 
         this._generators = {
