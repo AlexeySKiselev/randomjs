@@ -40,7 +40,7 @@ class KissPRNG extends BasicPRNG implements IPRNG {
      * Initializes initial values with seed and sets state for calculating random number
      * @private
      */
-    _initialize_with_seed() {
+    _initialize_with_seed(): void {
         this._x = this._seed | 0;
         this._y = this._seed << 5 | 0;
         this._z = this._seed >> 7 | 0;

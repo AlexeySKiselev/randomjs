@@ -168,10 +168,10 @@ const prngTest = (prngName) => {
         }
         expect(max_v).to.be.at.most(1);
         expect(max_v < 1).to.be.equal(true);
-        expect(max_v).to.be.closeTo(1, 0.00001);
+        expect(max_v).to.be.closeTo(1, 0.0001);
         expect(min_v).to.be.at.least(0);
         expect(min_v >= 0).to.be.equal(true);
-        expect(min_v).to.be.closeTo(0, 0.00001);
+        expect(min_v).to.be.closeTo(0, 0.0001);
         done();
     });
 };
@@ -206,4 +206,8 @@ describe('Kiss PRNG', () => {
 
 describe('ParkMiller PRNG', () => {
     prngTest('parkmiller');
+});
+
+describe('Coveyou PRNG', () => {
+    prngTest('coveyou');
 });

@@ -14,6 +14,7 @@ import DefaultPRNG from './DefaultPRNG';
 import XorshiftPRNG from './XorshiftPRNG';
 import KissPRNG from './KissPRNG';
 import ParkMillerPRNG from './ParkMillerPRNG';
+import CoveyouPRNG from './CoveyouPRNG';
 
 const DEFAULT_GENERATOR = 'tuchei';
 
@@ -34,7 +35,8 @@ class PRNGProxy implements IPRNGProxy {
             'tuchei': TucheiPRNG,
             'xorshift': XorshiftPRNG,
             'kiss': KissPRNG,
-            'parkmiller': ParkMillerPRNG
+            'parkmiller': ParkMillerPRNG,
+            'coveyou': CoveyouPRNG
         };
 
         this._generators = {
