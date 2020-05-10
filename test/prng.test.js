@@ -33,7 +33,8 @@ const prngTest = (prngName) => {
         const third = prng.random();
         expect(third === second || third === first).to.be.equal(false);
     });
-    it('should return same value every time with seed', () => {
+    it('should return same value every time with seed', function(done) {
+        this.timeout(480000);
         prng.seed('seed test');
         const first = prng.random();
         let temp;
@@ -41,6 +42,7 @@ const prngTest = (prngName) => {
             temp = prng.random();
             expect(temp).to.be.closeTo(first, 0.000001);
         }
+        done();
     });
     it('should return different value (uniformly distributed) every time without seed', function(done) {
         this.timeout(480000);
@@ -165,8 +167,10 @@ const prngTest = (prngName) => {
             min_v = Math.min(min_v, random[i]);
         }
         expect(max_v).to.be.at.most(1);
+        expect(max_v < 1).to.be.equal(true);
         expect(max_v).to.be.closeTo(1, 0.00001);
         expect(min_v).to.be.at.least(0);
+        expect(min_v >= 0).to.be.equal(true);
         expect(min_v).to.be.closeTo(0, 0.00001);
         done();
     });
@@ -198,4 +202,8 @@ describe('Xorshift PRNG', () =>  {
 
 describe('Kiss PRNG', () => {
     prngTest('kiss');
+});
+
+describe('ParkMiller PRNG', () => {
+    prngTest('parkmiller');
 });

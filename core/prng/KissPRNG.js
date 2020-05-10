@@ -108,7 +108,6 @@ class KissPRNG extends BasicPRNG implements IPRNG {
                 this._y ^= _tempSeed << 5 | 0;
                 this._z ^= _tempSeed >> 7 | 0;
                 this._w ^= _tempSeed << 22 | 0;
-                //this._c = 0;
                 this._nextInt();
             }
             this._setState(this._x, this._y, this._z, this._w, this._c);
@@ -120,7 +119,7 @@ class KissPRNG extends BasicPRNG implements IPRNG {
     }
 
     _nextInt(): number {
-        let t;
+        let t: number;
         this._y ^= (this._y << 5);
         this._y ^= (this._y >> 7);
         this._y ^= (this._y << 22);
