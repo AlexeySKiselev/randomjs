@@ -116,7 +116,7 @@ class CoveyouPRNG extends BasicPRNG implements IPRNG {
         // extract data from x
         const xData: Array<number> = [0];
         let _x: number = x;
-        let i = 0;
+        let i: number = 0;
         while (_x > 0) {
             xData[i] = _x % 10;
             _x = Math.floor(_x / 10);
@@ -138,7 +138,7 @@ class CoveyouPRNG extends BasicPRNG implements IPRNG {
     }
 
     _nextInt(): number {
-        let x = this._x;
+        let x: number = this._x;
         x = (this._squareWithModulo(x) + x) % this._M;
         return this._x = x;
     }
