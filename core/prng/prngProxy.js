@@ -17,6 +17,7 @@ import ParkMillerPRNG from './ParkMillerPRNG';
 import CoveyouPRNG from './CoveyouPRNG';
 import Knuthran2PRNG from './Knuthran2PRNG';
 import R250PRNG from './R250PRNG';
+import Mrg5PRNG from './Mrg5PRNG';
 
 const DEFAULT_GENERATOR = 'tuchei';
 
@@ -40,7 +41,8 @@ class PRNGProxy implements IPRNGProxy {
             'parkmiller': ParkMillerPRNG,
             'coveyou': CoveyouPRNG,
             'knuthran2': Knuthran2PRNG,
-            'r250': R250PRNG
+            'r250': R250PRNG,
+            'mrg5': Mrg5PRNG
         };
 
         this._generators = {

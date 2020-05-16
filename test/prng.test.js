@@ -219,3 +219,7 @@ describe('Knuthran2 PRNG', () => {
 describe('r250 PRNG', () => {
     prngTest('r250');
 });
+
+describe('mrg5 PRNG', () => {
+    prngTest('mrg5');
+});
