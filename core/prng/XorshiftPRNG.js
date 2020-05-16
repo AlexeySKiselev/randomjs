@@ -1,6 +1,7 @@
 // @flow
 /**
  * Xorshift32 PRNG
+ * Period: 2 ^ 32
  */
 
 import BasicPRNG from './BasicPRNG';

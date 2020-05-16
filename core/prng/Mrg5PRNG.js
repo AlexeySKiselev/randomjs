@@ -4,6 +4,7 @@
  * P. L’Ecuyer, F. Blouin, and R. Coutre, “A search for good multiple recursive random number generators”, ACM Transactions on Modeling and Computer Simulation 3, 87–98 (1993).
  * x_n = (a_1 x_{n-1} + a_5 x_{n-5}) mod m
  * with a_1 = 107374182, a_5 = 104480 and m = 2^31 - 1.
+ * Period: ~10^46
  */
 
 import BasicPRNG from './BasicPRNG';

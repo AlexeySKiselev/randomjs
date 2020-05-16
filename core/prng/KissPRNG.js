@@ -1,6 +1,7 @@
 // @flow
 /**
  * Kiss32 PRNG
+ * Period: 2^30
  */
 
 import BasicPRNG from './BasicPRNG';

@@ -2,6 +2,7 @@
 /**
  * Coveyou PRNG
  * It is taken from Knuth’s Seminumerical Algorithms, 3rd Ed., Section 3.2.2.
+ * Period: 2^31 - 1
  */
 
 import BasicPRNG from './BasicPRNG';

@@ -1,7 +1,9 @@
 // @flow
 /**
- * Tuchei PRNG
+ * ParkMiller PRNG
+ * Period: 2^31 - 1
  */
+
 import BasicPRNG from './BasicPRNG';
 import type { IPRNG } from '../interfaces';
 import type { NumberString } from '../types';

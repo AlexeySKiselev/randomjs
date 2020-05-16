@@ -3,6 +3,7 @@
  * r250 PRNG
  * S. Kirkpatrick and E. Stoll, “A very fast shift-register sequence random number generator”, Journal of Computational Physics, 40, 517–526 (1981)
  * x_n = x_{n-103} ^ x_{n-250}
+ * Period: ~2^250
  */
 
 import BasicPRNG from './BasicPRNG';

@@ -2,6 +2,7 @@
 /**
  * Knuthran2 PRNG
  * Described by Knuth in Seminumerical Algorithms, 3rd Ed., page 108
+ * Period: ~10^18
  */
 
 import BasicPRNG from './BasicPRNG';

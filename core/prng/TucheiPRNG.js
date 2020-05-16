@@ -1,6 +1,7 @@
 // @flow
 /**
  * Tuchei PRNG
+ * Period: ~2^32
  */
 import BasicPRNG from './BasicPRNG';
 import type { IPRNG } from '../interfaces';
