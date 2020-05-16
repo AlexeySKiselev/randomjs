@@ -215,3 +215,7 @@ describe('Coveyou PRNG', () => {
 describe('Knuthran2 PRNG', () => {
     prngTest('knuthran2');
 });
+
+describe('r250 PRNG', () => {
+    prngTest('r250');
+});
