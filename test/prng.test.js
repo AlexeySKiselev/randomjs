@@ -223,3 +223,7 @@ describe('r250 PRNG', () => {
 describe('mrg5 PRNG', () => {
     prngTest('mrg5');
 });
+
+describe('gfsr4 PRNG', () => {
+    prngTest('gfsr4');
+});
