@@ -231,3 +231,7 @@ describe('gfsr4 PRNG', () => {
 describe('dx1597 PRNG', () => {
     prngTest('dx1597');
 });
+
+describe('tt800 PRNG', () => {
+    prngTest('tt800');
+});
