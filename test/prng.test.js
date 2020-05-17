@@ -235,3 +235,7 @@ describe('dx1597 PRNG', () => {
 describe('tt800 PRNG', () => {
     prngTest('tt800');
 });
+
+describe('Xorwow PRNG', () => {
+    prngTest('xorwow');
+});

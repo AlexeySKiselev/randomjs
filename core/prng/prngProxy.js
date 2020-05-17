@@ -21,6 +21,7 @@ import Mrg5PRNG from './Mrg5PRNG';
 import Gfsr4PRNG from './Gfsr4PRNG';
 import Dx1597PRNG from './Dx1597PRNG';
 import Tt800PRNG from './Tt800PRNG';
+import XorwowPRNG from './XorwowPRNG';
 
 const DEFAULT_GENERATOR = 'tuchei';
 
@@ -48,7 +49,8 @@ class PRNGProxy implements IPRNGProxy {
             'mrg5': Mrg5PRNG,
             'gfsr4': Gfsr4PRNG,
             'dx1597': Dx1597PRNG,
-            'tt800': Tt800PRNG
+            'tt800': Tt800PRNG,
+            'xorwow': XorwowPRNG
         };
 
         this._generators = {
