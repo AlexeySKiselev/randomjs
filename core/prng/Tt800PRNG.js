@@ -13,7 +13,7 @@ import type {NumberString} from '../types';
 
 const NUMBER_WORDS: number = 25;
 const M_VALUE: number = 7;
-const RECALCULATE_FREQ: number = 16384;
+const RECALCULATE_FREQ: number = 65536;
 
 class Tt800PRNG extends BasicPRNG implements IPRNG {
 

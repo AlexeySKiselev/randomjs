@@ -37,6 +37,22 @@ class PRNGProxy implements IPRNGProxy {
     constructor() {
         this._modulo = BasicPRNG.modulo;
         this._seed = undefined;
+        /*
+        On machine: Ubuntu 18.04 x64, Intel® Core™ i7-6600U CPU @ 2.60GHz × 4
+        default: 4712 ms, 85M per sec
+        tuchei: 1550 ms, 258M per sec
+        xorshift: 1538 ms, 260M per sec
+        kiss: 3616 ms, 110M per sec
+        parkmiller: 6814 ms, 58M per sec
+        coveyou: 494885 ms, 808K per sec
+        knuthran2: 256272 ms, 1.5M per sec
+        r250: 2493 ms, 160M per sec
+        mrg5: 254178 ms, 1.5M per sec
+        gfsr4: 3631 ms, 110M per sec
+        dx1597: 133783 ms, 3M per sec
+        tt800: 10434 ms, 38M per sec
+        xorwow: 6493 ms, 61M per sec
+         */
         this._allowed_generators = {
             'default': DefaultPRNG,
             'tuchei': TucheiPRNG,

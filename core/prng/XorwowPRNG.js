@@ -11,7 +11,7 @@ import type { IPRNG } from '../interfaces';
 import type {NumberString} from '../types';
 
 const WORDS_NUMBER: number = 6;
-const RECALCULATE_FREQ: number = 2048;
+const RECALCULATE_FREQ: number = 65536;
 
 class XorwowPRNG extends BasicPRNG implements IPRNG {
 

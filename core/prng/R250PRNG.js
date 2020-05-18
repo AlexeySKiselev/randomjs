@@ -14,7 +14,7 @@ import type {NumberString} from '../types';
 const WORD_LEFT: number = 250;
 const WORD_RIGHT: number = 103;
 const NEGATIVE_WORD_RIGHT: number = WORD_LEFT - WORD_RIGHT; // need it for simplify calculation
-const RECALCULATE_FREQ = 16384;
+const RECALCULATE_FREQ = 65536;
 
 class R250PRNG extends BasicPRNG implements IPRNG {
 
