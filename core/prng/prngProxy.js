@@ -11,6 +11,17 @@ import type { IPRNG, IPRNGProxy } from '../interfaces';
 import BasicPRNG from './BasicPRNG';
 import TucheiPRNG from './TucheiPRNG';
 import DefaultPRNG from './DefaultPRNG';
+import XorshiftPRNG from './XorshiftPRNG';
+import KissPRNG from './KissPRNG';
+import ParkMillerPRNG from './ParkMillerPRNG';
+import CoveyouPRNG from './CoveyouPRNG';
+import Knuthran2PRNG from './Knuthran2PRNG';
+import R250PRNG from './R250PRNG';
+import Mrg5PRNG from './Mrg5PRNG';
+import Gfsr4PRNG from './Gfsr4PRNG';
+import Dx1597PRNG from './Dx1597PRNG';
+import Tt800PRNG from './Tt800PRNG';
+import XorwowPRNG from './XorwowPRNG';
 
 const DEFAULT_GENERATOR = 'tuchei';
 
@@ -26,9 +37,36 @@ class PRNGProxy implements IPRNGProxy {
     constructor() {
         this._modulo = BasicPRNG.modulo;
         this._seed = undefined;
+        /*
+        On machine: Ubuntu 18.04 x64, Intel® Core™ i7-6600U CPU @ 2.60GHz × 4
+        default: 4712 ms, 85M per sec
+        tuchei: 1550 ms, 258M per sec
+        xorshift: 1538 ms, 260M per sec
+        kiss: 3616 ms, 110M per sec
+        parkmiller: 6814 ms, 58M per sec
+        coveyou: 494885 ms, 808K per sec
+        knuthran2: 256272 ms, 1.5M per sec
+        r250: 2493 ms, 160M per sec
+        mrg5: 254178 ms, 1.5M per sec
+        gfsr4: 3631 ms, 110M per sec
+        dx1597: 133783 ms, 3M per sec
+        tt800: 10434 ms, 38M per sec
+        xorwow: 6493 ms, 61M per sec
+         */
         this._allowed_generators = {
             'default': DefaultPRNG,
-            'tuchei': TucheiPRNG
+            'tuchei': TucheiPRNG,
+            'xorshift': XorshiftPRNG,
+            'kiss': KissPRNG,
+            'parkmiller': ParkMillerPRNG,
+            'coveyou': CoveyouPRNG,
+            'knuthran2': Knuthran2PRNG,
+            'r250': R250PRNG,
+            'mrg5': Mrg5PRNG,
+            'gfsr4': Gfsr4PRNG,
+            'dx1597': Dx1597PRNG,
+            'tt800': Tt800PRNG,
+            'xorwow': XorwowPRNG
         };
 
         this._generators = {
@@ -43,11 +81,8 @@ class PRNGProxy implements IPRNGProxy {
      * A list of allowed generators
      * @returns {Array<string>} a list of generators
      */
-    static get generators(): Array<string> {
-        return [
-            'default',
-            'tychei'
-        ];
+    get generators(): Array<string> {
+        return Object.keys(this._allowed_generators);
     }
 
     /**
@@ -104,8 +139,12 @@ class PRNGProxy implements IPRNGProxy {
      * @param {string} prng_name: name of generator on initialization
      */
     set_prng(prng_name: string = 'default'): void {
+        if (!this._allowed_generators[prng_name]) {
+            throw new Error(`PRNG ${prng_name} is not allowed`);
+        }
+
         // if current generator is the same - do nothing
-        if (this._current_generator_name === prng_name || !this._allowed_generators[prng_name]) {
+        if (this._current_generator_name === prng_name) {
             return;
         }
 

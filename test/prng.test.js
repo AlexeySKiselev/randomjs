@@ -10,7 +10,11 @@ let chai = require('chai'),
 
 chai.should();
 
-describe('PRNG', () =>  {
+const prngTest = (prngName) => {
+    beforeEach(() => {
+        prng.set_prng(prngName);
+    });
+
     it('should maintain seed', () =>  {
         prng.seed(123456);
         expect(prng._seed).to.be.equal(123456);
@@ -29,7 +33,8 @@ describe('PRNG', () =>  {
         const third = prng.random();
         expect(third === second || third === first).to.be.equal(false);
     });
-    it('should return same value every time with seed', () => {
+    it('should return same value every time with seed', function(done) {
+        this.timeout(480000);
         prng.seed('seed test');
         const first = prng.random();
         let temp;
@@ -37,6 +42,7 @@ describe('PRNG', () =>  {
             temp = prng.random();
             expect(temp).to.be.closeTo(first, 0.000001);
         }
+        done();
     });
     it('should return different value (uniformly distributed) every time without seed', function(done) {
         this.timeout(480000);
@@ -67,7 +73,7 @@ describe('PRNG', () =>  {
             values[Math.floor(temp[i] * 100)] += 1;
         }
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(100000, 1000);
+            expect(values[v]).to.be.closeTo(100000, 1500);
         }
         done();
     });
@@ -102,7 +108,6 @@ describe('PRNG', () =>  {
                 if ((arr[i] > first[i] + epsilon) || (arr[i] < first[i] - epsilon)) {
                     return false;
                 }
-
             }
 
             return true;
@@ -128,7 +133,6 @@ describe('PRNG', () =>  {
                 if ((arr[i] > first[i] + epsilon) || (arr[i] < first[i] - epsilon)) {
                     return false;
                 }
-
             }
 
             return true;
@@ -163,9 +167,75 @@ describe('PRNG', () =>  {
             min_v = Math.min(min_v, random[i]);
         }
         expect(max_v).to.be.at.most(1);
-        expect(max_v).to.be.closeTo(1, 0.00001);
+        expect(max_v < 1).to.be.equal(true);
+        expect(max_v).to.be.closeTo(1, 0.0001);
         expect(min_v).to.be.at.least(0);
-        expect(min_v).to.be.closeTo(0, 0.00001);
+        expect(min_v >= 0).to.be.equal(true);
+        expect(min_v).to.be.closeTo(0, 0.0001);
         done();
     });
+};
+
+describe('PRNGProxy', () => {
+    it('should throw an error for wrong PRNG', () => {
+        let badPRNG = () => {
+            prng.set_prng('abc');
+        };
+        badPRNG.should.throw(Error);
+
+        let goodPRNG = () => {
+            for (let p of prng.generators) {
+                prng.set_prng(p);
+            }
+        };
+        goodPRNG.should.not.throw(Error);
+    });
+});
+
+describe('Tuchei PRNG', () =>  {
+    prngTest('tuchei');
+});
+
+describe('Xorshift PRNG', () =>  {
+    prngTest('xorshift');
+});
+
+describe('Kiss PRNG', () => {
+    prngTest('kiss');
+});
+
+describe('ParkMiller PRNG', () => {
+    prngTest('parkmiller');
+});
+
+describe('Coveyou PRNG', () => {
+    prngTest('coveyou');
+});
+
+describe('Knuthran2 PRNG', () => {
+    prngTest('knuthran2');
+});
+
+describe('r250 PRNG', () => {
+    prngTest('r250');
+});
+
+describe('mrg5 PRNG', () => {
+    prngTest('mrg5');
+});
+
+describe('gfsr4 PRNG', () => {
+    prngTest('gfsr4');
+});
+
+describe('dx1597 PRNG', () => {
+    prngTest('dx1597');
+});
+
+describe('tt800 PRNG', () => {
+    prngTest('tt800');
+});
+
+describe('Xorwow PRNG', () => {
+    prngTest('xorwow');
 });

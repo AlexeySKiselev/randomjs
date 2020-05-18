@@ -16,7 +16,7 @@ class DefaultPRNG extends BasicPRNG implements IPRNG {
     }
 
     _randomInt(): number {
-        return this._random() * 0x100000000;
+        return Math.floor(this._random() * 0x100000000);
     }
 
     random(n: ?number = 1): RandomArrayNumber {

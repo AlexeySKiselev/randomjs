@@ -4,7 +4,7 @@
 # Unirand
 A JavaScript module for generating seeded random distributions and its statistical analysis.
 
-Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with 600+ tests*.
+Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with 740+ tests*.
 
 #### [Supported distributions](./core/methods/)
 
@@ -58,6 +58,24 @@ Also you can set another PRNG by calling:
 unirand.prng.set_prng('default'); // now PRNG is default JS generator equals to Math.random()
 ```
 
+Unirand supports different PRNGs:
+
+| Name | Description | Performance | Supports seed |
+|---|---|---|---|
+| `default` | Default JS PRNG | fast | No |
+| `tuchei` | Tuchei PRNG, period ~2<sup>32</sup> | very fast | Yes |
+| `xorshift` | Xorshift PRNG, period ~2<sup>32</sup> | very fast | Yes |
+| `kiss` | Kiss PRNG, period ~2<sup>30</sup> | fast | Yes |
+| `parkmiller` | Park-Miller PRNG, period ~2<sup>31</sup> | medium | Yes |
+| `coveyou` | Coveyou PRNG, period ~2<sup>31</sup> | slow | Yes |
+| `knuthran2` | knuthran2 PRNG, period ~10<sup>18</sup> | slow | Yes |
+| `r250` | r250 PRNG, period ~2<sup>250</sup> | very fast | Yes |
+| `mrg5` | Fifth-order multiple recursive PRNG, period ~10<sup>46</sup> | slow | Yes |
+| `gfsr4` | gfsr4 PRNG, period ~2<sup>9689</sup> | fast | Yes |
+| `dx1597` | Dx-1957-f PRNG, period ~10<sup>14903</sup> | slow | Yes |
+| `tt800` | TT800 PRNG, period ~10<sup>240</sup> | medium | Yes |
+| `xorwow` | Xorwow PRNG, period ~10<sup>38</sup> | medium | Yes |
+
 #### .random() and .randomInt()
 Returns random uniformly distributed value or array of length *n*. Returns different value each time without seed and same value with seed value.
 ```javascript
@@ -80,6 +98,8 @@ unirand.next(); // returns 0.045074593275785446
 ...
 ```
 Same results for `.nextInt()`. These methods always return single value.
+
+\**Note*: for seeded prng we don't recommend use `.random()` method for generating all random values. Use `.random()` first time flushing generator, then `.next()` for all other random values.
 
 #### .seed()
 ```javascript
