@@ -56,7 +56,7 @@ class Poisson implements IDistribution {
     distribution(n: number): RandomArray {
         let poissonArray: RandomArray = [];
         prng.random();
-        for(let i:number = 0; i < n; i += 1){
+        for(let i: number = 0; i < n; i += 1){
             poissonArray[i] = this._random();
         }
         return poissonArray;

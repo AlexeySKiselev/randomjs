@@ -50,7 +50,7 @@ class Chi implements IDistribution {
         this.chiSquare.refresh(this.degrees);
         let chiArray: RandomArray = [],
             random: RandomArray = this.chiSquare.distribution(n);
-        for(let i:number = 0; i < n; i += 1){
+        for(let i: number = 0; i < n; i += 1){
             chiArray[i] = Math.sqrt(random[i]);
         }
         return chiArray;

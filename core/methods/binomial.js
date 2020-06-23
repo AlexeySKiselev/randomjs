@@ -63,7 +63,7 @@ class Binomial implements IDistribution {
         let binomialArray: RandomArray = [],
             random: RandomArray = (prng.random(n * this.trials): any),
             res: number;
-        for(let i:number = 0; i < n; i += 1){
+        for(let i: number = 0; i < n; i += 1){
             res = 0;
             for(let k: number = 0; k < this.trials; k += 1){
                 if(random[i * this.trials + k] < this.successProb) {

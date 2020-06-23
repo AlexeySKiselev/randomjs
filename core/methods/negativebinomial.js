@@ -59,7 +59,7 @@ class NegativeBinomial implements IDistribution {
         this.gamma.refresh(this.numberSuccess, this.successProb / (1 - this.successProb));
         let negativeBinomialArray: RandomArray = [],
             random: RandomArray = this.gamma.distribution(n);
-        for(let i:number = 0; i < n; i += 1){
+        for(let i: number = 0; i < n; i += 1){
             this.poisson.refresh(random[i]);
             negativeBinomialArray[i] = this.poisson.next();
         }

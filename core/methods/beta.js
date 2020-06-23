@@ -79,7 +79,7 @@ class Beta implements IDistribution {
             gammaA: number,
             gammaB: number,
             gammaADist: RandomArray,
-            gammaBDist : RandomArray;
+            gammaBDist: RandomArray;
 
         this.gammaA.refresh(this.alpha, 1);
         this.gammaB.refresh(this.beta, 1);

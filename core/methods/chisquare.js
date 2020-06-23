@@ -59,7 +59,7 @@ class ChiSquare implements IDistribution {
         let chiSquareArray: RandomArray = [],
             res: number,
             random: RandomArray = this.normal.distribution(n * this.degrees);
-        for(let i:number = 0; i < n; i += 1){
+        for(let i: number = 0; i < n; i += 1){
             res = 0;
             for(let j: number = 0; j < this.degrees; j += 1){
                 res += Math.pow(random[i * this.degrees + j], 2);
