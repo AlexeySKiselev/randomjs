@@ -20,6 +20,7 @@ Implemented in pure JavaScript with no dependencies, designed to work in Node.js
 | Cauchy (Lorenz) distribution | `x` - any value, `gamma` > 0 | `unirand.cauchy(x, gamma).random()` |
 | Chi distribution | `k` - integer, `k` > 0 | `unirand.chi(k).random()` |
 | Chi Square distribution | `k` - integer, `k` > 0 | `unirand.chisquare(k).random()` |
+| Compertz distribution | `nu` > 0 - float value, `b` > 0 - float value | `unirand.compertz(nu, b).random()` |
 | Erlang distribution | `k` - integer, `k` > 0, `mu` - float value, `mu` > 0 | `unirand.erlang(k, mu).random()` |
 | Exponential distribution | `lambda` - float value, `lambda` > 0 | `unirand.exponential(lambda).random()` |
 | Extreme (Gumbel-type) Value distribution | `mu` - any value, `sigma` - float number, `sigma` > 0 | `unirand.extremevalue(mu, sigma).random()` |

@@ -1192,6 +1192,176 @@ describe('Random distributions without seed', () => {
         });
     });
 
+    // Compertz distribution
+    describe('Compertz distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
+        let Compertz = require('../lib/methods/compertz'),
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
+        it('requires two numerical arguments with nu > 0 and b > 0', () => {
+            let zeroParams = () => {
+                let compertz = new Compertz();
+                if(compertz.isError().error)
+                    throw new Error(compertz.isError().error);
+            };
+            zeroParams.should.throw(Error);
+
+            let oneParam =  () => {
+                let compertz = new Compertz(0.5);
+                if(compertz.isError().error)
+                    throw new Error(compertz.isError().error);
+            };
+            oneParam.should.throw(Error);
+
+            let badParams = () => {
+                let compertz = new Compertz('a', 'b');
+                if(compertz.isError().error)
+                    throw new Error(compertz.isError().error);
+            };
+            badParams.should.throw(Error);
+
+            let badParamsLess0 = () => {
+                let compertz = new Compertz(-1, 0.5);
+                if(compertz.isError().error)
+                    throw new Error(compertz.isError().error);
+            };
+            badParamsLess0.should.throw(Error);
+
+            let badParamsLess02 = () => {
+                let compertz = new Compertz(1, -1);
+                if(compertz.isError().error)
+                    throw new Error(compertz.isError().error);
+            };
+            badParamsLess02.should.throw(Error);
+
+            let twoParams =  () => {
+                let compertz = new Compertz(2, 0.5);
+                if(compertz.isError().error)
+                    throw new Error(compertz.isError().error);
+            };
+            twoParams.should.not.throw(Error);
+        });
+        it('should has methods: .random, .distribution, .refresh, .isError', () => {
+            let compertz = new Compertz(2, 0.5);
+            expect(compertz).to.have.property('random');
+            expect(compertz).to.respondsTo('random');
+            expect(compertz).to.have.property('distribution');
+            expect(compertz).to.respondsTo('distribution');
+            expect(compertz).to.have.property('refresh');
+            expect(compertz).to.respondsTo('refresh');
+            expect(compertz).to.have.property('isError');
+            expect(compertz).to.respondsTo('isError');
+        });
+        it('should have values for initial nu = 1 and b = 1 equals to nu = 2 and b = 3 after .refresh(2, 3) method',() => {
+            let compertz = new Compertz(1, 1);
+            compertz.nu.should.equal(1);
+            compertz.b.should.equal(1);
+            compertz.refresh(2, 3);
+            compertz.nu.should.equal(2);
+            compertz.b.should.equal(3);
+        });
+        it('should generate an array with random values with length of 500', () => {
+            let compertz = new Compertz(1, 0.5),
+                randomArray = compertz.distribution(500),
+                countDiffs = 0,
+                last,
+                delta = 0.01;
+            // Check all values
+            randomArray.map(rand => {
+                if(last && Math.abs(rand - last) > delta){
+                    countDiffs += 1;
+                }
+                last = rand;
+            });
+            expect(randomArray).to.be.an('array');
+            expect(randomArray).to.have.lengthOf(500);
+            expect(countDiffs).to.be.at.least(300);
+        });
+        describe('With real generated data (nu = 0.7, b = 2)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
+            let compertz = new Compertz(0.7, 2),
+                distribution,
+                analyzer,
+                percentiler,
+                min = [],
+                max = [],
+                median = [];
+
+            prng.seed();
+            for(let i = 0; i < 20; i += 1) {
+                distribution = compertz.distribution(300000);
+                analyzer = Common.getInstance(distribution);
+                percentiler = Percentile.getInstance(distribution);
+                min.push(analyzer.min);
+                max.push(analyzer.max);
+                median.push(percentiler.median);
+            }
+
+            it('should has min value close to 0', () => {
+                expect(analyzer.min).to.be.a('number');
+                expect(meanValue(min)).to.be.closeTo(0, 0.002);
+            });
+            it('should has max value at most 5', () => {
+                expect(analyzer.max).to.be.a('number');
+                expect(meanValue(max)).to.be.at.most(5);
+            });
+            it('should has correct median value', () => {
+                expect(percentiler.median).to.be.a('number');
+                expect(meanValue(median)).to.be.closeTo(compertz.median, 0.02);
+            });
+            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+                let analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                    }),
+                    sum = 0;
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.values).to.be.an('array');
+                expect(analyzer.pdf.values[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities.length).to.be.equal(1000);
+                expect(analyzer.pdf.values.length).to.be.equal(1000);
+                expect(analyzer.pdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                for(let el of analyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has pdf value close to zero on corners', () => {
+                let analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities[0]).to.be.closeTo(0, 0.01);
+                expect(analyzer.pdf.probabilities[999]).to.be.closeTo(0, 0.01);
+            });
+            it('should has cdf array with 1000 elements and last element close to 1', () => {
+                let analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                expect(analyzer.cdf.probabilities).to.be.an('array');
+                expect(analyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.cdf.values).to.be.an('array');
+                expect(analyzer.cdf.values[0]).to.be.a('number');
+                expect(analyzer.cdf.probabilities.length).to.be.equal(1000);
+                expect(analyzer.cdf.values.length).to.be.equal(1000);
+                expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                expect(analyzer.cdf.probabilities[0]).to.be.closeTo(0, 0.01);
+                expect(analyzer.cdf.probabilities[999]).to.be.closeTo(1, 0.01);
+            });
+        });
+    });
+
     // Cauchy distribution
     describe('Cauchy distribution', () => {
         beforeEach(() => {
