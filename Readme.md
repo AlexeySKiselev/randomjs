@@ -21,6 +21,7 @@ Implemented in pure JavaScript with no dependencies, designed to work in Node.js
 | Chi distribution | `k` - integer, `k` > 0 | `unirand.chi(k).random()` |
 | Chi Square distribution | `k` - integer, `k` > 0 | `unirand.chisquare(k).random()` |
 | Compertz distribution | `nu` > 0 - float value, `b` > 0 - float value | `unirand.compertz(nu, b).random()` |
+| Delaporte distribution | `alpha` > 0 - float value, `beta` > 0 - float value, `lambda` > 0 - float value | `unirand.delaporte(alpha, beta, lambda).random()` |
 | Erlang distribution | `k` - integer, `k` > 0, `mu` - float value, `mu` > 0 | `unirand.erlang(k, mu).random()` |
 | Exponential distribution | `lambda` - float value, `lambda` > 0 | `unirand.exponential(lambda).random()` |
 | Extreme (Gumbel-type) Value distribution | `mu` - any value, `sigma` - float number, `sigma` > 0 | `unirand.extremevalue(mu, sigma).random()` |

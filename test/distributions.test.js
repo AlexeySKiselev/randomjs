@@ -1336,7 +1336,7 @@ describe('Random distributions without seed', () => {
                 expect(percentiler.median).to.be.a('number');
                 expect(meanValue(median)).to.be.closeTo(compertz.median, 0.02);
             });
-            it('should has pdf array with 200 elements and sum of them close to 1', () => {
+            it('should has pdf array with 1000 elements and sum of them close to 1', () => {
                 let analyzer = Common.getInstance(distribution, {
                         pdf: 1000
                     }),
@@ -1375,6 +1375,221 @@ describe('Random distributions without seed', () => {
                 expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
                 expect(analyzer.cdf.probabilities[0]).to.be.closeTo(0, 0.01);
                 expect(analyzer.cdf.probabilities[999]).to.be.closeTo(1, 0.01);
+            });
+        });
+    });
+
+    // Delaporte distribution
+    describe('Delaporte distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
+        let Delaporte = require('../lib/methods/delaporte'),
+            Common = require('../lib/analyzer/common');
+        it('requires three numerical arguments with alpha > 0 and beta > 0 and lambda > 0', () => {
+            let zeroParams = () => {
+                let delaporte = new Delaporte();
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            zeroParams.should.throw(Error);
+
+            let oneParam =  () => {
+                let delaporte = new Delaporte(1);
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            oneParam.should.throw(Error);
+
+            let twoParams =  () => {
+                let delaporte = new Delaporte(1, 2);
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            twoParams.should.throw(Error);
+
+            let threeParams =  () => {
+                let delaporte = new Delaporte(1, 2, 3);
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            threeParams.should.not.throw(Error);
+
+            let badParams = () => {
+                let delaporte = new Delaporte('a', 1, 2);
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            badParams.should.throw(Error);
+
+            let badParams2 = () => {
+                let delaporte = new Delaporte(1, 'b', 2);
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            badParams2.should.throw(Error);
+
+            let badParams3 = () => {
+                let delaporte = new Delaporte(1, 2, 'c');
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            badParams3.should.throw(Error);
+
+            let badParamsLess0 = () => {
+                let delaporte = new Delaporte(-1, 1, 1);
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            badParamsLess0.should.throw(Error);
+
+            let badParamsLess02 = () => {
+                let delaporte = new Delaporte(1, -1, 1);
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            badParamsLess02.should.throw(Error);
+
+            let badParamsLess03 = () => {
+                let delaporte = new Delaporte(1, 1, -1);
+                if(delaporte.isError().error)
+                    throw new Error(delaporte.isError().error);
+            };
+            badParamsLess03.should.throw(Error);
+        });
+        it('should has methods: .random, .distribution, .refresh, .isError', () => {
+            let delaporte = new Delaporte(1, 2, 3);
+            expect(delaporte).to.have.property('random');
+            expect(delaporte).to.respondsTo('random');
+            expect(delaporte).to.have.property('distribution');
+            expect(delaporte).to.respondsTo('distribution');
+            expect(delaporte).to.have.property('refresh');
+            expect(delaporte).to.respondsTo('refresh');
+            expect(delaporte).to.have.property('isError');
+            expect(delaporte).to.respondsTo('isError');
+        });
+        it('should have values for initial alpha = 1 and beta = 2, lambda = 3 equals to alpha = 2 and beta = 3, lambda = 4 after .refresh(2, 3, 4) method',() => {
+            let delaporte = new Delaporte(1, 2, 3);
+            delaporte.alpha.should.equal(1);
+            delaporte.beta.should.equal(2);
+            delaporte.lambda.should.equal(3);
+            delaporte.refresh(2, 3, 4);
+            delaporte.alpha.should.equal(2);
+            delaporte.beta.should.equal(3);
+            delaporte.lambda.should.equal(4);
+        });
+        it('should generate an array with random values with length of 500', () => {
+            let delaporte = new Delaporte(1, 2, 3),
+                randomArray = delaporte.distribution(500),
+                countDiffs = 0,
+                last,
+                delta = 0.9;
+            // Check all values
+            randomArray.map(rand => {
+                if(last && Math.abs(rand - last) > delta){
+                    countDiffs += 1;
+                }
+                last = rand;
+            });
+            expect(randomArray).to.be.an('array');
+            expect(randomArray).to.have.lengthOf(500);
+            expect(countDiffs).to.be.at.least(10);
+        });
+        describe('With real generated data (alpha = 1, beta = 2, lambda = 3)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
+            let delaporte = new Delaporte(1, 2, 3),
+                distribution,
+                analyzer,
+                min = [],
+                max = [],
+                mean = [],
+                variance = [],
+                skewness = [],
+                kurtosis = [];
+
+            prng.seed();
+            for(let i = 0; i < 20; i += 1) {
+                distribution = delaporte.distribution(300000);
+                analyzer = Common.getInstance(distribution);
+                min.push(analyzer.min);
+                max.push(analyzer.max);
+                mean.push(analyzer.mean);
+                variance.push(analyzer.variance);
+                skewness.push(analyzer.skewness);
+                kurtosis.push(analyzer.kurtosis);
+            }
+
+            it('should has min value close to 0', () => {
+                expect(analyzer.min).to.be.a('number');
+                expect(meanValue(min)).to.be.closeTo(0, 0.002);
+            });
+            it('should has max value at least 15', () => {
+                expect(analyzer.max).to.be.a('number');
+                expect(meanValue(max)).to.be.at.least(15);
+            });
+            it('should has correct mean value', () => {
+                expect(analyzer.mean).to.be.a('number');
+                expect(meanValue(mean)).to.be.closeTo(delaporte.mean, 0.02);
+            });
+            it('should has correct variance value', () => {
+                expect(analyzer.variance).to.be.a('number');
+                expect(meanValue(variance)).to.be.closeTo(delaporte.variance, 0.03);
+            });
+            it('should has correct skewness value', () => {
+                expect(analyzer.skewness).to.be.a('number');
+                expect(meanValue(skewness)).to.be.closeTo(delaporte.skewness, 0.04);
+            });
+            it('should has correct kurtosis value', () => {
+                expect(analyzer.kurtosis).to.be.a('number');
+                expect(meanValue(kurtosis)).to.be.closeTo(delaporte.kurtosis, 0.04);
+            });
+            it('should has pdf array with 1000 elements and sum of them close to 1', () => {
+                let analyzer = Common.getInstance(distribution, {
+                        pdf: 1000
+                    }),
+                    sum = 0;
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.values).to.be.an('array');
+                expect(analyzer.pdf.values[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities.length).to.be.equal(1000);
+                expect(analyzer.pdf.values.length).to.be.equal(1000);
+                expect(analyzer.pdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                for(let el of analyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has pdf value close to zero on corners', () => {
+                let analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities[0]).to.be.closeTo(0, 0.05);
+                expect(analyzer.pdf.probabilities[999]).to.be.closeTo(0, 0.05);
+            });
+            it('should has cdf array with 1000 elements and last element close to 1', () => {
+                let analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                expect(analyzer.cdf.probabilities).to.be.an('array');
+                expect(analyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.cdf.values).to.be.an('array');
+                expect(analyzer.cdf.values[0]).to.be.a('number');
+                expect(analyzer.cdf.probabilities.length).to.be.equal(1000);
+                expect(analyzer.cdf.values.length).to.be.equal(1000);
+                expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                expect(analyzer.cdf.probabilities[0]).to.be.closeTo(0, 0.05);
+                expect(analyzer.cdf.probabilities[999]).to.be.closeTo(1, 0.05);
             });
         });
     });

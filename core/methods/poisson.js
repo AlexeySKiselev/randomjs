@@ -68,10 +68,10 @@ class Poisson implements IDistribution {
      * @returns {boolean}
      */
     isError(): MethodError {
-        if(!this.lambda) {
+        if (!this.lambda) {
             return {error: 'Poisson distribution: you should point parameter "lambda" with numerical value'};
         }
-        if(this.lambda <= 0){
+        if (this.lambda <= 0) {
             return {error: 'Poisson distribution: parameter "lambda" must be positive integer'};
         }
         return { error: false };

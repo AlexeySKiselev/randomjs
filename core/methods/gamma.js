@@ -81,11 +81,11 @@ class Gamma implements IDistribution {
         }
 
         if(this.alpha <= 0){
-            return {error: 'Gamma distribution: parameter "alpha" must be a positive integer'};
+            return {error: 'Gamma distribution: parameter "alpha" must be a positive number'};
         }
 
         if(this.beta <= 0){
-            return {error: 'Gamma distribution: parameter "beta" must be a positive'};
+            return {error: 'Gamma distribution: parameter "beta" must be a positive integer'};
         }
 
         return { error: false };

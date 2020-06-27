@@ -97,6 +97,16 @@ class Compertz implements IDistribution {
     get median(): number {
         return this._random(0.5);
     }
+
+    /**
+     * All parameters of distribution in one object
+     * Information only
+     */
+    get parameters(): {} {
+        return {
+            median: this.median
+        };
+    }
 }
 
 module.exports = Compertz;
