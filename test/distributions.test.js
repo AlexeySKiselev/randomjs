@@ -673,6 +673,23 @@ describe('Random distributions without seed', () => {
             expect(beta.mean).to.be.a('number');
             beta.mean.should.equal(0.25);
         });
+        it('should generate a numerical value for alpha=1 or beta=1', () => {
+            const beta = new Beta(1, 1);
+            prng.seed();
+            for(let i = 0; i < 10000; i += 1){
+                expect(beta.random()).to.be.a('number');
+            }
+            const beta2 = new Beta(1, 2);
+            prng.seed();
+            for(let i = 0; i < 10000; i += 1){
+                expect(beta2.random()).to.be.a('number');
+            }
+            const beta3 = new Beta(2, 1);
+            prng.seed();
+            for(let i = 0; i < 10000; i += 1){
+                expect(beta3.random()).to.be.a('number');
+            }
+        });
         it('should return different values each time', () => {
             let beta = new Beta(1, 2),
                 value1;
@@ -1321,7 +1338,7 @@ describe('Random distributions without seed', () => {
             });
             it('should has pdf array with 200 elements and sum of them close to 1', () => {
                 let analyzer = Common.getInstance(distribution, {
-                    pdf: 1000
+                        pdf: 1000
                     }),
                     sum = 0;
                 expect(analyzer.pdf.probabilities).to.be.an('array');

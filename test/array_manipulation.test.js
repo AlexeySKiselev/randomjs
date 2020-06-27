@@ -420,7 +420,7 @@ describe('Array manipulation methods', () => {
             done();
         });
         it('should place each element on each position with the same probability', function(done) {
-            this.timeout(480000);
+            this.timeout(960000);
             let shuffle = new Shuffle(),
                 input_str = 'abcdefghijklmnopqrstuvwxyz',
                 letters = {},
@@ -948,6 +948,17 @@ describe('Array manipulation methods', () => {
                     };
                     res.should.not.throw(Error);
                 }
+                // empty options
+                let resEmptyOptions = () => {
+                    let r = movingAverage.smooth(data);
+                    expect(r.length).to.be.equal(data.length);
+                    for(let i = 0; i < r.length; i += 1) {
+                        if (typeof r[i] !== 'number') {
+                            throw new Error();
+                        }
+                    }
+                };
+                resEmptyOptions.should.not.throw(Error);
             });
             it('should throw error with wrong options', () => {
                 const badOptions1 = () => {

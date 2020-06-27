@@ -99,8 +99,8 @@ class MovingAverage implements ISmooth {
      * @param {RandomArray} data
      * @param {{[string]: any}} options
      */
-    smooth(data: RandomArray, options: {[string]: any} = {}): RandomArray {
-        const smoothData: MASmoothData = this._getSmoothData(options);
+    smooth(data: RandomArray, options: ?{[string]: any} = {}): RandomArray {
+        const smoothData: MASmoothData = this._getSmoothData(options || {});
         if (smoothData.minDataLength > data.length) {
             throw new Error(`Smooth (Moving Average): data size must NOT be less then ${smoothData.minDataLength}, given ${data.length}`);
         }

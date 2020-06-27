@@ -14,22 +14,17 @@ const DEFAULT_SMOOTH_ALGORITHM = 'moving_average';
 
 class SmoothProxy implements ISmoothProxy {
 
-    _allowedSmoothAlgorithms: {[string]: true};
+    _allowedSmoothAlgorithms: {[string]: any};
     _smoothAlgorithms: {[string]: ISmooth};
     _currentSmoothAlgorithm: ISmooth;
     _currentSmoothAlgorithmName: string;
 
     constructor() {
         this._allowedSmoothAlgorithms = {
-            'moving_average': true
+            'moving_average': MovingAverage
         };
-
-        this._smoothAlgorithms = {
-            'moving_average': new MovingAverage()
-        };
-
-        this._currentSmoothAlgorithmName = DEFAULT_SMOOTH_ALGORITHM;
-        this._currentSmoothAlgorithm = this._smoothAlgorithms[DEFAULT_SMOOTH_ALGORITHM];
+        this._smoothAlgorithms = {};
+        this.setSmoothAlgorithm(DEFAULT_SMOOTH_ALGORITHM);
     }
 
     /**
@@ -70,7 +65,7 @@ class SmoothProxy implements ISmoothProxy {
      * Sets algorithm
      * @param {string} name
      */
-    setSmoothAlgorithm(name: string) {
+    setSmoothAlgorithm(name: string): void {
         if (!this._allowedSmoothAlgorithms[name]) {
             throw new Error(`Smooth: algorithm ${name} is not allowed`);
         }
@@ -87,7 +82,7 @@ class SmoothProxy implements ISmoothProxy {
      * Returns current algorithm name
      * @returns {string}
      */
-    getAlgorithmName() {
+    getAlgorithmName(): string {
         return this._currentSmoothAlgorithm.getName();
     }
 
@@ -95,7 +90,7 @@ class SmoothProxy implements ISmoothProxy {
      * Returns a list of allowed algorithms
      * @returns {Array<string>}
      */
-    listSmoothAlgorithms() {
+    listSmoothAlgorithms(): Array<string> {
         return Object.keys(this._allowedSmoothAlgorithms);
     }
 
@@ -103,7 +98,7 @@ class SmoothProxy implements ISmoothProxy {
      * Returns default smooth algorithm name
      * @returns {string}
      */
-    getDefaultAlgorithmName() {
+    getDefaultAlgorithmName(): string {
         return DEFAULT_SMOOTH_ALGORITHM;
     }
 
