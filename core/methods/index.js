@@ -11,6 +11,7 @@ const delaporte = require('./delaporte');
 const erlang = require('./erlang');
 const exponential = require('./exponential');
 const extremevalue = require('./extremevalue');
+const fatigue = require('./fatigue');
 const gamma = require('./gamma');
 const geometric = require('./geometric');
 const irwinhall = require('./irwinhall');
@@ -42,6 +43,7 @@ module.exports = {
     erlang,
     exponential,
     extremevalue,
+    fatigue,
     gamma,
     geometric,
     irwinhall,
