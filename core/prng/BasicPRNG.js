@@ -19,14 +19,14 @@ class BasicPRNG implements IPRNG {
      * Random number generator with seed
      * @returns {number} random number
      */
-    random(n: ?number = 1): RandomArrayNumber {
+    random(n: ?number = 0): RandomArrayNumber {
         this._prepare_initial();
 
         if (typeof n !== 'number') {
             return this.next();
         }
 
-        if (n <= 1) {
+        if (n < 1) {
             return this.next();
         }
 
@@ -63,14 +63,14 @@ class BasicPRNG implements IPRNG {
      * Generates random integer [0, 2^32)
      * @returns {number}
      */
-    randomInt(n: ?number = 1): RandomArrayNumber {
+    randomInt(n: ?number = 0): RandomArrayNumber {
         this._prepare_initial();
 
         if (typeof n !== 'number') {
             return this.nextInt();
         }
 
-        if (n <= 1) {
+        if (n < 1) {
             return this.nextInt();
         }
 

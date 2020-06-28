@@ -90,6 +90,6 @@ export type KFoldCrossValidationItem = {
 export type KFoldCrossValidation = Array<KFoldCrossValidationItem>;
 
 export type SmoothData = RandomArray | {
-    smooth: RandomArray,
+    smoothData: RandomArray,
     diff: {[string]: any}
 };

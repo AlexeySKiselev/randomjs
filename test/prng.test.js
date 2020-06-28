@@ -23,6 +23,14 @@ const prngTest = (prngName) => {
         prng.seed();
         expect(prng._seed).to.be.equal(undefined);
     });
+    it('should return single value for .random() method and array for .random(1) method', () => {
+        expect(prng.random()).to.be.a('number');
+        expect(prng.random(0)).to.be.an('number');
+        expect(prng.random(-1)).to.be.an('number');
+        expect(prng.random('abc')).to.be.an('number');
+        expect(prng.random(1)).to.be.an('array');
+        expect(prng.random(1).length).to.be.equal(1);
+    });
     it('should return different values with different seed', () => {
         prng.seed(123456);
         const first = prng.random();

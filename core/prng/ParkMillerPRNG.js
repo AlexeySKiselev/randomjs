@@ -14,6 +14,9 @@ class ParkMillerPRNG extends BasicPRNG implements IPRNG {
     _A: number;
     _Q: number;
     _R: number;
+    _no_seed: boolean;
+    _state: {[prop: string]: number}; // state after setting seed
+    _x: number;
 
     constructor() {
         super();

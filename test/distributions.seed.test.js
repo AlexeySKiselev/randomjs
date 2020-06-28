@@ -300,6 +300,68 @@ describe('Random distributions with seed', () => {
             done();
         });
     });
+    describe('Compertz distribution (nu = 0.7, b = 2)', () => {
+        const Compertz = require('../lib/methods/compertz');
+        it('should return same value each time', () => {
+            const compertz = new Compertz(0.7, 2);
+            prng.seed('first compertz seed test');
+            const compertzFirst = compertz.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(compertz.random()).to.be.closeTo(compertzFirst, 0.000001);
+            }
+            prng.seed('second compertz seed test');
+            const compertzSecond = compertz.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(compertz.random()).to.be.closeTo(compertzSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const compertz = new Compertz(0.7, 2);
+            prng.seed('first compertz seed test');
+            const compertzFirst = compertz.distribution(10000);
+            for(let i = 0; i < 10; i += 1) {
+                compareDistributions(compertz.distribution(10000), compertzFirst);
+            }
+            prng.seed('second compertz seed test');
+            const compertzSecond = compertz.distribution(10000);
+            for(let i = 0; i < 10; i += 1) {
+                compareDistributions(compertz.distribution(10000), compertzSecond);
+            }
+            done();
+        });
+    });
+    describe('Delaporte distribution (alpha = 1, beta = 2, lambda = 3)', () => {
+        const Delaporte = require('../lib/methods/delaporte');
+        it('should return same value each time', () => {
+            const delaporte = new Delaporte(1, 2, 3);
+            prng.seed('first delaporte seed test');
+            const delaporteFirst = delaporte.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(delaporte.random()).to.be.closeTo(delaporteFirst, 0.000001);
+            }
+            prng.seed('second delaporte seed test');
+            const delaporteSecond = delaporte.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(delaporte.random()).to.be.closeTo(delaporteSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const delaporte = new Delaporte(1, 2, 3);
+            prng.seed('first delaporte seed test');
+            const delaporteFirst = delaporte.distribution(10000);
+            for(let i = 0; i < 10; i += 1) {
+                compareDistributions(delaporte.distribution(10000), delaporteFirst);
+            }
+            prng.seed('second delaporte seed test');
+            const delaporteSecond = delaporte.distribution(10000);
+            for(let i = 0; i < 10; i += 1) {
+                compareDistributions(delaporte.distribution(10000), delaporteSecond);
+            }
+            done();
+        });
+    });
     describe('Erlang distribution (k = 2, mu = 2)', () => {
         const Erlang = require('../lib/methods/erlang');
         it('should return same value each time', () => {

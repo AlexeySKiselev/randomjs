@@ -1,4 +1,3 @@
-
 const bates = require('./bates');
 const bernoulli = require('./bernoulli');
 const beta = require('./beta');
@@ -7,6 +6,8 @@ const binomial = require('./binomial');
 const cauchy = require('./cauchy');
 const chi = require('./chi');
 const chisquare = require('./chisquare');
+const compertz = require('./compertz');
+const delaporte = require('./delaporte');
 const erlang = require('./erlang');
 const exponential = require('./exponential');
 const extremevalue = require('./extremevalue');
@@ -36,6 +37,8 @@ module.exports = {
     cauchy,
     chi,
     chisquare,
+    compertz,
+    delaporte,
     erlang,
     exponential,
     extremevalue,

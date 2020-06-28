@@ -19,12 +19,12 @@ class DefaultPRNG extends BasicPRNG implements IPRNG {
         return Math.floor(this._random() * 0x100000000);
     }
 
-    random(n: ?number = 1): RandomArrayNumber {
+    random(n: ?number = 0): RandomArrayNumber {
         if (typeof n !== 'number') {
             return this._random();
         }
 
-        if (n <= 1) {
+        if (n < 1) {
             return this._random();
         }
 
@@ -36,12 +36,12 @@ class DefaultPRNG extends BasicPRNG implements IPRNG {
     }
 
     // eslint-disable-next-line
-    randomInt(n: ?number = 1): RandomArrayNumber {
+    randomInt(n: ?number = 0): RandomArrayNumber {
         if (typeof n !== 'number') {
             return this._randomInt();
         }
 
-        if (n <= 1) {
+        if (n < 1) {
             return this._randomInt();
         }
 

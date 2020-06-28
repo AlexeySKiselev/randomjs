@@ -24,7 +24,7 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
     _pointer: number; // track current pointer in words array
     _recalculate_counter: number;
     _no_seed: boolean;
-    _state: {[prop: string]: number}; // state after setting seed
+    _state: {[prop: string]: any}; // state after setting seed
     _M: number;
     _modulosA1: Array<number>; // pre calculated modulo of A1 * 10^x mod _M
     _modulosA5: Array<number>; // pre calculated modulo of A5 * 10^x mod _M
