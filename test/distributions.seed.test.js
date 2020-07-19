@@ -362,6 +362,37 @@ describe('Random distributions with seed', () => {
             done();
         });
     });
+    describe('Fatigue distribution (alpha = 1, beta = 2)', () => {
+        const Fatigue = require('../lib/methods/fatigue');
+        it('should return same value each time', () => {
+            const fatigue = new Fatigue(1, 2);
+            prng.seed('first fatigue seed test');
+            const fatigueFirst = fatigue.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(fatigue.random()).to.be.closeTo(fatigueFirst, 0.000001);
+            }
+            prng.seed('second fatigue seed test');
+            const fatigueSecond = fatigue.random();
+            for(let i = 0; i < 1000; i += 1) {
+                expect(fatigue.random()).to.be.closeTo(fatigueSecond, 0.000001);
+            }
+        });
+        it('should return same distribution each time', function(done) {
+            this.timeout(480000);
+            const fatigue = new Fatigue(1, 2);
+            prng.seed('first fatigue seed test');
+            const fatigueFirst = fatigue.distribution(10000);
+            for(let i = 0; i < 10; i += 1) {
+                compareDistributions(fatigue.distribution(10000), fatigueFirst);
+            }
+            prng.seed('second fatigue seed test');
+            const fatigueSecond = fatigue.distribution(10000);
+            for(let i = 0; i < 10; i += 1) {
+                compareDistributions(fatigue.distribution(10000), fatigueSecond);
+            }
+            done();
+        });
+    });
     describe('Erlang distribution (k = 2, mu = 2)', () => {
         const Erlang = require('../lib/methods/erlang');
         it('should return same value each time', () => {

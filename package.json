@@ -1,6 +1,6 @@
 {
   "name": "unirand",
-  "version": "2.8.2",
+  "version": "2.8.4",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
@@ -45,9 +45,6 @@
   ],
   "author": "Alexey S. Kiselev <alexeys.kiselev@yahoo.com>",
   "license": "ISC",
-  "engines": {
-    "node": "^8.12"
-  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.1",

@@ -4,7 +4,7 @@
 # Unirand
 A JavaScript module for generating seeded random distributions and its statistical analysis.
 
-Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with 780+ tests*.
+Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with 800+ tests*.
 
 #### [Supported distributions](./core/methods/)
 
@@ -25,6 +25,7 @@ Implemented in pure JavaScript with no dependencies, designed to work in Node.js
 | Erlang distribution | `k` - integer, `k` > 0, `mu` - float value, `mu` > 0 | `unirand.erlang(k, mu).random()` |
 | Exponential distribution | `lambda` - float value, `lambda` > 0 | `unirand.exponential(lambda).random()` |
 | Extreme (Gumbel-type) Value distribution | `mu` - any value, `sigma` - float number, `sigma` > 0 | `unirand.extremevalue(mu, sigma).random()` |
+| Fatigue life distribution | `alpha` > 0, `beta` > 0 | `unirand.fatigue(alpha, beta).random()` |
 | Gamma distribution | `alpha` - float value, `alpha` > 0, `beta` - integer, `beta` > 0 | `unirand.gamma(alpha, beta).random()` |
 | Geometric distribution | `p` - float value, 0 <= `p` <= 1 | `unirand.geometric(p).random()` |
 | Irwin-Hall distribution | `n` - integer, `n` > 0 | `unirand.irwinhall(n).random()` |

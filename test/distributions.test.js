@@ -673,7 +673,8 @@ describe('Random distributions without seed', () => {
             expect(beta.mean).to.be.a('number');
             beta.mean.should.equal(0.25);
         });
-        it('should generate a numerical value for alpha=1 or beta=1', () => {
+        it('should generate a numerical value for alpha=1 or beta=1', function(done) {
+            this.timeout(480000);
             const beta = new Beta(1, 1);
             prng.seed();
             for(let i = 0; i < 10000; i += 1){
@@ -689,6 +690,7 @@ describe('Random distributions without seed', () => {
             for(let i = 0; i < 10000; i += 1){
                 expect(beta3.random()).to.be.a('number');
             }
+            done();
         });
         it('should return different values each time', () => {
             let beta = new Beta(1, 2),
@@ -1590,6 +1592,207 @@ describe('Random distributions without seed', () => {
                 expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
                 expect(analyzer.cdf.probabilities[0]).to.be.closeTo(0, 0.05);
                 expect(analyzer.cdf.probabilities[999]).to.be.closeTo(1, 0.05);
+            });
+        });
+    });
+
+    // Fatigue distribution
+    describe('Fatigue distribution', () => {
+        beforeEach(() => {
+            prng.seed();
+        });
+        before(() => {
+            prng.seed();
+        });
+        let Fatigue = require('../lib/methods/fatigue'),
+            Common = require('../lib/analyzer/common'),
+            Percentile = require('../lib/analyzer/percentiles');
+        it('requires three numerical arguments with alpha > 0 and beta > 0', () => {
+            let zeroParams = () => {
+                let fatigue = new Fatigue();
+                if(fatigue.isError().error)
+                    throw new Error(fatigue.isError().error);
+            };
+            zeroParams.should.throw(Error);
+
+            let oneParam =  () => {
+                let fatigue = new Fatigue(1);
+                if(fatigue.isError().error)
+                    throw new Error(fatigue.isError().error);
+            };
+            oneParam.should.throw(Error);
+
+            let twoParams =  () => {
+                let fatigue = new Fatigue(1, 2);
+                if(fatigue.isError().error)
+                    throw new Error(fatigue.isError().error);
+            };
+            twoParams.should.not.throw(Error);
+
+            let badParams = () => {
+                let fatigue = new Fatigue('a', 1);
+                if(fatigue.isError().error)
+                    throw new Error(fatigue.isError().error);
+            };
+            badParams.should.throw(Error);
+
+            let badParams2 = () => {
+                let fatigue = new Fatigue(1, 'b');
+                if(fatigue.isError().error)
+                    throw new Error(fatigue.isError().error);
+            };
+            badParams2.should.throw(Error);
+
+            let badParamsLess0 = () => {
+                let fatigue = new Fatigue(-1, 1);
+                if(fatigue.isError().error)
+                    throw new Error(fatigue.isError().error);
+            };
+            badParamsLess0.should.throw(Error);
+
+            let badParamsLess02 = () => {
+                let fatigue = new Fatigue(1, -1);
+                if(fatigue.isError().error)
+                    throw new Error(fatigue.isError().error);
+            };
+            badParamsLess02.should.throw(Error);
+        });
+        it('should has methods: .random, .distribution, .refresh, .isError', () => {
+            let fatigue = new Fatigue(1, 2);
+            expect(fatigue).to.have.property('random');
+            expect(fatigue).to.respondsTo('random');
+            expect(fatigue).to.have.property('distribution');
+            expect(fatigue).to.respondsTo('distribution');
+            expect(fatigue).to.have.property('refresh');
+            expect(fatigue).to.respondsTo('refresh');
+            expect(fatigue).to.have.property('isError');
+            expect(fatigue).to.respondsTo('isError');
+        });
+        it('should have values for initial alpha = 1 and beta = 2 equals to alpha = 2 and beta = 3 after .refresh(2, 3) method',() => {
+            let fatigue = new Fatigue(1, 2);
+            fatigue.alpha.should.equal(1);
+            fatigue.beta.should.equal(2);
+            fatigue.refresh(2, 3);
+            fatigue.alpha.should.equal(2);
+            fatigue.beta.should.equal(3);
+        });
+        it('should generate an array with random values with length of 500', () => {
+            let fatigue = new Fatigue(1, 2),
+                randomArray = fatigue.distribution(500),
+                countDiffs = 0,
+                last,
+                delta = 0.01;
+            // Check all values
+            randomArray.map(rand => {
+                if(last && Math.abs(rand - last) > delta){
+                    countDiffs += 1;
+                }
+                last = rand;
+            });
+            expect(randomArray).to.be.an('array');
+            expect(randomArray).to.have.lengthOf(500);
+            expect(countDiffs).to.be.at.least(300);
+        });
+        describe('With real generated data (alpha = 1, beta = 2)', () => {
+            beforeEach(() => {
+                prng.seed();
+            });
+            before(() => {
+                prng.seed();
+            });
+            let fatigue = new Fatigue(1, 2),
+                distribution,
+                analyzer,
+                percentiler,
+                min = [],
+                max = [],
+                mean = [],
+                median = [],
+                variance = [],
+                skewness = [],
+                kurtosis = [];
+
+            prng.seed();
+            for(let i = 0; i < 20; i += 1) {
+                distribution = fatigue.distribution(300000);
+                analyzer = Common.getInstance(distribution);
+                percentiler = Percentile.getInstance(distribution);
+                min.push(analyzer.min);
+                max.push(analyzer.max);
+                mean.push(analyzer.mean);
+                median.push(percentiler.median);
+                variance.push(analyzer.variance);
+                skewness.push(analyzer.skewness);
+                kurtosis.push(analyzer.kurtosis);
+            }
+
+            it('should has min value close to 0', () => {
+                expect(analyzer.min).to.be.a('number');
+                expect(meanValue(min)).to.be.closeTo(0, 0.1);
+            });
+            it('should has max value at least 8', () => {
+                expect(analyzer.max).to.be.a('number');
+                expect(meanValue(max)).to.be.at.least(8);
+            });
+            it('should has correct mean value', () => {
+                expect(analyzer.mean).to.be.a('number');
+                expect(meanValue(mean)).to.be.closeTo(fatigue.mean, 0.02);
+            });
+            it('should has correct median value', () => {
+                expect(percentiler.median).to.be.a('number');
+                expect(meanValue(median)).to.be.closeTo(fatigue.median, 0.02);
+            });
+            it('should has correct variance value', () => {
+                expect(analyzer.variance).to.be.a('number');
+                expect(meanValue(variance)).to.be.closeTo(fatigue.variance, 0.03);
+            });
+            it('should has correct skewness value', () => {
+                expect(analyzer.skewness).to.be.a('number');
+                expect(meanValue(skewness)).to.be.closeTo(fatigue.skewness, 0.05);
+            });
+            it('should has correct kurtosis value', () => {
+                expect(analyzer.kurtosis).to.be.a('number');
+                expect(meanValue(kurtosis)).to.be.closeTo(fatigue.kurtosis, 0.1);
+            });
+            it('should has pdf array with 1000 elements and sum of them close to 1', () => {
+                let analyzer = Common.getInstance(distribution, {
+                        pdf: 1000
+                    }),
+                    sum = 0;
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.values).to.be.an('array');
+                expect(analyzer.pdf.values[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities.length).to.be.equal(1000);
+                expect(analyzer.pdf.values.length).to.be.equal(1000);
+                expect(analyzer.pdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                for(let el of analyzer.pdf.probabilities) {
+                    sum += el;
+                }
+                expect(sum).to.be.closeTo(1, 0.005);
+            });
+            it('should has pdf value close to zero on corners', () => {
+                let analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                expect(analyzer.pdf.probabilities).to.be.an('array');
+                expect(analyzer.pdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.pdf.probabilities[0]).to.be.closeTo(0, 0.02);
+                expect(analyzer.pdf.probabilities[999]).to.be.closeTo(0, 0.02);
+            });
+            it('should has cdf array with 1000 elements and last element close to 1', () => {
+                let analyzer = Common.getInstance(distribution, {
+                    pdf: 1000
+                });
+                expect(analyzer.cdf.probabilities).to.be.an('array');
+                expect(analyzer.cdf.probabilities[0]).to.be.a('number');
+                expect(analyzer.cdf.values).to.be.an('array');
+                expect(analyzer.cdf.values[0]).to.be.a('number');
+                expect(analyzer.cdf.probabilities.length).to.be.equal(1000);
+                expect(analyzer.cdf.values.length).to.be.equal(1000);
+                expect(analyzer.cdf.values.length).to.be.equal(analyzer.pdf.probabilities.length);
+                expect(analyzer.cdf.probabilities[0]).to.be.closeTo(0, 0.02);
+                expect(analyzer.cdf.probabilities[999]).to.be.closeTo(1, 0.02);
             });
         });
     });
