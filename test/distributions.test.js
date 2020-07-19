@@ -673,7 +673,8 @@ describe('Random distributions without seed', () => {
             expect(beta.mean).to.be.a('number');
             beta.mean.should.equal(0.25);
         });
-        it('should generate a numerical value for alpha=1 or beta=1', () => {
+        it('should generate a numerical value for alpha=1 or beta=1', function(done) {
+            this.timeout(480000);
             const beta = new Beta(1, 1);
             prng.seed();
             for(let i = 0; i < 10000; i += 1){
@@ -689,6 +690,7 @@ describe('Random distributions without seed', () => {
             for(let i = 0; i < 10000; i += 1){
                 expect(beta3.random()).to.be.a('number');
             }
+            done();
         });
         it('should return different values each time', () => {
             let beta = new Beta(1, 2),

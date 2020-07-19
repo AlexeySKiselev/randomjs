@@ -4,7 +4,7 @@
 # Unirand
 A JavaScript module for generating seeded random distributions and its statistical analysis.
 
-Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with 780+ tests*.
+Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with 800+ tests*.
 
 #### [Supported distributions](./core/methods/)
 
