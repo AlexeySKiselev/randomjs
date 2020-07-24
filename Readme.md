@@ -79,7 +79,7 @@ Unirand supports different PRNGs:
 | `tt800` | TT800 PRNG, period ~10<sup>240</sup> | medium | Yes |
 | `xorwow` | Xorwow PRNG, period ~10<sup>38</sup> | medium | Yes |
 
-#### .random() and .randomInt()
+#### .random(), .randomInt() and .randomInRange(from, to)
 Returns random uniformly distributed value or array of length *n*. Returns different value each time without seed and same value with seed value.
 ```javascript
 unirand.random(); // random value [0, 1)
@@ -87,20 +87,24 @@ unirand.random(n); // uniformly distributed random array of length n
 
 unirand.randomInt(); // random integer [0, 2^32)
 unirand.randomInt(n); // uniformly distributed random integer array of size n 
+
+unirand.randomInRange(from, to); // random value in range [from, to), from > to
+unirand.randomInRange(from, to, n); // array of size n, each value is random in range [from, to), from > to
 ```
 Without *seed value* this method returns different values each call. With *seed value* this method returns same value each time.
 
-#### .next() and .nextInt()
-It makes sense only for seeded generators. Otherwise that method works as `.random()`. If you want to return another random seeded value after *.random()* method, use *.next()*.
+#### .next(), .nextInt() and .nextInRange(from, to)
+It makes sense only for seeded generators. Otherwise, that method works as `.random()`. If you want to return another random seeded value after *.random()* method, use *.next()*.
 ```javascript
 unirand.seed(123456);
 unirand.random(); // returns 0.07329190103337169
 unirand.random(); // returns same 0.07329190103337169
 unirand.next(); // returns 0.49862336413934827
 unirand.next(); // returns 0.045074593275785446
+unirand.nextInRange(10, 20); // 12.58303941693157
 ...
 ```
-Same results for `.nextInt()`. These methods always return single value.
+Same results for `.nextInt()` and `.nextInRange(from, to)`. These methods always return single value.
 
 \**Note*: for seeded prng we don't recommend use `.random()` method for generating all random values. Use `.random()` first time flushing generator, then `.next()` for all other random values.
 

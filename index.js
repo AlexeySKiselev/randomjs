@@ -15,12 +15,13 @@ import prngProxy from './core/prng/prngProxy';
 
 const distributionMethods = require('./core/methods');
 const Bernoulli = distributionMethods.bernoulli;
+const Uniform = distributionMethods.uniform;
 
 import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
     SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions, SmoothData
 } from './core/types';
-import type { IPRNGProxy, ISample, IShuffle, IKFold } from './core/interfaces';
+import type { IPRNGProxy, ISample, IShuffle, IKFold, ISmooth } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
@@ -42,7 +43,11 @@ class RandomJS {
     next: number;
     randomInt: RandomArrayNumber;
     nextInt: number;
+    randomInRange: RandomArrayNumber;
+    nextInRange: number;
     _distribution_factory: DistributionFactory;
+    smooth: ISmooth;
+    smoothSync: ISmooth;
 
     constructor(): void {
         this.analyze = null;
@@ -59,7 +64,7 @@ class RandomJS {
              *  Uses a factory pattern for creating instances of distributions classes
              *  @returns Object corresponds to distribution
              */
-            Object.defineProperty(this, method, {
+            Object.defineProperty(this, method, ({
                 __proto__: null,
                 get: () => {
                     return (...params): DistributionFactory => {
@@ -67,7 +72,7 @@ class RandomJS {
                         return this._distribution_factory;
                     };
                 }
-            });
+            }: Object));
         });
 
         /**
@@ -151,11 +156,45 @@ class RandomJS {
         Object.defineProperty(this, 'chance', ({
             __proto__: null,
             value: (trueProb: number): boolean => {
-                let _chance = new Bernoulli(trueProb);
-                if(_chance.isError().error) {
+                const _chance = new Bernoulli(trueProb);
+                if (_chance.isError().error) {
                     throw new Error(_chance.isError().error);
                 }
                 return !!_chance.random();
+            }
+        }: Object));
+
+        /**
+         * RandomInRange- return uniformly distributed value in range
+         */
+        Object.defineProperty(this, 'randomInRange', ({
+            __proto__: null,
+            value: (from: number, to: number, n: number = -1): RandomArrayNumber => {
+                const _uniform = new Uniform(Math.min(from, to), Math.max(from, to));
+                if (_uniform.isError().error) {
+                    throw new Error(_uniform.isError().error);
+                }
+
+                if (n <= 0) {
+                    return _uniform.random();
+                }
+
+                return _uniform.distribution(n);
+            }
+        }: Object));
+
+        /**
+         * NextInRange- return uniformly distributed value in range
+         */
+        Object.defineProperty(this, 'nextInRange', ({
+            __proto__: null,
+            value: (from: number, to: number): number => {
+                const _uniform = new Uniform(Math.min(from, to), Math.max(from, to));
+                if (_uniform.isError().error) {
+                    throw new Error(_uniform.isError().error);
+                }
+
+                return _uniform.next();
             }
         }: Object));
 
@@ -238,7 +277,7 @@ class RandomJS {
          * Returns seeded random value [0, 1) with uniform distribution
          */
         Object.defineProperty(this, 'random', ({
-            value: (n: number = 1): RandomArrayNumber => {
+            value: (n: number = 0): RandomArrayNumber => {
                 return this._prng.random(n);
             }
         }: Object));
@@ -256,7 +295,7 @@ class RandomJS {
          * Returns seeded random integer value [0, 2^32) with uniform distribution
          */
         Object.defineProperty(this, 'randomInt', ({
-            value: (n: number = 1): RandomArrayNumber => {
+            value: (n: number = 0): RandomArrayNumber => {
                 return this._prng.randomInt(n);
             }
         }: Object));
@@ -297,7 +336,11 @@ const methods = {
     seed: randomjs.seed,
     prng: randomjs.prng,
     random: randomjs.random,
-    next: randomjs.next
+    next: randomjs.next,
+    randomInt: randomjs.randomInt,
+    nextInt: randomjs.nextInt,
+    randomInRange: randomjs.randomInRange,
+    nextInRange: randomjs.nextInRange
 };
 Object.keys(distributionMethods).forEach((rand_method: string) => {
     methods[rand_method] = Object.getOwnPropertyDescriptor(randomjs, rand_method).get();
