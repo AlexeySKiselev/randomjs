@@ -12,6 +12,8 @@ import KFold from './core/array_manipulation/kfold';
 import hashProxy from './core/utils/hash';
 import smoothProxy from './core/array_manipulation/smooth';
 import prngProxy from './core/prng/prngProxy';
+import {DEFAULT_GENERATOR} from './core/prng/prngProxy';
+import RouletteWheel from './core/array_manipulation/rouletteWheel';
 
 const distributionMethods = require('./core/methods');
 const Bernoulli = distributionMethods.bernoulli;
@@ -21,7 +23,7 @@ import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
     SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions, SmoothData
 } from './core/types';
-import type { IPRNGProxy, ISample, IShuffle, IKFold, ISmooth } from './core/interfaces';
+import type { IPRNGProxy, ISample, IShuffle, IKFold, ISmooth, IRouletteWheel } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
@@ -48,6 +50,7 @@ class RandomJS {
     _distribution_factory: DistributionFactory;
     smooth: ISmooth;
     smoothSync: ISmooth;
+    newRouletteWheel: IRouletteWheel;
 
     constructor(): void {
         this.analyze = null;
@@ -254,6 +257,18 @@ class RandomJS {
         }: Object));
 
         /**
+         * RouletteWheel
+         */
+        Object.defineProperty(this, 'newRouletteWheel', ({
+            __proto__: null,
+            value: (weights: Array<number>, options: ?{[string]: any}): IRouletteWheel => {
+                return new RouletteWheel(weights, Object.assign({
+                    prng: DEFAULT_GENERATOR
+                }, options));
+            }
+        }: Object));
+
+        /**
          * PRNG seed
          */
         Object.defineProperty(this, 'seed', ({
@@ -340,7 +355,8 @@ const methods = {
     randomInt: randomjs.randomInt,
     nextInt: randomjs.nextInt,
     randomInRange: randomjs.randomInRange,
-    nextInRange: randomjs.nextInRange
+    nextInRange: randomjs.nextInRange,
+    newRouletteWheel: randomjs.newRouletteWheel
 };
 Object.keys(distributionMethods).forEach((rand_method: string) => {
     methods[rand_method] = Object.getOwnPropertyDescriptor(randomjs, rand_method).get();

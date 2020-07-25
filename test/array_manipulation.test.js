@@ -1139,4 +1139,124 @@ describe('Array manipulation methods', () => {
             });
         });
     });
+    describe('RouletteWheel', () => {
+        const RouletteWheel = require('../lib/array_manipulation/rouletteWheel').default;
+        it('requires at least one correct argument', () => {
+            let zeroParams = () => {
+                let rouletteWheel = new RouletteWheel();
+                return rouletteWheel.select();
+            };
+            zeroParams.should.throw(Error);
+
+            let oneParam =  () => {
+                let rouletteWheel = new RouletteWheel([1, 2, 3]);
+                return rouletteWheel.select();
+            };
+            oneParam.should.not.throw(Error);
+
+            let badParam1 =  () => {
+                let rouletteWheel = new RouletteWheel([]);
+                return rouletteWheel.select();
+            };
+            badParam1.should.throw(Error);
+
+            let badParam2 = () => {
+                let rouletteWheel = new RouletteWheel([1, 0]);
+                return rouletteWheel.select();
+            };
+            badParam2.should.throw(Error);
+
+            let badParam3 = () => {
+                let rouletteWheel = new RouletteWheel([1, 'abc']);
+                return rouletteWheel.select();
+            };
+            badParam3.should.throw(Error);
+
+            let badParam4 = () => {
+                let rouletteWheel = new RouletteWheel('abc');
+                return rouletteWheel.select();
+            };
+            badParam4.should.throw(Error);
+
+            let badParam5 = () => {
+                let rouletteWheel = new RouletteWheel(1);
+                return rouletteWheel.select();
+            };
+            badParam5.should.throw(Error);
+        });
+        it('should support all public methods', () => {
+            const rouletteWheel = new RouletteWheel([1, 2, 3, 4]);
+            expect(rouletteWheel).to.have.property('select');
+            expect(rouletteWheel).to.respondsTo('select');
+            expect(rouletteWheel).to.have.property('seed');
+            expect(rouletteWheel).to.respondsTo('seed');
+            expect(rouletteWheel).to.have.property('setPrng');
+            expect(rouletteWheel).to.respondsTo('setPrng');
+            expect(rouletteWheel).to.have.property('reset');
+            expect(rouletteWheel).to.respondsTo('reset');
+        });
+        it('should support prng options', () => {
+            let zeroParams = () => {
+                const rouletteWheel = new RouletteWheel([1, 2, 3, 4], {
+                    seed: 1234567,
+                    prng: 'abc'
+                });
+                rouletteWheel.select();
+            };
+            zeroParams.should.throw(Error);
+
+            const rouletteWheel = new RouletteWheel([1, 2, 3, 4], {
+                seed: 1234567,
+                prng: 'tt800'
+            });
+            expect(rouletteWheel._prng.prng_name).to.be.equal('tt800');
+            expect(rouletteWheel._prng._seed).to.be.equal(1234567);
+
+            rouletteWheel.setPrng('r250');
+            expect(rouletteWheel._prng.prng_name).to.be.equal('r250');
+
+            rouletteWheel.seed(98765);
+            expect(rouletteWheel._prng._seed).to.be.equal(98765);
+        });
+        it('should return indexes with probability due to weights', function(done) {
+            this.timeout(480000);
+            const testsCount = 10;
+            const selectCount = 500000;
+            const weightsCount = 6;
+            let weights = [];
+            let weightsHashTable = {};
+            let weightsSum = 0;
+            const fillWeights = () => {
+                weights = [];
+                weightsHashTable = {};
+                weightsSum = 0;
+                for (let i = 0; i < weightsCount; i += 1) {
+                    weights[i] = Math.floor(Math.random() * 90 + 10);
+                    weightsHashTable[i] = 0;
+                    weightsSum += weights[i];
+                }
+            };
+
+            for (let i = 0; i < testsCount; i += 1) {
+                fillWeights();
+
+                const rouletteWheel = new RouletteWheel(weights);
+                rouletteWheel.seed();
+                rouletteWheel.reset();
+                let selected;
+                for (let j = 0; j < selectCount; j += 1) {
+                    selected = rouletteWheel.select();
+                    expect(selected).to.be.a('number');
+                    expect(selected >= 0).to.be.equal(true);
+                    expect(selected < weightsCount).to.be.equal(true);
+                    weightsHashTable[selected] += 1;
+                }
+
+                for (let j = 0; j < weightsCount; j += 1) {
+                    expect(weightsHashTable[j]/selectCount).to.be.closeTo(weights[j] / weightsSum, 0.05 * (weights[j] / weightsSum));
+                }
+            }
+            done();
+        });
+    });
 });

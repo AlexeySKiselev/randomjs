@@ -301,6 +301,38 @@ derange(<array|string>); // will output random derangement of input
 ```
 There are approximately n!/e derangements for array with *n* elements. 
 
+### Roulette wheel
+Consider You have an array of elements represented by some weight *w<sub>i</sub>*, and You want to select each element with probability w<sub>i</sub> / \<sum all weights\>. You can use roulette wheel algorithm for that purpose:
+
+```javascript
+// will create RouletteWheel instance with its own PRNG
+const rouletteWheel = unirand.newRouletteWheel(<weights array>);
+// weights array should be an array of positive numerical values
+// weights array can be unsorted, weight can be any positive value
+
+// @example
+const rouletteWheel = unirand.newRouletteWheel([2, 1, 3]); // O(weights.length) time complexity
+rouletteWheel.select(); // always O(1) time complexity
+// method .select() will return index 0 with 33.33% probability
+// method .select() will return index 1 with 16.67% probability
+// method .select() will return index 2 with 50.00% probability
+```
+RouletteWheel `.select()` method will return a corresponding index of weights array with **O(1) time complexity**. As `rouletteWheel` instance has own prng attached, it supports additional options:
+
+```javascript
+const rouletteWheel = unirand.newRouletteWheel([1, 2, 3], {
+    prng: 'tt800', // supports all unirand's PRNG algorithms
+    seed: 12345 // initial seed values, by default PRNG is unseeded
+});
+
+// PRNG options can be changed via next methods as well
+rouletteWheel.seed(<seed value>);
+rouletteWheel.seed(); // will unset seed from PRNG making PRNG unseeded
+rouletteWheel.setPrng(<prng name>[, reset]); // will set new PRNG
+// reset (default: false) will reset PRNG to initial state, useful to reproduce selections
+rouletteWheel.reset(); // reset PRNG to initial state
+```
+
 ### Smooth data
 Smooth method return an array contains smoothed data using different algorithms and strategies for smoothing.
 

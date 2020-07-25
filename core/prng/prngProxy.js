@@ -164,4 +164,8 @@ const prng: (string) => IPRNG = (prng_name: string = 'default'): IPRNGProxy => {
     return prng_proxy;
 };
 
+export {
+    PRNGProxy,
+    DEFAULT_GENERATOR
+};
 export default prng(DEFAULT_GENERATOR);
