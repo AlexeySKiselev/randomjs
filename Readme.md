@@ -179,63 +179,6 @@ analyzer.entropy.then((res) => {
 });
 ```
 
-### Utils
-Different utils ([Special functions list](./core/utils/))
-```javascript
-unirand.utils.gamma(2); // returns gamma function with argument 2
-unirand.utils.digamma(2); // returns digamma function with argument 2
-unirand.utils.erf(2); // returns error function with argument 2
-```
-
-### Hash
-Returns *hash* using murmur3 algorithm
-```javascript
-unirand.hash('unirand'); // string input
-// or
-unirand.hash(123456); // numerical input
-```  
-
-Also supports different `seed` values. By default, `seed` value is zero.
-
-```javascript
-unirand.hash('unirand', 123);
-```
-`Seed` can be array, meaning that `.hash` returns array of hash values for different seeds:
-```javascript
-unirand.hash('unirand', [1, 2, 3, 4]); // output [<hash1>, <hash2>, <hash3>, <hash4>]
-```
-
-Also supports different hash algorithms:
-* Murmur3 - `unirand.hash('unirand', 0, {algorithm: 'murmur'})`
-* Jenkins - `unirand.hash('unirand', 0, {algorithm: 'jenkins'})`
-
-Alternate usage:
-```javascript
-unirand.hash('unirand', {
-    algorithm: 'murmur'
-});
-// or
-unirand.hash('unirand', 123, {
-    algorithm: 'jenkins'
-});
-// or
-unirand.hash('unirand', [1, 2, 3], {
-    algorithm: 'murmur'
-}); // outputs array of hash values
-```
-
-If You want to bound hash values, You can use option `modulo` (*0x080000000* by default):
-```javascript
-unirand.hash('unirand', 123, {
-    algorithm: 'jenkins',
-    modulo: 1234
-});
-// or
-unirand.hash('unirand', 123, {
-    modulo: 1234
-}); // will use murmur3 algorithm as default value
-```
-
 ### Sample
 Generates **random sample** from array, string or object. This method will generate *k* random elements from array/string with *n* elements.
 ```javascript
@@ -254,35 +197,6 @@ sample([1, 2, 3, 4, 5, 6, 7, 8, 9], {shuffle: true}) // will output [6, 9, 1] or
 *Does not mutate input!*
 
 Sample method is **3 times faster** for arrays and **7 times faster** for string compared to simple shuffled and sliced array|string.
-
-### k-fold
-Splits array into *k* subarrays. Requires at least 2 arguments: array itself and *k*. Also supports *options*.
-
-- *type*: output type, **list** (default) for output like `[<fold>, <fold>, <fold>, ...]`, **set** for output like `{0: <fold>, 1: <fold>, 2: <fold>, ...}`, **crossvalidation** for output like `[{test: <fold>, data: <remaining folds>}, ...]`
-- *derange*: items will be shuffled as *random permutation* (default, `derange: false`) or *random derangement* (`derange: true`)
-```javascript
-const kfold = unirand.kfold;
-kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3); // [ [ 9, 8, 2, 10 ], [ 1, 7, 3 ], [ 4, 5, 6 ] ]
-
-// with options
-kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, {
-    type: 'set',
-    derange: true
-});
-// { '0': [ 8, 10, 7, 1 ], '1': [ 6, 4, 9 ], '2': [ 5, 2, 3 ] }
-
-// cross validation
-kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, {
-    type: 'crossvalidation',
-    derange: true
-})
-// [ { id: 0, test: [ 5, 6, 9, 7 ], data: [ 4, 1, 10, 2, 8, 3 ] },
-//  { id: 1, test: [ 4, 1, 10 ], data: [ 5, 6, 9, 7, 2, 8, 3 ] },
-//  { id: 2, test: [ 2, 8, 3 ], data: [ 5, 6, 9, 7, 4, 1, 10 ] } ]
-```
-For permutation unirand uses seeded PRNG. With *seed* k-fold will always return same result.
-
-*Does not mutate input!*
 
 ### Shuffle 
 **Shuffle** array or string (O(n) time complexity)
@@ -332,6 +246,35 @@ rouletteWheel.setPrng(<prng name>[, reset]); // will set new PRNG
 // reset (default: false) will reset PRNG to initial state, useful to reproduce selections
 rouletteWheel.reset(); // reset PRNG to initial state
 ```
+
+### k-fold
+Splits array into *k* subarrays. Requires at least 2 arguments: array itself and *k*. Also supports *options*.
+
+- *type*: output type, **list** (default) for output like `[<fold>, <fold>, <fold>, ...]`, **set** for output like `{0: <fold>, 1: <fold>, 2: <fold>, ...}`, **crossvalidation** for output like `[{test: <fold>, data: <remaining folds>}, ...]`
+- *derange*: items will be shuffled as *random permutation* (default, `derange: false`) or *random derangement* (`derange: true`)
+```javascript
+const kfold = unirand.kfold;
+kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3); // [ [ 9, 8, 2, 10 ], [ 1, 7, 3 ], [ 4, 5, 6 ] ]
+
+// with options
+kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, {
+    type: 'set',
+    derange: true
+});
+// { '0': [ 8, 10, 7, 1 ], '1': [ 6, 4, 9 ], '2': [ 5, 2, 3 ] }
+
+// cross validation
+kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, {
+    type: 'crossvalidation',
+    derange: true
+})
+// [ { id: 0, test: [ 5, 6, 9, 7 ], data: [ 4, 1, 10, 2, 8, 3 ] },
+//  { id: 1, test: [ 4, 1, 10 ], data: [ 5, 6, 9, 7, 2, 8, 3 ] },
+//  { id: 2, test: [ 2, 8, 3 ], data: [ 5, 6, 9, 7, 4, 1, 10 ] } ]
+```
+For permutation unirand uses seeded PRNG. With *seed* k-fold will always return same result.
+
+*Does not mutate input!*
 
 ### Smooth data
 Smooth method return an array contains smoothed data using different algorithms and strategies for smoothing.
@@ -468,6 +411,55 @@ const data = [2, 6, 9, 4, 6, 7, 3, 2, 4, 7];
 
 By default diff option is `false`. Does not mutate original array.
 
+### Hash
+Returns *hash* using murmur3 algorithm
+```javascript
+unirand.hash('unirand'); // string input
+// or
+unirand.hash(123456); // numerical input
+```  
+
+Also supports different `seed` values. By default, `seed` value is zero.
+
+```javascript
+unirand.hash('unirand', 123);
+```
+`Seed` can be array, meaning that `.hash` returns array of hash values for different seeds:
+```javascript
+unirand.hash('unirand', [1, 2, 3, 4]); // output [<hash1>, <hash2>, <hash3>, <hash4>]
+```
+
+Also supports different hash algorithms:
+* Murmur3 - `unirand.hash('unirand', 0, {algorithm: 'murmur'})`
+* Jenkins - `unirand.hash('unirand', 0, {algorithm: 'jenkins'})`
+
+Alternate usage:
+```javascript
+unirand.hash('unirand', {
+    algorithm: 'murmur'
+});
+// or
+unirand.hash('unirand', 123, {
+    algorithm: 'jenkins'
+});
+// or
+unirand.hash('unirand', [1, 2, 3], {
+    algorithm: 'murmur'
+}); // outputs array of hash values
+```
+
+If You want to bound hash values, You can use option `modulo` (*0x080000000* by default):
+```javascript
+unirand.hash('unirand', 123, {
+    algorithm: 'jenkins',
+    modulo: 1234
+});
+// or
+unirand.hash('unirand', 123, {
+    modulo: 1234
+}); // will use murmur3 algorithm as default value
+```
+
 ### Winsorize
 Winsorization replaces extreme data values with less extreme values.
 Winsorization is the transformation of statistics by limiting extreme values in the statistical data to reduce the effect of possibly spurious outliers.
@@ -482,6 +474,14 @@ winsorize(input: <array>, limits: <number|array>, mutate: <true|false>);
 const input = [92, 19, 101, 58, 1053, 91, 26, 78, 10, 13, −40, 101, 86, 85, 15, 89, 89, 28, −5, 41];
 winsorize(input, 0.05, false); // returns [92, 19, 101, 58, 101, 91, 26, 78, 10, 13, −5, 101, 86, 85, 15, 89, 89, 28, −5, 41]
 // replaced -40 with -5 and 1053 with 101
+```
+
+### Utils
+Different utils ([Special functions list](./core/utils/))
+```javascript
+unirand.utils.gamma(2); // returns gamma function with argument 2
+unirand.utils.digamma(2); // returns digamma function with argument 2
+unirand.utils.erf(2); // returns error function with argument 2
 ```
 
 ### Chance
