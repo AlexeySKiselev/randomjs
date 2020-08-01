@@ -14,6 +14,7 @@ import smoothProxy from './core/array_manipulation/smooth';
 import prngProxy from './core/prng/prngProxy';
 import {DEFAULT_GENERATOR} from './core/prng/prngProxy';
 import RouletteWheel from './core/array_manipulation/rouletteWheel';
+import RandomColor from './core/utils/randomColor';
 
 const distributionMethods = require('./core/methods');
 const Bernoulli = distributionMethods.bernoulli;
@@ -23,7 +24,7 @@ import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
     SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions, SmoothData
 } from './core/types';
-import type { IPRNGProxy, ISample, IShuffle, IKFold, ISmooth, IRouletteWheel } from './core/interfaces';
+import type { IPRNGProxy, ISample, IShuffle, IKFold, ISmooth, IRouletteWheel, IRandomColor } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
@@ -51,6 +52,9 @@ class RandomJS {
     smooth: ISmooth;
     smoothSync: ISmooth;
     newRouletteWheel: IRouletteWheel;
+    _randomColorFabric: IRandomColor;
+    randomColor: any;
+    nextColor: any;
 
     constructor(): void {
         this.analyze = null;
@@ -60,6 +64,7 @@ class RandomJS {
         this._kfold = new KFold();
         this._prng = prngProxy; // default PRNG with seed
         this._distribution_factory = new DistributionFactory();
+        this._randomColorFabric = RandomColor.getInstance(1);
 
         Object.keys(distributionMethods).forEach((method: string) => {
             /**
@@ -323,6 +328,32 @@ class RandomJS {
                 return this._prng.nextInt();
             }
         }: Object));
+
+        /**
+         * Returns random color
+         */
+        Object.defineProperty(this, 'randomColor', ({
+            value: (saturation: number, type: string = 'hex', n: number = -1): any => {
+                if (!RandomColor.getTypes()[type]) {
+                    throw new Error(`Type ${type} is not allowed`);
+                }
+                this._randomColorFabric.setSaturation(saturation);
+                return this._randomColorFabric.randomColor(type, n);
+            }
+        }: Object));
+
+        /**
+         * Returns next random color
+         */
+        Object.defineProperty(this, 'nextColor', ({
+            value: (saturation: number, type: string = 'hex'): any => {
+                if (!RandomColor.getTypes()[type]) {
+                    throw new Error(`Type ${type} is not allowed`);
+                }
+                this._randomColorFabric.setSaturation(saturation);
+                return this._randomColorFabric.nextColor(type);
+            }
+        }: Object));
     }
 
     help(): void {
@@ -356,7 +387,9 @@ const methods = {
     nextInt: randomjs.nextInt,
     randomInRange: randomjs.randomInRange,
     nextInRange: randomjs.nextInRange,
-    newRouletteWheel: randomjs.newRouletteWheel
+    newRouletteWheel: randomjs.newRouletteWheel,
+    randomColor: randomjs.randomColor,
+    nextColor: randomjs.nextColor
 };
 Object.keys(distributionMethods).forEach((rand_method: string) => {
     methods[rand_method] = Object.getOwnPropertyDescriptor(randomjs, rand_method).get();

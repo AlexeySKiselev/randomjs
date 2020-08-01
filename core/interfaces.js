@@ -255,3 +255,10 @@ export interface IRouletteWheel {
     setPrng(prng_name: string, reset?: boolean): void;
     reset(): void;
 }
+
+export interface IRandomColor {
+    getSaturation(): number;
+    setSaturation(saturation: number): void;
+    randomColor(type: string, n?: number): any;
+    nextColor(type: string): any;
+}

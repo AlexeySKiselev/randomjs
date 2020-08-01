@@ -484,6 +484,29 @@ unirand.utils.digamma(2); // returns digamma function with argument 2
 unirand.utils.erf(2); // returns error function with argument 2
 ```
 
+### RandomColor
+This method generates a random color with good contrast and randomness:
+
+```javascript
+const randomColor = unirand.randomColor(<saturation value>); // 0 <= saturation <= 1
+console.log(randomColor); // will return #f8b34a
+
+// You can specify two types of returned result, 'rgb' and 'hex' (default)
+unirand.randomColor(0.9, 'hex'); // #b97437
+unirand.randomColor(0.9, 'rgb'); // [54, 181, 116]
+
+// for seeded generator supports also nextColor method
+unirand.seed('unirand');
+unirand.randomColor(0.9, 'hex'); // #132ac5
+unirand.randomColor(0.9, 'hex'); // #132ac5
+unirand.nextColor(0.9, 'hex'); // #9dc413
+unirand.nextColor(0.9, 'hex'); // #7f16e0
+
+// You are able to generate random vector as well
+unirand.randomColor(0.9, 'hex', 5); // ['#23bf13', '#6bcc14', '#dc5a16', '#14cd5d', '#6a15d3']
+unirand.randomColor(0.9, 'rgb', 3); // [[ 203, 116, 20 ], [ 23, 236, 61 ], [ 45, 23, 232 ]]
+```
+
 ### Chance
 **Chance** returns *true* with given probability
 ```javascript

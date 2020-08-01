@@ -55,3 +55,30 @@ export const AnalyzerSingleton = (Target: any): void => {
         }
     });
 };
+
+export function Singleton<T>(Target: any): void {
+    /**
+     * Create instance object initially assigned to null
+     */
+    Target._instance = null;
+
+    /**
+     * Add static method getInstance to target
+     * Instead of using "new" keyword I use getInstance method
+     */
+    Object.defineProperty(Target, 'getInstance', {
+        value: (...args: any): T => {
+            /**
+             * If instance haven't created - create it with arguments
+             * If instance created - update params via calling constructor without creating new object
+             * In total returns instance
+             */
+            if(!Target._instance) {
+                Target._instance = new Target(...args);
+            } else {
+                Target._instance.constructor.apply(Target._instance, args);
+            }
+            return Target._instance;
+        }
+    });
+}
