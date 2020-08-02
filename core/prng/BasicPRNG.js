@@ -56,7 +56,7 @@ class BasicPRNG implements IPRNG {
      * @returns {number}
      */
     nextInt(): number {
-        return this._nextInt();
+        return this._nextInt() >>> 0; // returns only unsigned integers
     }
 
     /**

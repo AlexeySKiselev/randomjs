@@ -28,7 +28,7 @@ const DEFAULT_GENERATOR = 'tuchei';
 class PRNGProxy implements IPRNGProxy {
 
     _generators: {[string]: IPRNG};
-    _allowed_generators: {[string]: IPRNG};
+    _allowed_generators: {[string]: any};
     _current_generator_name: string;
     _current_generator: IPRNG;
     _seed: ?NumberString;
@@ -159,9 +159,13 @@ class PRNGProxy implements IPRNGProxy {
 
 const prng_proxy: IPRNGProxy = new PRNGProxy();
 
-const prng: Function<IPRNGProxy> = (prng_name: string = 'default'): IPRNGProxy => {
+const prng: (string) => IPRNG = (prng_name: string = 'default'): IPRNGProxy => {
     prng_proxy.set_prng(prng_name);
     return prng_proxy;
 };
 
+export {
+    PRNGProxy,
+    DEFAULT_GENERATOR
+};
 export default prng(DEFAULT_GENERATOR);

@@ -72,4 +72,68 @@ describe('Array manipulation methods with seed', () => {
             done();
         });
     });
+    describe('RouletteWheel', () => {
+        const RouletteWheel = require('../lib/array_manipulation/rouletteWheel').default;
+        it('should generate same results each time with seed', function (done) {
+            this.timeout(480000);
+            const weights = [];
+            for (let i = 0; i < 20; i += 1) {
+                weights[i] = Math.floor(Math.random() * 90 + 10);
+            }
+            const rouletteWheel1 = new RouletteWheel(weights, {
+                seed: 'unirand'
+            });
+            const rouletteWheel2 = new RouletteWheel(weights, {
+                seed: 'unirand'
+            });
+            const rouletteWheel3 = new RouletteWheel(weights, {
+                seed: 'unirand'
+            });
+
+            let selected1, selected2, selected3;
+            for (let i = 0; i < 10000; i += 1) {
+                selected1 = rouletteWheel1.select();
+                selected2 = rouletteWheel2.select();
+                selected3 = rouletteWheel3.select();
+
+                expect(selected1).to.be.a('number');
+                expect(selected2).to.be.a('number');
+                expect(selected3).to.be.a('number');
+                expect(selected1).to.be.equal(selected2);
+                expect(selected2).to.be.equal(selected3);
+            }
+
+            done();
+        });
+        it('should support .reset() and reproduce selections', function (done) {
+            this.timeout(480000);
+            const weights = [];
+            const selected = [];
+            const selected2 = [];
+            const selectedCount = 100000;
+            for (let i = 0; i < 20; i += 1) {
+                weights[i] = Math.floor(Math.random() * 90 + 10);
+            }
+            const rouletteWheel = new RouletteWheel(weights, {
+                seed: 'unirand'
+            });
+
+            for (let i = 0; i < selectedCount; i += 1) {
+                selected[i] = rouletteWheel.select();
+            }
+
+            rouletteWheel.reset();
+            for (let i = 0; i < selectedCount; i += 1) {
+                selected2[i] = rouletteWheel.select();
+            }
+
+            for (let i = 0; i < selectedCount; i += 1) {
+                expect(selected[i]).to.be.a('number');
+                expect(selected2[i]).to.be.a('number');
+                expect(selected[i]).to.be.equal(selected2[i]);
+            }
+
+            done();
+        });
+    });
 });

@@ -244,4 +244,21 @@ export interface ISmoothProxy {
  */
 export interface IKFold {
     getKFold(input: RandomArrayNumberString<any>, k: number, options: KFoldOptions): RandomArrayStringObject<any>;
-} 
+}
+
+/**
+ * Roulette wheel interface
+ */
+export interface IRouletteWheel {
+    select(): number;
+    seed(seed_value: ?NumberString): void;
+    setPrng(prng_name: string, reset?: boolean): void;
+    reset(): void;
+}
+
+export interface IRandomColor {
+    getSaturation(): number;
+    setSaturation(saturation: number): void;
+    randomColor(type: string, n?: number): any;
+    nextColor(type: string): any;
+}

@@ -1,6 +1,6 @@
 {
   "name": "unirand",
-  "version": "2.8.4",
+  "version": "2.10.0",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
@@ -41,7 +41,8 @@
     "prng",
     "tuchei prng",
     "seed",
-    "moving average"
+    "moving average",
+    "roulette wheel"
   ],
   "author": "Alexey S. Kiselev <alexeys.kiselev@yahoo.com>",
   "license": "ISC",

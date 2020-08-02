@@ -79,7 +79,7 @@ Unirand supports different PRNGs:
 | `tt800` | TT800 PRNG, period ~10<sup>240</sup> | medium | Yes |
 | `xorwow` | Xorwow PRNG, period ~10<sup>38</sup> | medium | Yes |
 
-#### .random() and .randomInt()
+#### .random(), .randomInt() and .randomInRange(from, to)
 Returns random uniformly distributed value or array of length *n*. Returns different value each time without seed and same value with seed value.
 ```javascript
 unirand.random(); // random value [0, 1)
@@ -87,20 +87,24 @@ unirand.random(n); // uniformly distributed random array of length n
 
 unirand.randomInt(); // random integer [0, 2^32)
 unirand.randomInt(n); // uniformly distributed random integer array of size n 
+
+unirand.randomInRange(from, to); // random value in range [from, to), from > to
+unirand.randomInRange(from, to, n); // array of size n, each value is random in range [from, to), from > to
 ```
 Without *seed value* this method returns different values each call. With *seed value* this method returns same value each time.
 
-#### .next() and .nextInt()
-It makes sense only for seeded generators. Otherwise that method works as `.random()`. If you want to return another random seeded value after *.random()* method, use *.next()*.
+#### .next(), .nextInt() and .nextInRange(from, to)
+It makes sense only for seeded generators. Otherwise, that method works as `.random()`. If you want to return another random seeded value after *.random()* method, use *.next()*.
 ```javascript
 unirand.seed(123456);
 unirand.random(); // returns 0.07329190103337169
 unirand.random(); // returns same 0.07329190103337169
 unirand.next(); // returns 0.49862336413934827
 unirand.next(); // returns 0.045074593275785446
+unirand.nextInRange(10, 20); // 12.58303941693157
 ...
 ```
-Same results for `.nextInt()`. These methods always return single value.
+Same results for `.nextInt()` and `.nextInRange(from, to)`. These methods always return single value.
 
 \**Note*: for seeded prng we don't recommend use `.random()` method for generating all random values. Use `.random()` first time flushing generator, then `.next()` for all other random values.
 
@@ -175,63 +179,6 @@ analyzer.entropy.then((res) => {
 });
 ```
 
-### Utils
-Different utils ([Special functions list](./core/utils/))
-```javascript
-unirand.utils.gamma(2); // returns gamma function with argument 2
-unirand.utils.digamma(2); // returns digamma function with argument 2
-unirand.utils.erf(2); // returns error function with argument 2
-```
-
-### Hash
-Returns *hash* using murmur3 algorithm
-```javascript
-unirand.hash('unirand'); // string input
-// or
-unirand.hash(123456); // numerical input
-```  
-
-Also supports different `seed` values. By default, `seed` value is zero.
-
-```javascript
-unirand.hash('unirand', 123);
-```
-`Seed` can be array, meaning that `.hash` returns array of hash values for different seeds:
-```javascript
-unirand.hash('unirand', [1, 2, 3, 4]); // output [<hash1>, <hash2>, <hash3>, <hash4>]
-```
-
-Also supports different hash algorithms:
-* Murmur3 - `unirand.hash('unirand', 0, {algorithm: 'murmur'})`
-* Jenkins - `unirand.hash('unirand', 0, {algorithm: 'jenkins'})`
-
-Alternate usage:
-```javascript
-unirand.hash('unirand', {
-    algorithm: 'murmur'
-});
-// or
-unirand.hash('unirand', 123, {
-    algorithm: 'jenkins'
-});
-// or
-unirand.hash('unirand', [1, 2, 3], {
-    algorithm: 'murmur'
-}); // outputs array of hash values
-```
-
-If You want to bound hash values, You can use option `modulo` (*0x080000000* by default):
-```javascript
-unirand.hash('unirand', 123, {
-    algorithm: 'jenkins',
-    modulo: 1234
-});
-// or
-unirand.hash('unirand', 123, {
-    modulo: 1234
-}); // will use murmur3 algorithm as default value
-```
-
 ### Sample
 Generates **random sample** from array, string or object. This method will generate *k* random elements from array/string with *n* elements.
 ```javascript
@@ -250,6 +197,55 @@ sample([1, 2, 3, 4, 5, 6, 7, 8, 9], {shuffle: true}) // will output [6, 9, 1] or
 *Does not mutate input!*
 
 Sample method is **3 times faster** for arrays and **7 times faster** for string compared to simple shuffled and sliced array|string.
+
+### Shuffle 
+**Shuffle** array or string (O(n) time complexity)
+```javascript
+const shuffle = unirand.shuffle;
+shuffle(<array|string>); // will output random permutation of input
+```
+Method will return random permutation with same type as input.
+
+### Derange
+**Derange** method returns random derangement of array or string (O(n) time complexity)
+Derangement is a permutation of the elements of a set, such that no element appears in its original position. In other words, derangement is a permutation that has no fixed points.
+```javascript
+const derange = unirand.derange;
+derange(<array|string>); // will output random derangement of input
+```
+There are approximately n!/e derangements for array with *n* elements. 
+
+### Roulette wheel
+Consider You have an array of elements represented by some weight *w<sub>i</sub>*, and You want to select each element with probability w<sub>i</sub> / \<sum all weights\>. You can use roulette wheel algorithm for that purpose:
+
+```javascript
+// will create RouletteWheel instance with its own PRNG
+const rouletteWheel = unirand.newRouletteWheel(<weights array>);
+// weights array should be an array of positive numerical values
+// weights array can be unsorted, weight can be any positive value
+
+// @example
+const rouletteWheel = unirand.newRouletteWheel([2, 1, 3]); // O(weights.length) time complexity
+rouletteWheel.select(); // always O(1) time complexity
+// method .select() will return index 0 with 33.33% probability
+// method .select() will return index 1 with 16.67% probability
+// method .select() will return index 2 with 50.00% probability
+```
+RouletteWheel `.select()` method will return a corresponding index of weights array with **O(1) time complexity**. As `rouletteWheel` instance has own prng attached, it supports additional options:
+
+```javascript
+const rouletteWheel = unirand.newRouletteWheel([1, 2, 3], {
+    prng: 'tt800', // supports all unirand's PRNG algorithms
+    seed: 12345 // initial seed values, by default PRNG is unseeded
+});
+
+// PRNG options can be changed via next methods as well
+rouletteWheel.seed(<seed value>);
+rouletteWheel.seed(); // will unset seed from PRNG making PRNG unseeded
+rouletteWheel.setPrng(<prng name>[, reset]); // will set new PRNG
+// reset (default: false) will reset PRNG to initial state, useful to reproduce selections
+rouletteWheel.reset(); // reset PRNG to initial state
+```
 
 ### k-fold
 Splits array into *k* subarrays. Requires at least 2 arguments: array itself and *k*. Also supports *options*.
@@ -279,23 +275,6 @@ kfold([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, {
 For permutation unirand uses seeded PRNG. With *seed* k-fold will always return same result.
 
 *Does not mutate input!*
-
-### Shuffle 
-**Shuffle** array or string (O(n) time complexity)
-```javascript
-const shuffle = unirand.shuffle;
-shuffle(<array|string>); // will output random permutation of input
-```
-Method will return random permutation with same type as input.
-
-### Derange
-**Derange** method returns random derangement of array or string (O(n) time complexity)
-Derangement is a permutation of the elements of a set, such that no element appears in its original position. In other words, derangement is a permutation that has no fixed points.
-```javascript
-const derange = unirand.derange;
-derange(<array|string>); // will output random derangement of input
-```
-There are approximately n!/e derangements for array with *n* elements. 
 
 ### Smooth data
 Smooth method return an array contains smoothed data using different algorithms and strategies for smoothing.
@@ -432,6 +411,55 @@ const data = [2, 6, 9, 4, 6, 7, 3, 2, 4, 7];
 
 By default diff option is `false`. Does not mutate original array.
 
+### Hash
+Returns *hash* using murmur3 algorithm
+```javascript
+unirand.hash('unirand'); // string input
+// or
+unirand.hash(123456); // numerical input
+```  
+
+Also supports different `seed` values. By default, `seed` value is zero.
+
+```javascript
+unirand.hash('unirand', 123);
+```
+`Seed` can be array, meaning that `.hash` returns array of hash values for different seeds:
+```javascript
+unirand.hash('unirand', [1, 2, 3, 4]); // output [<hash1>, <hash2>, <hash3>, <hash4>]
+```
+
+Also supports different hash algorithms:
+* Murmur3 - `unirand.hash('unirand', 0, {algorithm: 'murmur'})`
+* Jenkins - `unirand.hash('unirand', 0, {algorithm: 'jenkins'})`
+
+Alternate usage:
+```javascript
+unirand.hash('unirand', {
+    algorithm: 'murmur'
+});
+// or
+unirand.hash('unirand', 123, {
+    algorithm: 'jenkins'
+});
+// or
+unirand.hash('unirand', [1, 2, 3], {
+    algorithm: 'murmur'
+}); // outputs array of hash values
+```
+
+If You want to bound hash values, You can use option `modulo` (*0x080000000* by default):
+```javascript
+unirand.hash('unirand', 123, {
+    algorithm: 'jenkins',
+    modulo: 1234
+});
+// or
+unirand.hash('unirand', 123, {
+    modulo: 1234
+}); // will use murmur3 algorithm as default value
+```
+
 ### Winsorize
 Winsorization replaces extreme data values with less extreme values.
 Winsorization is the transformation of statistics by limiting extreme values in the statistical data to reduce the effect of possibly spurious outliers.
@@ -446,6 +474,37 @@ winsorize(input: <array>, limits: <number|array>, mutate: <true|false>);
 const input = [92, 19, 101, 58, 1053, 91, 26, 78, 10, 13, −40, 101, 86, 85, 15, 89, 89, 28, −5, 41];
 winsorize(input, 0.05, false); // returns [92, 19, 101, 58, 101, 91, 26, 78, 10, 13, −5, 101, 86, 85, 15, 89, 89, 28, −5, 41]
 // replaced -40 with -5 and 1053 with 101
+```
+
+### Utils
+Different utils ([Special functions list](./core/utils/))
+```javascript
+unirand.utils.gamma(2); // returns gamma function with argument 2
+unirand.utils.digamma(2); // returns digamma function with argument 2
+unirand.utils.erf(2); // returns error function with argument 2
+```
+
+### RandomColor
+This method generates a random color with good contrast and randomness:
+
+```javascript
+const randomColor = unirand.randomColor(<saturation value>); // 0 <= saturation <= 1
+console.log(randomColor); // will return #f8b34a
+
+// You can specify two types of returned result, 'rgb' and 'hex' (default)
+unirand.randomColor(0.9, 'hex'); // #b97437
+unirand.randomColor(0.9, 'rgb'); // [54, 181, 116]
+
+// for seeded generator supports also nextColor method
+unirand.seed('unirand');
+unirand.randomColor(0.9, 'hex'); // #132ac5
+unirand.randomColor(0.9, 'hex'); // #132ac5
+unirand.nextColor(0.9, 'hex'); // #9dc413
+unirand.nextColor(0.9, 'hex'); // #7f16e0
+
+// You are able to generate random vector as well
+unirand.randomColor(0.9, 'hex', 5); // ['#23bf13', '#6bcc14', '#dc5a16', '#14cd5d', '#6a15d3']
+unirand.randomColor(0.9, 'rgb', 3); // [[ 203, 116, 20 ], [ 23, 236, 61 ], [ 45, 23, 232 ]]
 ```
 
 ### Chance
