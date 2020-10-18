@@ -262,3 +262,25 @@ export interface IRandomColor {
     randomColor(type: string, n?: number): any;
     nextColor(type: string): any;
 }
+
+export interface IUIDGenerator {
+    generateRandom(): string;
+    generateNext(): string;
+}
+
+export interface IUIDGeneratorFactory {
+    random(): string;
+    next(): string;
+    setGenerator(generator: string): void;
+}
+
+export interface IEncoder {
+    encode(str: string): string;
+    encodeFromByteArray(bytes: Array<number>): string;
+    decode(str: string): string;
+    decodeToByteArray(str: string): Array<number>;
+}
+
+export interface IEncoderProxy extends IEncoder {
+    setEncoder(encoder: string): void;
+}

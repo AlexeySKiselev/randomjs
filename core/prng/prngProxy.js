@@ -159,7 +159,7 @@ class PRNGProxy implements IPRNGProxy {
 
 const prng_proxy: IPRNGProxy = new PRNGProxy();
 
-const prng: (string) => IPRNG = (prng_name: string = 'default'): IPRNGProxy => {
+const prng: (string) => IPRNGProxy = (prng_name: string = 'default'): IPRNGProxy => {
     prng_proxy.set_prng(prng_name);
     return prng_proxy;
 };

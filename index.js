@@ -12,6 +12,8 @@ import KFold from './core/array_manipulation/kfold';
 import hashProxy from './core/utils/hash';
 import smoothProxy from './core/array_manipulation/smooth';
 import prngProxy from './core/prng/prngProxy';
+import encoderProxy from './core/utils/encoders/encoderProxy';
+import UidFactory from './core/uidFactory';
 import {DEFAULT_GENERATOR} from './core/prng/prngProxy';
 import RouletteWheel from './core/array_manipulation/rouletteWheel';
 import RandomColor from './core/utils/randomColor';
@@ -24,11 +26,13 @@ import type {
     NumberString, PercentileInput, RandomArray, RandomArrayNumber, RandomArrayString,
     SampleOptions, RandomArrayNumberString, KFoldOptions, RandomArrayStringObject, HashOptions, SmoothData
 } from './core/types';
-import type { IPRNGProxy, ISample, IShuffle, IKFold, ISmooth, IRouletteWheel, IRandomColor } from './core/interfaces';
+import type { IPRNGProxy, ISample, IShuffle, IKFold, ISmooth,
+    IRouletteWheel, IRandomColor, IEncoderProxy, IUIDGeneratorFactory } from './core/interfaces';
 
 class RandomJS {
     analyze: any;
     utils: any;
+    stringutils: any;
     sample: any;
     _sample: ISample;
     kfold: any;
@@ -42,6 +46,8 @@ class RandomJS {
     _prng: IPRNGProxy;
     seed: (seed_value: ?NumberString) => void;
     prng: IPRNGProxy;
+    _encoder: IEncoderProxy;
+    encoder: IEncoderProxy;
     random: RandomArrayNumber;
     next: number;
     randomInt: RandomArrayNumber;
@@ -49,6 +55,8 @@ class RandomJS {
     randomInRange: RandomArrayNumber;
     nextInRange: number;
     _distribution_factory: DistributionFactory;
+    _uidFactory: IUIDGeneratorFactory;
+    uid: IUIDGeneratorFactory;
     smooth: ISmooth;
     smoothSync: ISmooth;
     newRouletteWheel: IRouletteWheel;
@@ -63,8 +71,10 @@ class RandomJS {
         this._shuffle = new Shuffle();
         this._kfold = new KFold();
         this._prng = prngProxy; // default PRNG with seed
+        this._encoder = encoderProxy;
         this._distribution_factory = new DistributionFactory();
-        this._randomColorFabric = RandomColor.getInstance(1);
+        this._randomColorFabric = (RandomColor: any).getInstance(1);
+        this._uidFactory = new UidFactory();
 
         Object.keys(distributionMethods).forEach((method: string) => {
             /**
@@ -106,6 +116,14 @@ class RandomJS {
         }: Object));
 
         /**
+         * Different string utils
+         */
+        Object.defineProperty(this, 'stringutils', ({
+            __proto__: null,
+            value: require(__dirname + '/core/utils/string_utils')
+        }: Object));
+
+        /**
          * Random sample (k random elements from array with N elements 0 < k <= N)
          */
         Object.defineProperty(this, 'sample', ({
@@ -117,10 +135,8 @@ class RandomJS {
                 if(typeof k === 'object' || typeof k === 'undefined') {
                     // assume that k is undefined, and the second parameter is options
                     return this._sample.getSample(input, undefined, Object.assign(defaultOptions, k));
-                } else {
-                    return this._sample.getSample(input, k, Object.assign(defaultOptions, options));
                 }
-
+                return this._sample.getSample(input, k, Object.assign(defaultOptions, options));
             }
         }: Object));
 
@@ -294,6 +310,28 @@ class RandomJS {
         }: Object));
 
         /**
+         * Sets Encoder
+         */
+        Object.defineProperty(this, 'encoder', ({
+            __proto__: null,
+            value: (encoder: string): IEncoderProxy => {
+                this._encoder.setEncoder(encoder);
+                return this._encoder;
+            }
+        }: Object));
+
+        /**
+         * Sets random uid generator
+         */
+        Object.defineProperty(this, 'uid', ({
+            __proto__: null,
+            value: (generator: string): IUIDGeneratorFactory => {
+                this._uidFactory.setGenerator(generator);
+                return this._uidFactory;
+            }
+        }: Object));
+
+        /**
          * Returns seeded random value [0, 1) with uniform distribution
          */
         Object.defineProperty(this, 'random', ({
@@ -355,14 +393,6 @@ class RandomJS {
             }
         }: Object));
     }
-
-    help(): void {
-        let help = require('./core/help');
-        console.log('Available Distribution methods:');
-        Object.keys(help).forEach((method: string): void => {
-            console.log(method + ': ' + help[method]);
-        });
-    }
 }
 
 // Add methods extractor
@@ -370,6 +400,7 @@ const randomjs = new RandomJS();
 const methods = {
     analyze: randomjs.analyze,
     utils: randomjs.utils,
+    stringutils: randomjs.stringutils,
     sample: randomjs.sample,
     kfold: randomjs.kfold,
     shuffle: randomjs.shuffle,
@@ -381,6 +412,8 @@ const methods = {
     smoothSync: randomjs.smoothSync,
     seed: randomjs.seed,
     prng: randomjs.prng,
+    encoder: randomjs.encoder,
+    uid: randomjs.uid,
     random: randomjs.random,
     next: randomjs.next,
     randomInt: randomjs.randomInt,
@@ -392,7 +425,7 @@ const methods = {
     nextColor: randomjs.nextColor
 };
 Object.keys(distributionMethods).forEach((rand_method: string) => {
-    methods[rand_method] = Object.getOwnPropertyDescriptor(randomjs, rand_method).get();
+    methods[rand_method] = (Object.getOwnPropertyDescriptor(randomjs, rand_method): any).get();
 });
 
 module.exports = methods;
