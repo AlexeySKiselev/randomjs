@@ -442,7 +442,7 @@ describe('String Utils', () => {
             let randomString;
             let letterOccurrence = alphabet.split('')
                 .reduce((res, letter) => {res[letter] = 0; return res;}, {});
-            for (let i = 0; i < 100000; i += 1) {
+            for (let i = 0; i < 200000; i += 1) {
                 stringLength = Math.floor(20 + 280 * Math.random());
                 randomString = StringUtils.randomBitString(stringLength, 0.7);
                 expect(randomString).to.be.a('string');
@@ -452,7 +452,7 @@ describe('String Utils', () => {
                     letterOccurrence[randomString[j]] += 1;
                 }
             }
-            for (let i = 0; i < 100000; i += 1) {
+            for (let i = 0; i < 200000; i += 1) {
                 stringLength = Math.floor(20 + 280 * Math.random());
                 randomString = StringUtils.nextBitString(stringLength, 0.7);
                 expect(randomString).to.be.a('string');
