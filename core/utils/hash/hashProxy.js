@@ -11,12 +11,14 @@ import type { IHash, IHashProxy } from '../../interfaces';
 import Murmur3Hash from './murmur3';
 import JenkinsHash from './jenkins';
 
-const DEFAULT_HASH_FUNCTION = 'murmur';
+const DEFAULT_HASH_FUNCTION: string = 'murmur';
 
 class HashProxy implements IHashProxy {
 
     _hashFunctions: {[string]: IHash};
     _allowedHashFunctions: {[string]: IHash};
+    _currentHashFunctionName: string;
+    _currentHashFunction: IHash;
 
     constructor() {
         this._hashFunctions = {

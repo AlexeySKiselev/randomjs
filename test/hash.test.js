@@ -170,7 +170,7 @@ describe('Hash', () => {
         let tempSeed, tempHash, tempModulo;
         for (let m = 0; m < 1000; m += 1) {
             tempModulo = Math.floor(Math.random() * 1000000);
-            for (let i = 0; i < 10000; i += 1) {
+            for (let i = 0; i < 1000; i += 1) {
                 tempSeed = Math.floor(Math.random() * 100000000);
                 tempHash = hashProxy.hash('unirand_bounded_test_murmur3_algorithm', tempSeed, tempModulo);
                 expect(tempHash).to.be.at.most(tempModulo); // 2 ^ 31 - 1
@@ -185,7 +185,7 @@ describe('Hash', () => {
         let tempSeed, tempHash, tempModulo;
         for (let m = 0; m < 1000; m += 1) {
             tempModulo = Math.floor(Math.random() * 1000000);
-            for (let i = 0; i < 10000; i += 1) {
+            for (let i = 0; i < 1000; i += 1) {
                 tempSeed = Math.floor(Math.random() * 100000000);
                 tempHash = hashProxy.hash('unirand_bounded_test_murmur3_algorithm', tempSeed, tempModulo);
                 expect(tempHash).to.be.at.most(tempModulo); // 2 ^ 31 - 1

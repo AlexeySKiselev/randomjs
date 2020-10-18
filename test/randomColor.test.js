@@ -172,24 +172,24 @@ describe('RandomColor', () => {
             return true;
         };
         unirand.seed();
-        for (let i = 0; i < 1000000; i += 1) {
+        for (let i = 0; i < 100000; i += 1) {
             expect(isRGBValid(unirand.randomColor(0.7, 'rgb'))).to.be.equal(true);
         }
 
         unirand.seed('unirand');
         unirand.randomColor(0.7, 'rgb');
-        for (let i = 0; i < 1000000; i += 1) {
+        for (let i = 0; i < 100000; i += 1) {
             expect(isRGBValid(unirand.nextColor(0.7, 'rgb'))).to.be.equal(true);
         }
 
         unirand.seed();
-        for (let i = 0; i < 1000000; i += 1) {
+        for (let i = 0; i < 100000; i += 1) {
             expect(isHexValid(unirand.randomColor(0.7, 'hex'))).to.be.equal(true);
         }
 
         unirand.seed('unirand');
         unirand.randomColor(0.7, 'hex');
-        for (let i = 0; i < 1000000; i += 1) {
+        for (let i = 0; i < 100000; i += 1) {
             expect(isHexValid(unirand.nextColor(0.7, 'hex'))).to.be.equal(true);
         }
         done();

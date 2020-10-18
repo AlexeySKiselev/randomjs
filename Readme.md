@@ -4,7 +4,7 @@
 # Unirand
 A JavaScript module for generating seeded random distributions and its statistical analysis.
 
-Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with 800+ tests*.
+Implemented in pure JavaScript with no dependencies, designed to work in Node.js and fully asynchronous, tested *with 900+ tests*.
 
 #### [Supported distributions](./core/methods/)
 
@@ -65,19 +65,20 @@ Unirand supports different PRNGs:
 
 | Name | Description | Performance | Supports seed |
 |---|---|---|---|
-| `default` | Default JS PRNG | fast | No |
-| `tuchei` | Tuchei PRNG, period ~2<sup>32</sup> | very fast | Yes |
-| `xorshift` | Xorshift PRNG, period ~2<sup>32</sup> | very fast | Yes |
-| `kiss` | Kiss PRNG, period ~2<sup>30</sup> | fast | Yes |
-| `parkmiller` | Park-Miller PRNG, period ~2<sup>31</sup> | medium | Yes |
-| `coveyou` | Coveyou PRNG, period ~2<sup>31</sup> | slow | Yes |
-| `knuthran2` | knuthran2 PRNG, period ~10<sup>18</sup> | slow | Yes |
-| `r250` | r250 PRNG, period ~2<sup>250</sup> | very fast | Yes |
-| `mrg5` | Fifth-order multiple recursive PRNG, period ~10<sup>46</sup> | slow | Yes |
-| `gfsr4` | gfsr4 PRNG, period ~2<sup>9689</sup> | fast | Yes |
-| `dx1597` | Dx-1957-f PRNG, period ~10<sup>14903</sup> | slow | Yes |
-| `tt800` | TT800 PRNG, period ~10<sup>240</sup> | medium | Yes |
-| `xorwow` | Xorwow PRNG, period ~10<sup>38</sup> | medium | Yes |
+| default | Default JS PRNG | fast | No |
+| tuchei | Tuchei PRNG, period ~2<sup>32</sup> | very fast | Yes |
+| xorshift | Xorshift PRNG, period ~2<sup>32</sup> | very fast | Yes |
+| kiss | Kiss PRNG, period ~2<sup>30</sup> | fast | Yes |
+| parkmiller | Park-Miller PRNG, period ~2<sup>31</sup> | medium | Yes |
+| coveyou | Coveyou PRNG, period ~2<sup>31</sup> | slow | Yes |
+| knuthran2 | knuthran2 PRNG, period ~10<sup>18</sup> | slow | Yes |
+| r250 | r250 PRNG, period ~2<sup>250</sup> | very fast | Yes |
+| mrg5 | Fifth-order multiple recursive PRNG, period ~10<sup>46</sup> | slow | Yes |
+| gfsr4 | gfsr4 PRNG, period ~2<sup>9689</sup> | fast | Yes |
+| dx1597 | Dx-1957-f PRNG, period ~10<sup>14903</sup> | slow | Yes |
+| tt800 | TT800 PRNG, period ~10<sup>240</sup> | medium | Yes |
+| xorwow | Xorwow PRNG, period ~10<sup>38</sup> | medium | Yes |
+| mt19937 | Marsenne Twister PRNG, period ~2<sup>19937</sup> | fast | Yes |
 
 #### .random(), .randomInt() and .randomInRange(from, to)
 Returns random uniformly distributed value or array of length *n*. Returns different value each time without seed and same value with seed value.
@@ -102,6 +103,7 @@ unirand.random(); // returns same 0.07329190103337169
 unirand.next(); // returns 0.49862336413934827
 unirand.next(); // returns 0.045074593275785446
 unirand.nextInRange(10, 20); // 12.58303941693157
+unirand.nextInt(); // 1398469627
 ...
 ```
 Same results for `.nextInt()` and `.nextInRange(from, to)`. These methods always return single value.
@@ -246,6 +248,49 @@ rouletteWheel.setPrng(<prng name>[, reset]); // will set new PRNG
 // reset (default: false) will reset PRNG to initial state, useful to reproduce selections
 rouletteWheel.reset(); // reset PRNG to initial state
 ```
+
+### String utils
+Unirand allow You to generate different random strings:
+
+| Usage | Description | Example |
+| --- | --- | --- |
+| unirand.stringutils.random('abcdefg', n) | Generates random string of size `n` with Your alphabet | `dbfagcdaeb` |
+| unirand.stringutils.randomHex(n) | Generates random string of size `n` with `0123456789abcdef` alphabet | `ebe9a1d10d` |
+| unirand.stringutils.randomAlphabetic(n) | Generates random string of size `n` with [a-z, A-Z] alphabet | `LfeFYWVjDH` |
+| unirand.stringutils.randomAscii(n) | Generates random string of size `n` with ASCII alphabet | `&TxiHCFN<d` |
+| unirand.stringutils.randomAlphanumeric(n) | Generates random string of size `n` with [a-z, A-Z, 0-9] alphabet | `r4A77w1fo0` |
+| unirand.stringutils.randomNumeric(n) | Generates random string of size `n` with [0-9] alphabet | `3826717859` |
+| unirand.stringutils.randomBitString(n, p) | Generates random string of size `n` consists of only `1` or `0` with `p` probability of `1` (default `p=0.5`) | `1101100011` |
+| unirand.stringutils.randomUID(type) | Generates random UID of type `type` (see [UID generation](#uid-generation)) | `3b6d5575-1a03-40a8-9cd2-e1493dbe5d01` |
+
+For seeded PRNGs You can use `.next*` methods:
+
+```javascript
+unirand.seed('unirand');
+unirand.stringutils.randomAscii(15); // "6W5,Wj8JeZsz"$
+unirand.stringutils.randomAscii(15); // "6W5,Wj8JeZsz"$
+unirand.stringutils.nextAscii(15); // 20wv]+m)!p;+;t=
+unirand.stringutils.nextAscii(15); // CM6-BgKAj;O>8TK
+```
+
+\**Note: not all UID generators will generate same UID for seeded PRNGs.* 
+
+### UID generation
+You can generate random UID of different types. Not all of them can be seeded. `unirand.stringutils.randomUID('uuid')` and `unirand.uid('uuid').random()` are the same:
+
+| Name | Usage | Description | Randomness | Example |
+| --- | --- | --- | --- | --- |
+| betterguid | unirand.uid('betterguid').random() | 8 bytes of time (milliseconds) + 9 random bytes | Partly random | `-MJvUyyWjbsx01BAu` |
+| ksuid | unirand.uid('ksuid').random() | 4 bytes of time (seconds) + 16 random bytes | Partly random | `DBnbYgY8lToilslDcryc4PQFCjE` |
+| uuid | unirand.uid('uuid').random() | UUIDv4 from RFC 4112, 4 bytes for time in milliseconds, other 12 bytes - random | Partly random | `3b834ec5-0383-428b-b6b9-de0022dd91c1` |
+| shortuuid | unirand.uid('shortuuid').random() | Short representation of UUIDv4 | Partly random | `8mkdCaDhVxg9TV48shm1ZX` |
+| sno | unirand.uid('sno').random() | 5 bytes timestamp, 3 bytes random payload, 2 bytes increased (with any call) sequence | Partly random | `BL7E614A0RH68001` |
+| snowflake | unirand.uid('snowflake').random() | 5 bytes timestamp, 28 bit machine id (random payload in browser), 12 bit increased (with any call) sequence | Non random, Partly random in browser | `20803747841385512962` |
+| sonyflake | unirand.uid('sonyflake').random() | 5 bytes of time (10 ms) + 1 byte sequence (increased with any call) + 2 bytes machine id (random in browser) | Non random, Partly random in browser | `04814e6d06001a954` |
+| ulid | unirand.uid('ulid').random() | 6 bytes of time (milliseconds) + 8 bytes random | Partly random | `05TKQ54NHR33S59T4ABCJGR` |
+| xid | unirand.uid('xid').random() | 4 bytes of time (seconds) + 3 byte machine id + 2 byte process id + 3 bytes random | Partly random | `1GCU16S2L5A7824LPPHG` |
+
+It supports `unirand.uid(<type>).next()` method as well, but it will not have much effect as all UID generators are not fully random.
 
 ### k-fold
 Splits array into *k* subarrays. Requires at least 2 arguments: array itself and *k*. Also supports *options*.
@@ -483,6 +528,29 @@ unirand.utils.gamma(2); // returns gamma function with argument 2
 unirand.utils.digamma(2); // returns digamma function with argument 2
 unirand.utils.erf(2); // returns error function with argument 2
 ```
+
+### Encoder
+You can also encode and decode strings with well known encoders:
+
+```javascript
+unirand.encoder(<type>).encode(<string to encode>);
+unirand.encoder(<type>).encodeFromByteArray(<byte array to encode>);
+unirand.encoder(<type>).decode(<string to decode>);
+unirand.encoder(<type>).decodeToByteArray(<string to decode>);
+```
+
+Allowed types:
+
+* base62
+* base64
+* base32
+* base32Hex
+* z-base-32
+* crockford-base32
+* base58
+* bitcoin-base58
+* flickr-base58
+* ripple-base58
 
 ### RandomColor
 This method generates a random color with good contrast and randomness:

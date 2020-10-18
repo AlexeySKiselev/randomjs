@@ -1,6 +1,6 @@
 {
   "name": "unirand",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
@@ -8,6 +8,16 @@
     "lint": "node node_modules/eslint/bin/eslint --config .eslintrc.json ./",
     "build:node": "node node_modules/gulp/bin/gulp build:node --watch",
     "test": "node node_modules/npm-run-all/bin/run-s build:node mocha",
+    "test:analyzer": "node node_modules/mocha/bin/mocha test/analyzer.test.js",
+    "test:array-manipulation": "node node_modules/mocha/bin/mocha test/array_manipulation*.test.js",
+    "test:distribution": "node node_modules/mocha/bin/mocha test/distribution*.test.js",
+    "test:encoder": "node node_modules/mocha/bin/mocha test/encoder.test.js",
+    "test:hash": "node node_modules/mocha/bin/mocha test/hash.test.js",
+    "test:index": "node node_modules/mocha/bin/mocha test/index.test.js",
+    "test:prng": "node node_modules/mocha/bin/mocha test/prng.test.js",
+    "test:random-color": "node node_modules/mocha/bin/mocha test/randomColor.test.js",
+    "test:stringutils": "node node_modules/mocha/bin/mocha test/stringutils.test.js",
+    "test:utils": "node node_modules/mocha/bin/mocha test/utils.test.js",
     "nyc-coverage": "node node_modules/nyc/bin/nyc --reporter=text mocha",
     "test-coverage": "node node_modules/npm-run-all/bin/run-s build:node nyc-coverage",
     "publish": "npm run build:node && npm login && npm publish"
@@ -27,8 +37,6 @@
     "normal",
     "gaussian",
     "bernoulli",
-    "gamma",
-    "beta",
     "shuffle",
     "derangement",
     "permutation",
@@ -42,7 +50,10 @@
     "tuchei prng",
     "seed",
     "moving average",
-    "roulette wheel"
+    "roulette wheel",
+    "uuid",
+    "base64",
+    "base62"
   ],
   "author": "Alexey S. Kiselev <alexeys.kiselev@yahoo.com>",
   "license": "ISC",

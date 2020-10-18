@@ -60,12 +60,12 @@ const prngTest = (prngName) => {
             values[i] = 0;
         }
         let temp;
-        for (let i = 0; i < 10000000; i += 1) {
+        for (let i = 0; i < 4000000; i += 1) {
             temp = prng.random();
             values[Math.floor(temp * 100)] += 1;
         }
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(100000, 1500);
+            expect(values[v]).to.be.closeTo(40000, 1000);
         }
         done();
     });
@@ -76,12 +76,12 @@ const prngTest = (prngName) => {
         for (let i = 0; i < 100; i += 1) {
             values[i] = 0;
         }
-        let temp = prng.random(10000000);
-        for (let i = 0; i < 10000000; i += 1) {
+        let temp = prng.random(4000000);
+        for (let i = 0; i < 4000000; i += 1) {
             values[Math.floor(temp[i] * 100)] += 1;
         }
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(100000, 1500);
+            expect(values[v]).to.be.closeTo(40000, 1000);
         }
         done();
     });
@@ -92,13 +92,13 @@ const prngTest = (prngName) => {
         for (let i = 0; i < 100; i += 1) {
             values[i] = 0;
         }
-        let temp = prng.random(30000000);
-        for (let i = 0; i < 30000000; i += 1) {
+        let temp = prng.random(2000000);
+        for (let i = 0; i < 2000000; i += 1) {
             values[Math.floor(temp[i] * 100)] += 1;
         }
 
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(300000, 3000);
+            expect(values[v]).to.be.closeTo(20000, 500);
         }
         done();
     });
@@ -121,7 +121,7 @@ const prngTest = (prngName) => {
             return true;
         };
         let temp;
-        for (let i = 0; i < 100; i += 1) {
+        for (let i = 0; i < 20; i += 1) {
             temp = prng.random(1000000);
             expect(check(temp)).to.be.equal(true);
         }
@@ -167,10 +167,10 @@ const prngTest = (prngName) => {
     it('should have max value close to 1 and min close to 0', function(done) {
         this.timeout(480000);
         prng.seed('seed test');
-        const random = prng.random(10000000);
-        let max_v = -1,
-            min_v = 2;
-        for (let i = 0; i < 10000000; i += 1) {
+        const random = prng.random(2000000);
+        let max_v = -Infinity,
+            min_v = +Infinity;
+        for (let i = 0; i < 2000000; i += 1) {
             max_v = Math.max(max_v, random[i]);
             min_v = Math.min(min_v, random[i]);
         }
@@ -246,4 +246,8 @@ describe('tt800 PRNG', () => {
 
 describe('Xorwow PRNG', () => {
     prngTest('xorwow');
+});
+
+describe('mt19937 PRNG', () => {
+    prngTest('mt19937');
 });

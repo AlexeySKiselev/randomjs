@@ -21,6 +21,32 @@ function meanValue(arr) {
     return res / arr.length;
 }
 
+describe('Distribution factory', () => {
+    it('should support .set_current_generator, .random, .next, .randomSync, .nextSync, .distribution, .distributionSync, .refresh, .isError', () => {
+        const DistributionFactory = require('../lib/distributionFactory').default;
+        const distributionFactory = new DistributionFactory();
+
+        expect(distributionFactory).to.have.property('set_current_generator');
+        expect(distributionFactory).to.respondsTo('set_current_generator');
+        expect(distributionFactory).to.have.property('random');
+        expect(distributionFactory).to.respondsTo('random');
+        expect(distributionFactory).to.have.property('next');
+        expect(distributionFactory).to.respondsTo('next');
+        expect(distributionFactory).to.have.property('randomSync');
+        expect(distributionFactory).to.respondsTo('randomSync');
+        expect(distributionFactory).to.have.property('nextSync');
+        expect(distributionFactory).to.respondsTo('nextSync');
+        expect(distributionFactory).to.have.property('distribution');
+        expect(distributionFactory).to.respondsTo('distribution');
+        expect(distributionFactory).to.have.property('distributionSync');
+        expect(distributionFactory).to.respondsTo('distributionSync');
+        expect(distributionFactory).to.have.property('isError');
+        expect(distributionFactory).to.respondsTo('isError');
+        expect(distributionFactory).to.have.property('refresh');
+        expect(distributionFactory).to.respondsTo('refresh');
+    });
+});
+
 describe('Random distributions without seed', () => {
     beforeEach(() => {
         prng.seed();
