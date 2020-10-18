@@ -465,8 +465,8 @@ describe('String Utils', () => {
             for (let l of alphabet) {
                 expect(letterOccurrence[l]).to.be.at.least(1);
             }
-            expect(letterOccurrence['0'] / (letterOccurrence['0'] + letterOccurrence['1'])).to.be.closeTo(0.3, 0.01);
-            expect(letterOccurrence['1'] / (letterOccurrence['0'] + letterOccurrence['1'])).to.be.closeTo(0.7, 0.01);
+            expect(letterOccurrence['0'] / (letterOccurrence['0'] + letterOccurrence['1'])).to.be.closeTo(0.3, 0.02);
+            expect(letterOccurrence['1'] / (letterOccurrence['0'] + letterOccurrence['1'])).to.be.closeTo(0.7, 0.02);
             done();
         });
         it('should generate string of "1" or "0" for given length and prob "p=1" or "p=0"', function(done) {
