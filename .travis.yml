@@ -7,17 +7,28 @@ branches:
 before_script:
   - npm install -g gulp
   - npm run build:node
-script:
-  - npm run test:analyzer
-  - npm run test:array-manipulation
-  - npm run test:distribution
-  - npm run test:encoder
-  - npm run test:hash
-  - npm run test:index
-  - npm run test:prng
-  - npm run test:random-color
-  - npm run test:stringutils
-  - npm run test:utils
+jobs:
+  include:
+    - name: Analyzer tests
+      script: npm run test:analyzer
+    - name: Array manipulation tests
+      script: npm run test:array-manipulation
+    - name: Distribution tests
+      script: npm run test:distribution
+    - name: Encoder tests
+      script: npm run test:encoder
+    - name: Hash tests
+      script: npm run test:hash
+    - name: Index tests
+      script: npm run test:index
+    - name: PRNG tests
+      script: npm run test:prng
+    - name: Random color tests
+      script: npm run test:random-color
+    - name: String utils tests
+      script: npm run test:stringutils
+    - name: Utils tests
+      script: npm run test:utils
 cache:
   directories:
     - "node_modules"
