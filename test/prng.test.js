@@ -65,7 +65,7 @@ const prngTest = (prngName) => {
             values[Math.floor(temp * 100)] += 1;
         }
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(40000, 800);
+            expect(values[v]).to.be.closeTo(40000, 1000);
         }
         done();
     });
@@ -81,7 +81,7 @@ const prngTest = (prngName) => {
             values[Math.floor(temp[i] * 100)] += 1;
         }
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(40000, 800);
+            expect(values[v]).to.be.closeTo(40000, 1000);
         }
         done();
     });
@@ -92,13 +92,13 @@ const prngTest = (prngName) => {
         for (let i = 0; i < 100; i += 1) {
             values[i] = 0;
         }
-        let temp = prng.random(6000000);
-        for (let i = 0; i < 6000000; i += 1) {
+        let temp = prng.random(2000000);
+        for (let i = 0; i < 2000000; i += 1) {
             values[Math.floor(temp[i] * 100)] += 1;
         }
 
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(60000, 1200);
+            expect(values[v]).to.be.closeTo(20000, 500);
         }
         done();
     });
@@ -121,7 +121,7 @@ const prngTest = (prngName) => {
             return true;
         };
         let temp;
-        for (let i = 0; i < 100; i += 1) {
+        for (let i = 0; i < 20; i += 1) {
             temp = prng.random(1000000);
             expect(check(temp)).to.be.equal(true);
         }

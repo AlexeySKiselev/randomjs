@@ -575,7 +575,7 @@ describe('String Utils', () => {
                 this.timeout(480000);
                 unirand.seed();
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('betterguid');
                     expect(randomUid).to.be.a('string');
                     expect(randomUid.length).to.be.equal(17);
@@ -618,7 +618,7 @@ describe('String Utils', () => {
                 this.timeout(480000);
                 unirand.seed();
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('ksuid');
                     expect(randomUid).to.be.a('string');
                     expect(randomUid.length).to.be.equal(27);
@@ -661,7 +661,7 @@ describe('String Utils', () => {
                 this.timeout(480000);
                 unirand.seed();
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('shortuuid');
                     expect(randomUid).to.be.a('string');
                     expect(randomUid.length).to.be.equal(22);
@@ -686,7 +686,7 @@ describe('String Utils', () => {
                 this.timeout(480000);
                 unirand.seed();
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('sno');
                     expect(randomUid).to.be.a('string');
                     expect(randomUid.length).to.be.equal(16);
@@ -707,7 +707,7 @@ describe('String Utils', () => {
                 this.timeout(480000);
                 unirand.seed();
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('snowflake');
                     expect(randomUid).to.be.a('string');
                     expect(randomUid.length).to.be.equal(20);
@@ -721,7 +721,7 @@ describe('String Utils', () => {
                 const alphabet_indexes = alphabet.split('')
                     .reduce((res, letter, index) => {res[letter] = index; return res;}, {});
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('snowflake');
                     expect(randomUid).to.be.a('string');
                     expect(checkLettersInAlphabet(randomUid, alphabet_indexes, alphabet[0])).to.be.equal(true);
@@ -734,7 +734,7 @@ describe('String Utils', () => {
                 this.timeout(480000);
                 unirand.seed();
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('sonyflake');
                     expect(randomUid).to.be.a('string');
                     expect(randomUid.length).to.be.equal(17);
@@ -748,7 +748,7 @@ describe('String Utils', () => {
                 const alphabet_indexes = alphabet.split('')
                     .reduce((res, letter, index) => {res[letter] = index; return res;}, {});
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('sonyflake');
                     expect(randomUid).to.be.a('string');
                     expect(checkLettersInAlphabet(randomUid, alphabet_indexes, alphabet[0])).to.be.equal(true);
@@ -761,7 +761,7 @@ describe('String Utils', () => {
                 this.timeout(480000);
                 unirand.seed();
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('ulid');
                     expect(randomUid).to.be.a('string');
                     expect(randomUid.length).to.be.equal(23);
@@ -804,7 +804,7 @@ describe('String Utils', () => {
                 this.timeout(480000);
                 unirand.seed();
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('uuid');
                     expect(randomUid).to.be.a('string');
                     expect(randomUid.length).to.be.equal(36);
@@ -849,7 +849,7 @@ describe('String Utils', () => {
                 const alphabet_indexes = alphabet.split('')
                     .reduce((res, letter, index) => {res[letter] = index; return res;}, {});
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('uuid');
                     expect(randomUid).to.be.a('string');
                     expect(checkLettersInAlphabet(randomUid, alphabet_indexes, alphabet[0])).to.be.equal(true);
@@ -862,7 +862,7 @@ describe('String Utils', () => {
                 this.timeout(480000);
                 unirand.seed();
                 let randomUid;
-                for (let i = 0; i < 1000000; i += 1) {
+                for (let i = 0; i < 200000; i += 1) {
                     randomUid = StringUtils.randomUID('xid');
                     expect(randomUid).to.be.a('string');
                     expect(randomUid.length).to.be.equal(20);
