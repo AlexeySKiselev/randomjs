@@ -6,6 +6,18 @@ branches:
     - master
 before_script:
   - npm install -g gulp
+  - npm run build:node
+script:
+  - npm run test:analyzer
+  - npm run test:array-manipulation
+  - npm run test:distribution
+  - npm run test:encoder
+  - npm run test:hash
+  - npm run test:index
+  - npm run test:prng
+  - npm run test:random-color
+  - npm run test:stringutils
+  - npm run test:utils
 cache:
   directories:
     - "node_modules"
