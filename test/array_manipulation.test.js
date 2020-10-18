@@ -1221,7 +1221,7 @@ describe('Array manipulation methods', () => {
         it('should return indexes with probability due to weights', function(done) {
             this.timeout(480000);
             const testsCount = 10;
-            const selectCount = 500000;
+            const selectCount = 200000;
             const weightsCount = 6;
             let weights = [];
             let weightsHashTable = {};

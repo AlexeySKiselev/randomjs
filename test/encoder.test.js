@@ -73,8 +73,8 @@ describe('Encoder', () => {
             let randomString;
             let encoded;
             let decoded;
-            for (let i = 0; i < 500000; i += 1) {
-                stringSize = Math.floor(50 + Math.random() * 450);
+            for (let i = 0; i < 100000; i += 1) {
+                stringSize = Math.floor(50 + Math.random() * 250);
                 randomString = getRandomString(stringSize);
                 encoded = encoderProxy.encode(randomString);
                 expect(encoded).to.be.a('string');
@@ -98,8 +98,8 @@ describe('Encoder', () => {
             let randomString;
             let encoded;
             let decoded;
-            for (let i = 0; i < 500000; i += 1) {
-                stringSize = Math.floor(50 + Math.random() * 450);
+            for (let i = 0; i < 100000; i += 1) {
+                stringSize = Math.floor(50 + Math.random() * 250);
                 randomString = getRandomString(stringSize);
                 encoded = encoderProxy.encode(randomString);
                 expect(encoded).to.be.a('string');
@@ -131,8 +131,8 @@ describe('Encoder', () => {
             let randomString;
             let encoded;
             let decoded;
-            for (let i = 0; i < 500000; i += 1) {
-                stringSize = Math.floor(50 + Math.random() * 450);
+            for (let i = 0; i < 100000; i += 1) {
+                stringSize = Math.floor(50 + Math.random() * 250);
                 randomString = getRandomString(stringSize);
                 encoded = encoderProxy.encode(randomString);
                 expect(encoded).to.be.a('string');
@@ -163,8 +163,8 @@ describe('Encoder', () => {
             let randomString;
             let encoded;
             let decoded;
-            for (let i = 0; i < 500000; i += 1) {
-                stringSize = Math.floor(50 + Math.random() * 450);
+            for (let i = 0; i < 100000; i += 1) {
+                stringSize = Math.floor(50 + Math.random() * 250);
                 randomString = getRandomString(stringSize);
                 encoded = encoderProxy.encode(randomString);
                 expect(encoded).to.be.a('string');
@@ -195,8 +195,8 @@ describe('Encoder', () => {
             let randomString;
             let encoded;
             let decoded;
-            for (let i = 0; i < 500000; i += 1) {
-                stringSize = Math.floor(50 + Math.random() * 450);
+            for (let i = 0; i < 100000; i += 1) {
+                stringSize = Math.floor(50 + Math.random() * 250);
                 randomString = getRandomString(stringSize);
                 encoded = encoderProxy.encode(randomString);
                 expect(encoded).to.be.a('string');
@@ -227,8 +227,8 @@ describe('Encoder', () => {
             let randomString;
             let encoded;
             let decoded;
-            for (let i = 0; i < 500000; i += 1) {
-                stringSize = Math.floor(50 + Math.random() * 450);
+            for (let i = 0; i < 100000; i += 1) {
+                stringSize = Math.floor(50 + Math.random() * 250);
                 randomString = getRandomString(stringSize);
                 encoded = encoderProxy.encode(randomString);
                 expect(encoded).to.be.a('string');
