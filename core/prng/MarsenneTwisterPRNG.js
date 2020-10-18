@@ -1,9 +1,8 @@
 // @flow
 /**
- * r250 PRNG
- * S. Kirkpatrick and E. Stoll, “A very fast shift-register sequence random number generator”, Journal of Computational Physics, 40, 517–526 (1981)
- * x_n = x_{n-103} ^ x_{n-250}
- * Period: ~2^250
+ * Marsenne Twister PRNG
+ * https://en.wikipedia.org/wiki/Mersenne_Twister
+ * Period: ~2^19937 - 1
  */
 
 import BasicPRNG from './BasicPRNG';
@@ -11,12 +10,11 @@ import TucheiPRNG from './TucheiPRNG';
 import type { IPRNG } from '../interfaces';
 import type {NumberString} from '../types';
 
-const WORD_LEFT: number = 250;
-const WORD_RIGHT: number = 103;
-const NEGATIVE_WORD_RIGHT: number = WORD_LEFT - WORD_RIGHT; // need it for simplify calculation
-const RECALCULATE_FREQ: number = 65536;
+const WORD_LEFT: number = 624;
+const WORD_RIGHT: number = 397;
+const RECALCULATE_FREQ: number = 65536; // 2 ^ 16
 
-class R250PRNG extends BasicPRNG implements IPRNG {
+class MarsenneTwisterPRNG extends BasicPRNG implements IPRNG {
 
     _localPrng: IPRNG;
     _words: Array<number>;
@@ -122,9 +120,14 @@ class R250PRNG extends BasicPRNG implements IPRNG {
 
     _nextInt(): number {
         let res: number;
-
-        this._words[this._pointer] = this._words[(this._pointer + NEGATIVE_WORD_RIGHT) % WORD_LEFT] ^ this._words[this._pointer];
+        const lsbY: number = (this._words[this._pointer] & 0x80000000) | (this._words[(this._pointer + 1) % WORD_LEFT] & 0x7fffffff);
+        const lsb: number = ((lsbY & 0x1) === 0) ? 0 : 0x9908b0df;
+        this._words[this._pointer] = this._words[(this._pointer + WORD_RIGHT) % WORD_LEFT] ^ (lsbY >> 1) ^ lsb;
         res = this._words[this._pointer];
+        res = res ^ (res >>> 11);
+        res = res ^ ((res << 7) & 0x9D2C5680);
+        res = res ^ ((res << 15) & 0xefc60000);
+        res = res ^ (res >>> 18);
         this._pointer = (this._pointer + 1) % WORD_LEFT;
 
         return res;
@@ -139,4 +142,4 @@ class R250PRNG extends BasicPRNG implements IPRNG {
     }
 }
 
-export default R250PRNG;
+export default MarsenneTwisterPRNG;

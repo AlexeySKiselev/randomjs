@@ -22,7 +22,7 @@ function meanValue(arr) {
 }
 
 describe('Distribution factory', () => {
-    it('Factory should support .set_current_generator, .random, .next, .randomSync, .nextSync, .distribution, .distributionSync, .refresh, .isError', () => {
+    it('should support .set_current_generator, .random, .next, .randomSync, .nextSync, .distribution, .distributionSync, .refresh, .isError', () => {
         const DistributionFactory = require('../lib/distributionFactory').default;
         const distributionFactory = new DistributionFactory();
 

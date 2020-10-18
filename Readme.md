@@ -65,19 +65,20 @@ Unirand supports different PRNGs:
 
 | Name | Description | Performance | Supports seed |
 |---|---|---|---|
-| `default` | Default JS PRNG | fast | No |
-| `tuchei` | Tuchei PRNG, period ~2<sup>32</sup> | very fast | Yes |
-| `xorshift` | Xorshift PRNG, period ~2<sup>32</sup> | very fast | Yes |
-| `kiss` | Kiss PRNG, period ~2<sup>30</sup> | fast | Yes |
-| `parkmiller` | Park-Miller PRNG, period ~2<sup>31</sup> | medium | Yes |
-| `coveyou` | Coveyou PRNG, period ~2<sup>31</sup> | slow | Yes |
-| `knuthran2` | knuthran2 PRNG, period ~10<sup>18</sup> | slow | Yes |
-| `r250` | r250 PRNG, period ~2<sup>250</sup> | very fast | Yes |
-| `mrg5` | Fifth-order multiple recursive PRNG, period ~10<sup>46</sup> | slow | Yes |
-| `gfsr4` | gfsr4 PRNG, period ~2<sup>9689</sup> | fast | Yes |
-| `dx1597` | Dx-1957-f PRNG, period ~10<sup>14903</sup> | slow | Yes |
-| `tt800` | TT800 PRNG, period ~10<sup>240</sup> | medium | Yes |
-| `xorwow` | Xorwow PRNG, period ~10<sup>38</sup> | medium | Yes |
+| default | Default JS PRNG | fast | No |
+| tuchei | Tuchei PRNG, period ~2<sup>32</sup> | very fast | Yes |
+| xorshift | Xorshift PRNG, period ~2<sup>32</sup> | very fast | Yes |
+| kiss | Kiss PRNG, period ~2<sup>30</sup> | fast | Yes |
+| parkmiller | Park-Miller PRNG, period ~2<sup>31</sup> | medium | Yes |
+| coveyou | Coveyou PRNG, period ~2<sup>31</sup> | slow | Yes |
+| knuthran2 | knuthran2 PRNG, period ~10<sup>18</sup> | slow | Yes |
+| r250 | r250 PRNG, period ~2<sup>250</sup> | very fast | Yes |
+| mrg5 | Fifth-order multiple recursive PRNG, period ~10<sup>46</sup> | slow | Yes |
+| gfsr4 | gfsr4 PRNG, period ~2<sup>9689</sup> | fast | Yes |
+| dx1597 | Dx-1957-f PRNG, period ~10<sup>14903</sup> | slow | Yes |
+| tt800 | TT800 PRNG, period ~10<sup>240</sup> | medium | Yes |
+| xorwow | Xorwow PRNG, period ~10<sup>38</sup> | medium | Yes |
+| mt19937 | Marsenne Twister PRNG, period ~2<sup>19937</sup> | fast | Yes |
 
 #### .random(), .randomInt() and .randomInRange(from, to)
 Returns random uniformly distributed value or array of length *n*. Returns different value each time without seed and same value with seed value.

@@ -168,8 +168,8 @@ const prngTest = (prngName) => {
         this.timeout(480000);
         prng.seed('seed test');
         const random = prng.random(10000000);
-        let max_v = -1,
-            min_v = 2;
+        let max_v = -Infinity,
+            min_v = +Infinity;
         for (let i = 0; i < 10000000; i += 1) {
             max_v = Math.max(max_v, random[i]);
             min_v = Math.min(min_v, random[i]);
@@ -246,4 +246,8 @@ describe('tt800 PRNG', () => {
 
 describe('Xorwow PRNG', () => {
     prngTest('xorwow');
+});
+
+describe('mt19937 PRNG', () => {
+    prngTest('mt19937');
 });

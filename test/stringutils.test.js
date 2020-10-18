@@ -469,6 +469,54 @@ describe('String Utils', () => {
             expect(letterOccurrence['1'] / (letterOccurrence['0'] + letterOccurrence['1'])).to.be.closeTo(0.7, 0.01);
             done();
         });
+        it('should generate string of "1" or "0" for given length and prob "p=1" or "p=0"', function(done) {
+            this.timeout(480000);
+            let stringLength;
+            const alphabet1 = '1';
+            const alphabet_indexes1 = alphabet1.split('')
+                .reduce((res, letter, index) => {res[letter] = index; return res;}, {});
+            let randomString;
+            for (let i = 0; i < 100000; i += 1) {
+                stringLength = 50;
+                randomString = StringUtils.randomBitString(stringLength, 1.0);
+                expect(randomString).to.be.a('string');
+                expect(randomString.length).to.be.equal(stringLength);
+                expect(checkLettersInAlphabet(randomString, alphabet_indexes1, alphabet1[0])).to.be.equal(true);
+            }
+            const alphabet0 = '0';
+            const alphabet_indexes0 = alphabet0.split('')
+                .reduce((res, letter, index) => {res[letter] = index; return res;}, {});
+            for (let i = 0; i < 100000; i += 1) {
+                stringLength = 50;
+                randomString = StringUtils.nextBitString(stringLength, 0.0);
+                expect(randomString).to.be.a('string');
+                expect(randomString.length).to.be.equal(stringLength);
+                expect(checkLettersInAlphabet(randomString, alphabet_indexes0, alphabet0[0])).to.be.equal(true);
+            }
+            done();
+        });
+        it('should throw error for wrong prob value', () => {
+            const wrongProb1 = () => {
+                StringUtils.randomBitString(10, 1.1);
+            };
+            wrongProb1.should.throw(Error);
+            const wrongProb2 = () => {
+                StringUtils.randomBitString(10, -0.1);
+            };
+            wrongProb2.should.throw(Error);
+            const wrongProb3 = () => {
+                StringUtils.randomBitString(10, 'abc');
+            };
+            wrongProb3.should.throw(Error);
+            const wrongProb4 = () => {
+                StringUtils.randomBitString(10, [1, 2]);
+            };
+            wrongProb4.should.throw(Error);
+            const wrongProb5 = () => {
+                StringUtils.randomBitString(10, {1: 1});
+            };
+            wrongProb5.should.throw(Error);
+        });
         it('should generate random strings each time for unseeded prng', () => {
             unirand.seed();
             const randomStrings = {};
