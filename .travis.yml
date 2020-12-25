@@ -1,12 +1,6 @@
 language: node_js
 node_js:
-  - "node"
-  - "lts/*"
   - "6"
-  - "8"
-  - "10"
-  - "12"
-  - "14"
 branches:
   only:
     - master
@@ -17,6 +11,14 @@ jobs:
   include:
     - name: Analyzer tests
       script: npm run test:analyzer
+      node_js:
+        - "node"
+        - "lts/*"
+        - "6"
+        - "8"
+        - "10"
+        - "12"
+        - "14"
     - name: Array manipulation tests
       script: npm run test:array-manipulation
     - name: Distribution tests
