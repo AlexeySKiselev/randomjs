@@ -59,7 +59,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "7.x",
-    "@babel/plugin-proposal-decorators": "^7.12.12",
+    "@babel/plugin-proposal-decorators": "7.x",
     "@babel/preset-env": "7.x",
     "@babel/preset-flow": "7.x",
     "babel-eslint": "10.x",
@@ -68,7 +68,7 @@
     "eslint-plugin-flowtype": "5.x",
     "eslint-plugin-mocha": "8.x",
     "flow": "^0.2.3",
-    "flow-bin": "0.141.0",
+    "flow-bin": "^0.141.0",
     "flowtype": "^2.0.0",
     "gulp": "4.x",
     "gulp-babel": "8.x",

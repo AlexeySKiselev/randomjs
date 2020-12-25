@@ -1,6 +1,8 @@
+os: linux
+dist: bionic
 language: node_js
 node_js:
-  - "10"
+  - "12"
 branches:
   only:
     - master
@@ -10,7 +12,8 @@ before_script:
   - npm run build:node
 jobs:
   include:
-    - name: Analyzer tests
+    - stage: Tests
+      name: Analyzer tests
       script: npm run test:analyzer
     - name: Array manipulation tests
       script: npm run test:array-manipulation
