@@ -5,6 +5,8 @@ branches:
   only:
     - master
 before_install:
+  - echo "TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
   - if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" ]]; then echo "NOT a PullRequest, skipping tests" && travis_terminate 0; fi
 before_script:
   - npm install -g gulp
