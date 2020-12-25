@@ -4,6 +4,8 @@ language: node_js
 branches:
   only:
     - master
+before_install:
+  - if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then echo "NOT a PullRequest, skipping tests" && travis_terminate 0; fi
 before_script:
   - npm install -g gulp
   - npm run lint
@@ -103,68 +105,6 @@ jobs:
     - name: Utils tests
       script: npm run test:utils
       node_js: "10"
-    - stage: Tests (NodeJS 8.x)
-      name: Analyzer tests
-      script: npm run test:analyzer
-      node_js: "8"
-    - name: Array manipulation tests
-      script: npm run test:array-manipulation
-      node_js: "8"
-    - name: Distribution tests
-      script: npm run test:distribution
-      node_js: "8"
-    - name: Encoder tests
-      script: npm run test:encoder
-      node_js: "8"
-    - name: Hash tests
-      script: npm run test:hash
-      node_js: "8"
-    - name: Index tests
-      script: npm run test:index
-      node_js: "8"
-    - name: PRNG tests
-      script: npm run test:prng
-      node_js: "8"
-    - name: Random color tests
-      script: npm run test:random-color
-      node_js: "8"
-    - name: String utils tests
-      script: npm run test:stringutils
-      node_js: "8"
-    - name: Utils tests
-      script: npm run test:utils
-      node_js: "8"
-    - stage: Tests (NodeJS 6.x)
-      name: Analyzer tests
-      script: npm run test:analyzer
-      node_js: "6"
-    - name: Array manipulation tests
-      script: npm run test:array-manipulation
-      node_js: "6"
-    - name: Distribution tests
-      script: npm run test:distribution
-      node_js: "6"
-    - name: Encoder tests
-      script: npm run test:encoder
-      node_js: "6"
-    - name: Hash tests
-      script: npm run test:hash
-      node_js: "6"
-    - name: Index tests
-      script: npm run test:index
-      node_js: "6"
-    - name: PRNG tests
-      script: npm run test:prng
-      node_js: "6"
-    - name: Random color tests
-      script: npm run test:random-color
-      node_js: "6"
-    - name: String utils tests
-      script: npm run test:stringutils
-      node_js: "6"
-    - name: Utils tests
-      script: npm run test:utils
-      node_js: "6"
 cache:
   directories:
     - "node_modules"
