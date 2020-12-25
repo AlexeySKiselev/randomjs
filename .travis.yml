@@ -1,34 +1,170 @@
+os: linux
+dist: bionic
 language: node_js
-node_js:
-  - "6.11"
 branches:
   only:
     - master
 before_script:
   - npm install -g gulp
+  - npm run lint
   - npm run build:node
 jobs:
   include:
-    - name: Analyzer tests
+    - stage: Tests (Latest NodeJS LTS)
+      name: Analyzer tests
       script: npm run test:analyzer
+      node_js: "lts/*"
     - name: Array manipulation tests
       script: npm run test:array-manipulation
+      node_js: "lts/*"
     - name: Distribution tests
       script: npm run test:distribution
+      node_js: "lts/*"
     - name: Encoder tests
       script: npm run test:encoder
+      node_js: "lts/*"
     - name: Hash tests
       script: npm run test:hash
+      node_js: "lts/*"
     - name: Index tests
       script: npm run test:index
+      node_js: "lts/*"
     - name: PRNG tests
       script: npm run test:prng
+      node_js: "lts/*"
     - name: Random color tests
       script: npm run test:random-color
+      node_js: "lts/*"
     - name: String utils tests
       script: npm run test:stringutils
+      node_js: "lts/*"
     - name: Utils tests
       script: npm run test:utils
+      node_js: "lts/*"
+    - stage: Tests (NodeJS 12.x)
+      name: Analyzer tests
+      script: npm run test:analyzer
+      node_js: "12"
+    - name: Array manipulation tests
+      script: npm run test:array-manipulation
+      node_js: "12"
+    - name: Distribution tests
+      script: npm run test:distribution
+      node_js: "12"
+    - name: Encoder tests
+      script: npm run test:encoder
+      node_js: "12"
+    - name: Hash tests
+      script: npm run test:hash
+      node_js: "12"
+    - name: Index tests
+      script: npm run test:index
+      node_js: "12"
+    - name: PRNG tests
+      script: npm run test:prng
+      node_js: "12"
+    - name: Random color tests
+      script: npm run test:random-color
+      node_js: "12"
+    - name: String utils tests
+      script: npm run test:stringutils
+      node_js: "12"
+    - name: Utils tests
+      script: npm run test:utils
+      node_js: "12"
+    - stage: Tests (NodeJS 10.x)
+      name: Analyzer tests
+      script: npm run test:analyzer
+      node_js: "10"
+    - name: Array manipulation tests
+      script: npm run test:array-manipulation
+      node_js: "10"
+    - name: Distribution tests
+      script: npm run test:distribution
+      node_js: "10"
+    - name: Encoder tests
+      script: npm run test:encoder
+      node_js: "10"
+    - name: Hash tests
+      script: npm run test:hash
+      node_js: "10"
+    - name: Index tests
+      script: npm run test:index
+      node_js: "10"
+    - name: PRNG tests
+      script: npm run test:prng
+      node_js: "10"
+    - name: Random color tests
+      script: npm run test:random-color
+      node_js: "10"
+    - name: String utils tests
+      script: npm run test:stringutils
+      node_js: "10"
+    - name: Utils tests
+      script: npm run test:utils
+      node_js: "10"
+    - stage: Tests (NodeJS 8.x)
+      name: Analyzer tests
+      script: npm run test:analyzer
+      node_js: "8"
+    - name: Array manipulation tests
+      script: npm run test:array-manipulation
+      node_js: "8"
+    - name: Distribution tests
+      script: npm run test:distribution
+      node_js: "8"
+    - name: Encoder tests
+      script: npm run test:encoder
+      node_js: "8"
+    - name: Hash tests
+      script: npm run test:hash
+      node_js: "8"
+    - name: Index tests
+      script: npm run test:index
+      node_js: "8"
+    - name: PRNG tests
+      script: npm run test:prng
+      node_js: "8"
+    - name: Random color tests
+      script: npm run test:random-color
+      node_js: "8"
+    - name: String utils tests
+      script: npm run test:stringutils
+      node_js: "8"
+    - name: Utils tests
+      script: npm run test:utils
+      node_js: "8"
+    - stage: Tests (NodeJS 6.x)
+      name: Analyzer tests
+      script: npm run test:analyzer
+      node_js: "6"
+    - name: Array manipulation tests
+      script: npm run test:array-manipulation
+      node_js: "6"
+    - name: Distribution tests
+      script: npm run test:distribution
+      node_js: "6"
+    - name: Encoder tests
+      script: npm run test:encoder
+      node_js: "6"
+    - name: Hash tests
+      script: npm run test:hash
+      node_js: "6"
+    - name: Index tests
+      script: npm run test:index
+      node_js: "6"
+    - name: PRNG tests
+      script: npm run test:prng
+      node_js: "6"
+    - name: Random color tests
+      script: npm run test:random-color
+      node_js: "6"
+    - name: String utils tests
+      script: npm run test:stringutils
+      node_js: "6"
+    - name: Utils tests
+      script: npm run test:utils
+      node_js: "6"
 cache:
   directories:
     - "node_modules"

@@ -119,6 +119,7 @@ class Chi implements IDistribution {
         if(this.degrees >= 1){
             return Math.sqrt(this.degrees - 1);
         }
+        return undefined;
     }
 
     /**

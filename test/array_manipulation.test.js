@@ -205,8 +205,7 @@ describe('Array manipulation methods', () => {
             this.timeout(480000);
             let sample = new Sample(),
                 input_arr = [],
-                correctOrders = 0,
-                temp; // eslint-disable-line no-unused-vars
+                correctOrders = 0;
 
             // function for checking correct order
             let checkOrder = (input) => {
@@ -223,17 +222,9 @@ describe('Array manipulation methods', () => {
                 input_arr[i - 1] = i;
             }
 
-            for(let j = 0; j < 20000; j += 1) {
-                temp = sample.getSample(input_arr, 1000);
-                if(checkOrder(input_arr)) {
-                    correctOrders += 1;
-                }
-            }
-            expect(correctOrders).to.be.equal(20000);
-
             correctOrders = 0;
             for(let j = 0; j < 20000; j += 1) {
-                temp = sample.getSample(input_arr, 5000);
+                sample.getSample(input_arr, 5000);
                 if(checkOrder(input_arr)) {
                     correctOrders += 1;
                 }
