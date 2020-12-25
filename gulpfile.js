@@ -8,22 +8,29 @@ let gulp = require('gulp'),
     babel = require('gulp-babel');
 
 // Bundle main Index File
-gulp.task('build:node',function(){
+gulp.task('build:node', async function() {
     gulp.src([
         './index.js',
         './core/**/*.js'
     ]).
         on('error', function(){
-            console.error('Error');
+            console.error('Error occurred during build');
             this.emit('end');
         }).
         pipe(babel({
-            presets: ['es2015', 'flow'],
-            plugins: ['transform-decorators-legacy']
+            presets: ['@babel/preset-env', '@babel/preset-flow'],
+            plugins: [
+                [
+                    '@babel/plugin-proposal-decorators',
+                    {
+                        'legacy': true
+                    }
+                ]
+            ]
         })).
         pipe(replace(/(\/core)/g,'')).
         pipe(gulp.dest('./lib/'));
 });
 
 // Default task
-gulp.task('default', ['build:node']);
+gulp.task('default', gulp.series('build:node'));
