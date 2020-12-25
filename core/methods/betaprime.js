@@ -142,6 +142,7 @@ class BetaPrime implements IDistribution {
         if(this.beta > 2){
             return this.alpha * (this.alpha + this.beta - 1) / ((this.beta - 1) * (this.beta - 1) * (this.beta - 2));
         }
+        return undefined;
     }
 
     /**

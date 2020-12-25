@@ -22,42 +22,42 @@ describe('RandomColor', () => {
     const unirand = require('../lib');
     it('requires at least one input argument', () => {
         let zeroParams = () => {
-            const rc = new RandomColor();
+            return new RandomColor();
         };
         zeroParams.should.throw(Error);
 
         let badParam = () => {
-            const rc = new RandomColor('abc');
+            return new RandomColor('abc');
         };
         badParam.should.throw(Error);
 
         let badParam2 = () => {
-            const rc = new RandomColor([1, 2]);
+            return new RandomColor([1, 2]);
         };
         badParam2.should.throw(Error);
 
         let badParam3 = () => {
-            const rc = new RandomColor(-1);
+            return new RandomColor(-1);
         };
         badParam3.should.throw(Error);
 
         let badParam4 = () => {
-            const rc = new RandomColor(1.1);
+            return new RandomColor(1.1);
         };
         badParam4.should.throw(Error);
 
         let goodParam = () => {
-            const rc = new RandomColor(1);
+            return new RandomColor(1);
         };
         goodParam.should.not.throw(Error);
 
         let goodParam2 = () => {
-            const rc = new RandomColor(0);
+            return new RandomColor(0);
         };
         goodParam2.should.not.throw(Error);
 
         let goodParam3 = () => {
-            const rc = new RandomColor(0.5);
+            return new RandomColor(0.5);
         };
         goodParam3.should.not.throw(Error);
     });
@@ -92,7 +92,7 @@ describe('RandomColor', () => {
         const rgb = unirand.randomColor(0.7, 'rgb');
         expect(rgb).to.be.an('array');
         expect(rgb.length).to.be.equal(3);
-        for (let i = 0; i > 3; i += 1) {
+        for (let i = 0; i < 3; i += 1) {
             expect(rgb[i]).to.be.a('number');
         }
 
@@ -103,7 +103,7 @@ describe('RandomColor', () => {
         const rgb2 = unirand.nextColor(0.7, 'rgb');
         expect(rgb2).to.be.an('array');
         expect(rgb2.length).to.be.equal(3);
-        for (let i = 0; i > 3; i += 1) {
+        for (let i = 0; i < 3; i += 1) {
             expect(rgb2[i]).to.be.a('number');
         }
 
