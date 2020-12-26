@@ -22,6 +22,8 @@ class MarsenneTwisterPRNG extends BasicPRNG implements IPRNG {
     _recalculate_counter: number;
     _no_seed: boolean;
     _state: {[prop: string]: number}; // state after setting seed
+    _pointers1: Array<number>;
+    _pointersRight: Array<number>;
 
     constructor() {
         super();
@@ -29,13 +31,26 @@ class MarsenneTwisterPRNG extends BasicPRNG implements IPRNG {
         this._state = {};
         this._localPrng = new TucheiPRNG();
         this._recalculate_counter = 0;
+        this._pointers1 = this._generate_shifted_pointers(1);
+        this._pointersRight = this._generate_shifted_pointers(WORD_RIGHT);
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @param {number} pointer
      * @private
+     * @override
      */
     _initialize(pointer: number = 0): void {
         this._localPrng.seed(this._seed);
@@ -57,6 +72,7 @@ class MarsenneTwisterPRNG extends BasicPRNG implements IPRNG {
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
         this._pointer = this._state._pointer;
@@ -79,6 +95,7 @@ class MarsenneTwisterPRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -98,6 +115,7 @@ class MarsenneTwisterPRNG extends BasicPRNG implements IPRNG {
     seed(seed_value: ?NumberString): void {
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._pointer = this._seed % WORD_LEFT;
@@ -114,22 +132,44 @@ class MarsenneTwisterPRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
 
+    /**
+     * @override
+     * @returns {number}
+     * @private
+     */
     _nextInt(): number {
         let res: number;
-        const lsbY: number = (this._words[this._pointer] & 0x80000000) | (this._words[(this._pointer + 1) % WORD_LEFT] & 0x7fffffff);
+        const lsbY: number = (this._words[this._pointer] & 0x80000000) | (this._words[this._pointers1[this._pointer]] & 0x7fffffff);
         const lsb: number = ((lsbY & 0x1) === 0) ? 0 : 0x9908b0df;
-        this._words[this._pointer] = this._words[(this._pointer + WORD_RIGHT) % WORD_LEFT] ^ (lsbY >> 1) ^ lsb;
+        this._words[this._pointer] = this._words[this._pointersRight[this._pointer]] ^ (lsbY >> 1) ^ lsb;
         res = this._words[this._pointer];
         res = res ^ (res >>> 11);
         res = res ^ ((res << 7) & 0x9D2C5680);
         res = res ^ ((res << 15) & 0xefc60000);
         res = res ^ (res >>> 18);
-        this._pointer = (this._pointer + 1) % WORD_LEFT;
+        this._pointer += 1;
+        if (this._pointer >= WORD_LEFT) {
+            this._pointer = this._pointer % WORD_LEFT;
+        }
 
+        return res;
+    }
+
+    /**
+     * Pre-calculate shifted pointers for performance reasons
+     * @returns {Array<number>}
+     * @private
+     */
+    _generate_shifted_pointers(shift: number): Array<number> {
+        const res: Array<number> = [];
+        for (let i = 0; i < WORD_LEFT; i += 1) {
+            res[i] = (i + shift) % WORD_LEFT;
+        }
         return res;
     }
 

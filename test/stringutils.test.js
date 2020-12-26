@@ -93,7 +93,7 @@ describe('String Utils', () => {
             let randomString;
             const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             for (let i = 0; i < 10000; i += 1) {
-                randomString = StringUtils.random(alphabet, 50);
+                randomString = StringUtils.random(alphabet, 100);
                 randomStrings[randomString] = 1;
             }
             expect(Object.keys(randomStrings).length).to.be.equal(10000);
@@ -157,7 +157,7 @@ describe('String Utils', () => {
             const randomStrings = {};
             let randomString;
             for (let i = 0; i < 10000; i += 1) {
-                randomString = StringUtils.randomAlphabetic(50);
+                randomString = StringUtils.randomAlphabetic(100);
                 randomStrings[randomString] = 1;
             }
             expect(Object.keys(randomStrings).length).to.be.equal(10000);
@@ -220,7 +220,7 @@ describe('String Utils', () => {
             const randomStrings = {};
             let randomString;
             for (let i = 0; i < 10000; i += 1) {
-                randomString = StringUtils.randomAscii(50);
+                randomString = StringUtils.randomAscii(100);
                 randomStrings[randomString] = 1;
             }
             expect(Object.keys(randomStrings).length).to.be.equal(10000);
@@ -283,7 +283,7 @@ describe('String Utils', () => {
             const randomStrings = {};
             let randomString;
             for (let i = 0; i < 10000; i += 1) {
-                randomString = StringUtils.randomAlphanumeric(50);
+                randomString = StringUtils.randomAlphanumeric(100);
                 randomStrings[randomString] = 1;
             }
             expect(Object.keys(randomStrings).length).to.be.equal(10000);

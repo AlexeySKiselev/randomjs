@@ -40,20 +40,21 @@ class PRNGProxy implements IPRNGProxy {
         this._seed = undefined;
         /*
         On machine: Ubuntu 18.04 x64, Intel® Core™ i7-6600U CPU @ 2.60GHz × 4
+        Tested on 400M .next() operations
         default: 4712 ms, 85M per sec
         tuchei: 1550 ms, 258M per sec
         xorshift: 1538 ms, 260M per sec
         kiss: 3616 ms, 110M per sec
         parkmiller: 6814 ms, 58M per sec
-        coveyou: 494885 ms, 808K per sec
-        knuthran2: 256272 ms, 1.5M per sec
-        r250: 2493 ms, 160M per sec
-        mrg5: 254178 ms, 1.5M per sec
-        gfsr4: 3631 ms, 110M per sec
-        dx1597: 133783 ms, 3M per sec
+        coveyou: 238704 ms, 1.7M per sec
+        knuthran2: 117532 ms, 3.4M per sec
+        r250: 1575 ms, 254M per sec
+        mrg5: 112347 ms, 3.6M per sec
+        gfsr4: 2890 ms, 138M per sec
+        dx1597: 50161ms, 8M per sec
         tt800: 10434 ms, 38M per sec
-        xorwow: 6493 ms, 61M per sec
-        mt19937: 2580 ms, 150M per sec
+        xorwow: 3093 ms, 130M per sec
+        mt19937: 6250 ms, 64M per sec
          */
         this._allowed_generators = {
             'default': DefaultPRNG,

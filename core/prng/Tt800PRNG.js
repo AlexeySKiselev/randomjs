@@ -35,12 +35,23 @@ class Tt800PRNG extends BasicPRNG implements IPRNG {
         this._words = [];
         this._k = 0;
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @param {number} k
      * @private
+     * @override
      */
     _initialize(k: number = 0): void {
         this._localPrng.seed(this._seed);
@@ -56,15 +67,16 @@ class Tt800PRNG extends BasicPRNG implements IPRNG {
      * @private
      */
     _setState(words: Array<number>): void {
-        this._state._words = words.slice();
+        this._state._words = (words: any).slice();
     }
 
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
-        this._words = this._state._words.slice();
+        this._words = (this._state._words: any).slice();
         this._k = 0;
     }
 
@@ -84,6 +96,7 @@ class Tt800PRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -103,6 +116,7 @@ class Tt800PRNG extends BasicPRNG implements IPRNG {
     seed(seed_value: ?NumberString): void {
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._initialize();
@@ -115,10 +129,16 @@ class Tt800PRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
 
+    /**
+     * @override
+     * @returns {number}
+     * @private
+     */
     _nextInt(): number {
         let kk: number;
         if (this._k === NUMBER_WORDS) {

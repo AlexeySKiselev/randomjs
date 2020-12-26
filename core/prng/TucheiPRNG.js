@@ -21,11 +21,22 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
         this._no_seed = true;
         this._state = {};
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @private
+     * @override
      */
     _initialize(): void {
         this._a = 0;
@@ -52,6 +63,7 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
         this._a = this._state._a;
@@ -63,6 +75,7 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -78,10 +91,14 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
         return (this._nextInt() >>> 0) / 0x100000000;
     }
 
+    /**
+     * @override
+     */
     seed(seed_value: ?NumberString): void {
         this._initialize();
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._a = (this._seed / 0x100000000) | 0;
@@ -98,10 +115,16 @@ class TucheiPRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
 
+    /**
+     * @override
+     * @returns {number}
+     * @private
+     */
     _nextInt(): number {
         let a = this._a,
             b = this._b,

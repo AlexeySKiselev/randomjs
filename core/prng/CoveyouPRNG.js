@@ -7,13 +7,14 @@
 
 import BasicPRNG from './BasicPRNG';
 import type { IPRNG } from '../interfaces';
-import type {NumberString} from '../types';
+import type {NumberString, RandomArray} from '../types';
 
 class CoveyouPRNG extends BasicPRNG implements IPRNG {
 
     _M: number;
     _x: number;
     _modulos: Array<number>; // pre calculated modulo of 10^x mod _M
+    _xdata_modulos: RandomArray;
     _no_seed: boolean;
     _state: {[prop: string]: number}; // state after setting seed
 
@@ -44,12 +45,24 @@ class CoveyouPRNG extends BasicPRNG implements IPRNG {
             1569325056, // 10^17 mod _M
             2808348672 // 10^18 mod _M
         ];
+        this._xdata_modulos = this._constructXDataModulos();
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @private
+     * @override
      */
     _initialize(): void {
         this._x = 0;
@@ -67,6 +80,7 @@ class CoveyouPRNG extends BasicPRNG implements IPRNG {
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
         this._x = this._state._x;
@@ -75,6 +89,7 @@ class CoveyouPRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -89,6 +104,7 @@ class CoveyouPRNG extends BasicPRNG implements IPRNG {
         this._initialize();
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._x = this._seed % this._M;
@@ -104,6 +120,7 @@ class CoveyouPRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
@@ -127,20 +144,55 @@ class CoveyouPRNG extends BasicPRNG implements IPRNG {
         let res: number = 0;
         for (let i = 0; i < xData.length; i += 1) {
             // add squares
-            res = (res + xData[i] * ((xData[i] * this._modulos[2 * i]) % this._M)) % this._M;
+            res += xData[i] * this._get_xdata_modulo(xData[i], 2 * i);
 
             // add other parts
             for (let j = i + 1; j < xData.length; j += 1) {
-                res = (res + 2 * xData[i] * ((xData[j] * this._modulos[i + j]) % this._M)) % this._M;
+                res += 2 * xData[i] * this._get_xdata_modulo(xData[j], i + j);
             }
         }
 
         return res;
     }
 
+    /**
+     * Constructs xData[i] * this._modulos[j] hashmap
+     * Keys will be i + j * 10 (i always [0..9])
+     * Calculates data only in constructor
+     * @private
+     */
+    _constructXDataModulos(): RandomArray {
+        const res: RandomArray = [];
+        // prefill res array
+        for (let i = 0; i < (this._modulos.length + 1) * 10; i += 1) {
+            res[i] = 0;
+        }
+        for (let xData = 0; xData < 10; xData += 1) {
+            for (let j = 0; j < this._modulos.length; j += 1) {
+                res[xData + j * 10] = (xData * this._modulos[j]) % this._M;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Get result from xdata_modulos
+     * @private
+     */
+    _get_xdata_modulo(xData: number, j: number): number {
+        return this._xdata_modulos[xData + j * 10];
+    }
+
+    /**
+     * @override
+     * @private
+     */
     _nextInt(): number {
         let x: number = this._x;
-        x = (this._squareWithModulo(x) + x) % this._M;
+        x = this._squareWithModulo(x) + x;
+        if (x >= this._M) {
+            x = x % this._M;
+        }
         return this._x = x;
     }
 

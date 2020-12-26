@@ -7,7 +7,7 @@
 
 import BasicPRNG from './BasicPRNG';
 import type { IPRNG } from '../interfaces';
-import type {NumberString} from '../types';
+import type {NumberString, RandomArray} from '../types';
 
 class Knuthran2PRNG extends BasicPRNG implements IPRNG {
 
@@ -19,6 +19,8 @@ class Knuthran2PRNG extends BasicPRNG implements IPRNG {
     _modulosA1: Array<number>; // pre calculated modulo of A1 * 10^x mod _M
     _modulosA2: Array<number>; // pre calculated modulo of A2 * 10^x mod _M
     _no_seed: boolean;
+    _xdata_modulosA1: RandomArray;
+    _xdata_modulosA2: RandomArray;
     _state: {[prop: string]: number}; // state after setting seed
 
     constructor() {
@@ -53,12 +55,25 @@ class Knuthran2PRNG extends BasicPRNG implements IPRNG {
             2080980540, // A2 * 10^8 mod _M
             1482452577 // A2 * 10^9 mod _M
         ];
+        this._xdata_modulosA1 = this._constructXDataModulos(this._modulosA1);
+        this._xdata_modulosA2 = this._constructXDataModulos(this._modulosA2);
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @private
+     * @override
      */
     _initialize(): void {
         this._xm1 = 0;
@@ -79,6 +94,7 @@ class Knuthran2PRNG extends BasicPRNG implements IPRNG {
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
         this._xm1 = this._state._xm1;
@@ -88,6 +104,7 @@ class Knuthran2PRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -103,6 +120,7 @@ class Knuthran2PRNG extends BasicPRNG implements IPRNG {
         this._initialize();
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._xm2 = this._seed % this._M;
@@ -119,6 +137,7 @@ class Knuthran2PRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
@@ -128,7 +147,7 @@ class Knuthran2PRNG extends BasicPRNG implements IPRNG {
      * Need it for more precise calculation
      * @private
      */
-    _multiplyByAWithModulo(x: number, moduloArray: Array<number>): number {
+    _multiplyByAWithModulo(x: number, xdata_modulos: Array<number>): number {
         // extract data from x
         let xData: number = 0;
         let _x: number = x;
@@ -136,7 +155,7 @@ class Knuthran2PRNG extends BasicPRNG implements IPRNG {
         let res: number = 0;
         while (_x > 0) {
             xData = _x % 10;
-            res = (res + ((xData * moduloArray[i]) % this._M)) % this._M;
+            res += xdata_modulos[xData + 10 * i];
             _x = Math.floor(_x / 10);
             i += 1;
         }
@@ -144,10 +163,39 @@ class Knuthran2PRNG extends BasicPRNG implements IPRNG {
         return res;
     }
 
+    /**
+     * @override
+     * @returns {number}
+     * @private
+     */
     _nextInt(): number {
-        let res: number = (this._multiplyByAWithModulo(this._xm1, this._modulosA1) + this._multiplyByAWithModulo(this._xm2, this._modulosA2)) % this._M;
+        let res: number = this._multiplyByAWithModulo(this._xm1, this._xdata_modulosA1)
+            + this._multiplyByAWithModulo(this._xm2, this._xdata_modulosA2);
         this._xm2 = this._xm1;
+        if (res >= this._M) {
+            res = res % this._M;
+        }
         this._xm1 = res;
+        return res;
+    }
+
+    /**
+     * Constructs xData * this._modulos[j] hashmap
+     * Keys will be i + j * 10 (i always [0..9])
+     * Calculates data only in constructor
+     * @private
+     */
+    _constructXDataModulos(modulos: Array<number>): RandomArray {
+        const res: RandomArray = [];
+        // prefill res array
+        for (let i = 0; i < (modulos.length + 1) * 10; i += 1) {
+            res[i] = 0;
+        }
+        for (let xData = 0; xData < 10; xData += 1) {
+            for (let j = 0; j < modulos.length; j += 1) {
+                res[xData + j * 10] = (xData * modulos[j]) % this._M;
+            }
+        }
         return res;
     }
 

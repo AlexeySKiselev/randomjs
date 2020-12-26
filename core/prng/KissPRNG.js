@@ -23,11 +23,22 @@ class KissPRNG extends BasicPRNG implements IPRNG {
         this._no_seed = true;
         this._state = {};
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @private
+     * @override
      */
     _initialize(): void {
         this._x = 0;
@@ -42,10 +53,10 @@ class KissPRNG extends BasicPRNG implements IPRNG {
      * @private
      */
     _initialize_with_seed(): void {
-        this._x = this._seed | 0;
-        this._y = this._seed << 5 | 0;
-        this._z = this._seed >> 7 | 0;
-        this._w = this._seed << 22 | 0;
+        this._x = (this._seed: any) | 0;
+        this._y = (this._seed: any) << 5 | 0;
+        this._z = (this._seed: any) >> 7 | 0;
+        this._w = (this._seed: any) << 22 | 0;
         this._c = 0;
     }
 
@@ -69,6 +80,7 @@ class KissPRNG extends BasicPRNG implements IPRNG {
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
         this._x = this._state._x;
@@ -81,6 +93,7 @@ class KissPRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -96,6 +109,7 @@ class KissPRNG extends BasicPRNG implements IPRNG {
         this._initialize();
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._initialize_with_seed();
@@ -115,10 +129,16 @@ class KissPRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
 
+    /**
+     * @override
+     * @returns {number}
+     * @private
+     */
     _nextInt(): number {
         let t: number;
         this._y ^= (this._y << 5);
@@ -126,7 +146,7 @@ class KissPRNG extends BasicPRNG implements IPRNG {
         this._y ^= (this._y << 22);
         t = this._z + this._w + this._c;
         this._z = this._w;
-        this._c = t < 0;
+        this._c = ((t < 0): any);
         this._w = t & 0x7FFFFFFF;
         this._x += 0x542023AB;
 

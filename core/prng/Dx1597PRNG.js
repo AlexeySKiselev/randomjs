@@ -11,7 +11,7 @@
 import BasicPRNG from './BasicPRNG';
 import TucheiPRNG from './TucheiPRNG';
 import type { IPRNG } from '../interfaces';
-import type {NumberString} from '../types';
+import type {NumberString, RandomArray} from '../types';
 
 const WORD_4: number = 1597;
 const WORD_3: number = 1065;
@@ -33,6 +33,7 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
     _no_seed: boolean;
     _state: {[prop: string]: number}; // state after setting seed
     _modulos: Array<number>;
+    _xdata_modulos: RandomArray;
 
     constructor() {
         super();
@@ -54,13 +55,25 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
             801553535, // B * 10^8 mod _M
             1573084409 // B * 10^9 mod _M
         ];
+        this._xdata_modulos = this._constructXDataModulos();
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @param {number} pointer
      * @private
+     * @override
      */
     _initialize(pointer: number = 0): void {
         this._localPrng.seed(this._seed);
@@ -78,16 +91,17 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
      */
     _setState(pointer: number, words: Array<number>): void {
         this._state._pointer = pointer;
-        this._state._words = words.slice();
+        this._state._words = (words: any).slice();
     }
 
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
         this._pointer = this._state._pointer;
-        this._words = this._state._words.slice();
+        this._words = (this._state._words: any).slice();
     }
 
     /**
@@ -106,6 +120,7 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -125,6 +140,7 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
     seed(seed_value: ?NumberString): void {
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._pointer = this._seed % WORD_4;
@@ -141,6 +157,7 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
@@ -150,7 +167,7 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
      * Need it for more precise calculation
      * @private
      */
-    _multiplyByBWithModulo(x: number, moduloArray: Array<number>): number {
+    _multiplyByBWithModulo(x: number): number {
         // extract data from x
         let xData: number = 0;
         let _x: number = x;
@@ -158,14 +175,50 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
         let res: number = 0;
         while (_x > 0) {
             xData = _x % 10;
-            res = (res + ((xData * moduloArray[i]) % this._M)) % this._M;
+            res += this._get_xdata_modulo(xData, i);
             _x = Math.floor(_x / 10);
             i += 1;
+        }
+        if (res >= this._M) {
+            res = res % this._M;
         }
 
         return res;
     }
 
+    /**
+     * Constructs xData * this._modulos[j] hashmap
+     * Keys will be i + j * 10 (i always [0..9])
+     * Calculates data only in constructor
+     * @private
+     */
+    _constructXDataModulos(): RandomArray {
+        const res: RandomArray = [];
+        // prefill res array
+        for (let i = 0; i < (this._modulos.length + 1) * 10; i += 1) {
+            res[i] = 0;
+        }
+        for (let xData = 0; xData < 10; xData += 1) {
+            for (let j = 0; j < this._modulos.length; j += 1) {
+                res[xData + j * 10] = (xData * this._modulos[j]) % this._M;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Get result from xdata_modulos
+     * @private
+     */
+    _get_xdata_modulo(xData: number, j: number): number {
+        return this._xdata_modulos[xData + j * 10];
+    }
+
+    /**
+     * @override
+     * @returns {number}
+     * @private
+     */
     _nextInt(): number {
         let res: number;
 
@@ -173,10 +226,12 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
             this._words[(this._pointer + NEGATIVE_WORD_1) % WORD_4]
             + this._words[(this._pointer + NEGATIVE_WORD_2) % WORD_4]
             + this._words[(this._pointer + NEGATIVE_WORD_3) % WORD_4]
-            + this._words[this._pointer]
-            , this._modulos);
+            + this._words[this._pointer]);
         res = this._words[this._pointer];
-        this._pointer = (this._pointer + 1) % WORD_4;
+        this._pointer += 1;
+        if (this._pointer >= WORD_4) {
+            this._pointer = this._pointer % WORD_4;
+        }
 
         return res;
     }
