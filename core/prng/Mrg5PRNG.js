@@ -10,7 +10,7 @@
 import BasicPRNG from './BasicPRNG';
 import TucheiPRNG from './TucheiPRNG';
 import type { IPRNG } from '../interfaces';
-import type {NumberString} from '../types';
+import type {NumberString, RandomArray} from '../types';
 
 const WORD_LEFT: number = 5;
 const WORD_RIGHT: number = 1;
@@ -28,6 +28,9 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
     _M: number;
     _modulosA1: Array<number>; // pre calculated modulo of A1 * 10^x mod _M
     _modulosA5: Array<number>; // pre calculated modulo of A5 * 10^x mod _M
+    _xdata_modulosA1: RandomArray;
+    _xdata_modulosA5: RandomArray;
+    _pointersRight: Array<number>;
 
     constructor() {
         super();
@@ -62,13 +65,27 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
             625606156 // A5 * 10^9 mod _M
         ];
         this._words = [];
+        this._xdata_modulosA1 = this._constructXDataModulos(this._modulosA1);
+        this._xdata_modulosA5 = this._constructXDataModulos(this._modulosA5);
+        this._pointersRight = this._generate_shifted_pointers(NEGATIVE_WORD_RIGHT);
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @param {number} pointer
      * @private
+     * @override
      */
     _initialize(pointer: number = 0): void {
         this._localPrng.seed(this._seed);
@@ -92,6 +109,7 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
         this._pointer = this._state._pointer;
@@ -114,6 +132,7 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -133,6 +152,7 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
     seed(seed_value: ?NumberString): void {
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._pointer = this._seed % WORD_LEFT;
@@ -149,6 +169,7 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
@@ -158,7 +179,7 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
      * Need it for more precise calculation
      * @private
      */
-    _multiplyByAWithModulo(x: number, moduloArray: Array<number>): number {
+    _multiplyByAWithModulo(x: number, xdata_modulos: Array<number>): number {
         // extract data from x
         let xData: number = 0;
         let _x: number = x;
@@ -166,7 +187,7 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
         let res: number = 0;
         while (_x > 0) {
             xData = _x % 10;
-            res = (res + ((xData * moduloArray[i]) % this._M)) % this._M;
+            res += xdata_modulos[xData + 10 * i];
             _x = Math.floor(_x / 10);
             i += 1;
         }
@@ -174,14 +195,58 @@ class Mrg5PRNG extends BasicPRNG implements IPRNG {
         return res;
     }
 
+    /**
+     * @override
+     * @returns {number}
+     * @private
+     */
     _nextInt(): number {
         let res: number;
 
-        this._words[this._pointer] = (this._multiplyByAWithModulo(this._words[this._pointer], this._modulosA5)
-            + this._multiplyByAWithModulo(this._words[(this._pointer + NEGATIVE_WORD_RIGHT) % WORD_LEFT], this._modulosA1)) % this._M;
-        res = this._words[this._pointer];
-        this._pointer = (this._pointer + 1) % WORD_LEFT;
+        res = this._multiplyByAWithModulo(this._words[this._pointer], this._xdata_modulosA5)
+            + this._multiplyByAWithModulo(this._words[this._pointersRight[this._pointer]], this._xdata_modulosA1);
+        if (res >= this._M) {
+            res = res % this._M;
+        }
+        this._words[this._pointer] = res;
+        this._pointer += 1;
+        if (this._pointer >= WORD_LEFT) {
+            this._pointer = this._pointer % WORD_LEFT;
+        }
 
+        return res;
+    }
+
+    /**
+     * Constructs xData * this._modulos[j] hashmap
+     * Keys will be i + j * 10 (i always [0..9])
+     * Calculates data only in constructor
+     * @private
+     */
+    _constructXDataModulos(modulos: Array<number>): RandomArray {
+        const res: RandomArray = [];
+        // prefill res array
+        for (let i = 0; i < (modulos.length + 1) * 10; i += 1) {
+            res[i] = 0;
+        }
+        for (let xData = 0; xData < 10; xData += 1) {
+            for (let j = 0; j < modulos.length; j += 1) {
+                res[xData + j * 10] = (xData * modulos[j]) % this._M;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Pre-calculate shifted pointers for performance reasons
+     * @returns {Array<number>}
+     * @private
+     */
+    _generate_shifted_pointers(shift: number): Array<number> {
+        const res: Array<number> = [];
+        for (let i = 0; i < WORD_LEFT; i += 1) {
+            res[i] = (i + shift) % WORD_LEFT;
+        }
         return res;
     }
 

@@ -24,6 +24,7 @@ class R250PRNG extends BasicPRNG implements IPRNG {
     _recalculate_counter: number;
     _no_seed: boolean;
     _state: {[prop: string]: number}; // state after setting seed
+    _pointersRight: Array<number>;
 
     constructor() {
         super();
@@ -31,13 +32,25 @@ class R250PRNG extends BasicPRNG implements IPRNG {
         this._state = {};
         this._localPrng = new TucheiPRNG();
         this._recalculate_counter = 0;
+        this._pointersRight = this._generate_shifted_pointers(NEGATIVE_WORD_RIGHT);
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @param {number} pointer
      * @private
+     * @override
      */
     _initialize(pointer: number = 0): void {
         this._localPrng.seed(this._seed);
@@ -59,6 +72,7 @@ class R250PRNG extends BasicPRNG implements IPRNG {
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
         this._pointer = this._state._pointer;
@@ -81,6 +95,7 @@ class R250PRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -100,6 +115,7 @@ class R250PRNG extends BasicPRNG implements IPRNG {
     seed(seed_value: ?NumberString): void {
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._pointer = this._seed % WORD_LEFT;
@@ -116,17 +132,39 @@ class R250PRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
 
+    /**
+     * @override
+     * @returns {number}
+     * @private
+     */
     _nextInt(): number {
         let res: number;
 
-        this._words[this._pointer] = this._words[(this._pointer + NEGATIVE_WORD_RIGHT) % WORD_LEFT] ^ this._words[this._pointer];
+        this._words[this._pointer] = this._words[this._pointersRight[this._pointer]] ^ this._words[this._pointer];
         res = this._words[this._pointer];
-        this._pointer = (this._pointer + 1) % WORD_LEFT;
+        this._pointer += 1;
+        if (this._pointer >= WORD_LEFT) {
+            this._pointer = this._pointer % WORD_LEFT;
+        }
 
+        return res;
+    }
+
+    /**
+     * Pre-calculate shifted pointers for performance reasons
+     * @returns {Array<number>}
+     * @private
+     */
+    _generate_shifted_pointers(shift: number): Array<number> {
+        const res: Array<number> = [];
+        for (let i = 0; i < WORD_LEFT; i += 1) {
+            res[i] = (i + shift) % WORD_LEFT;
+        }
         return res;
     }
 

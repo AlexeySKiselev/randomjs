@@ -29,6 +29,9 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
     _recalculate_counter: number;
     _no_seed: boolean;
     _state: {[prop: string]: number}; // state after setting seed
+    _pointersA: Array<number>;
+    _pointersB: Array<number>;
+    _pointersC: Array<number>;
 
     constructor() {
         super();
@@ -36,17 +39,31 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
         this._state = {};
         this._localPrng = new TucheiPRNG();
         this._recalculate_counter = 0;
+        this._pointersA = this._generate_shifted_pointers(NEGATIVE_WORD_A);
+        this._pointersB = this._generate_shifted_pointers(NEGATIVE_WORD_B);
+        this._pointersC = this._generate_shifted_pointers(NEGATIVE_WORD_C);
         this._initialize();
+        this._set_random_seed();
+    }
+
+    /**
+     * Indicate whether seed is set up
+     * @private
+     * @override
+     */
+    _has_no_seed(): boolean {
+        return this._no_seed;
     }
 
     /**
      * Initializes initial values and sets state for calculating random number
      * @param {number} pointer
      * @private
+     * @override
      */
     _initialize(pointer: number = 0): void {
         this._localPrng.seed(this._seed);
-        this._words = this._localPrng.randomInt(WORD_D);
+        this._words = (this._localPrng.randomInt(WORD_D): any);
         this._pointer = pointer;
     }
 
@@ -58,16 +75,17 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
      */
     _setState(pointer: number, words: Array<number>): void {
         this._state._pointer = pointer;
-        this._state._words = words.slice();
+        this._state._words = (words: any).slice();
     }
 
     /**
      * Gets values from state
      * @private
+     * @override
      */
     _get_from_state(): void {
         this._pointer = this._state._pointer;
-        this._words = this._state._words.slice();
+        this._words = (this._state._words: any).slice();
     }
 
     /**
@@ -86,6 +104,7 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
     /**
      * Creates random seed
      * @private
+     * @override
      */
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
@@ -105,6 +124,7 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
     seed(seed_value: ?NumberString): void {
         if (seed_value === undefined || seed_value === null) {
             this._no_seed = true;
+            this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._pointer = this._seed % WORD_D;
@@ -121,21 +141,43 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else {
             this._no_seed = true;
+            this._set_random_seed();
             throw new Error('You should point seed with types: "undefined", "number" or "string"');
         }
     }
 
+    /**
+     * @override
+     * @returns {number}
+     * @private
+     */
     _nextInt(): number {
         let res: number;
 
         this._words[this._pointer] =
-            this._words[(this._pointer + NEGATIVE_WORD_A) % WORD_D]
-            ^ this._words[(this._pointer + NEGATIVE_WORD_B) % WORD_D]
-            ^ this._words[(this._pointer + NEGATIVE_WORD_C) % WORD_D]
+            this._words[this._pointersA[this._pointer]]
+            ^ this._words[this._pointersB[this._pointer]]
+            ^ this._words[this._pointersC[this._pointer]]
             ^ this._words[this._pointer];
         res = this._words[this._pointer];
-        this._pointer = (this._pointer + 1) % WORD_D;
+        this._pointer += 1;
+        if (this._pointer >= WORD_D) {
+            this._pointer = this._pointer % WORD_D;
+        }
 
+        return res;
+    }
+
+    /**
+     * Pre-calculate shifted pointers for performance reasons
+     * @returns {Array<number>}
+     * @private
+     */
+    _generate_shifted_pointers(shift: number): Array<number> {
+        const res: Array<number> = [];
+        for (let i = 0; i < WORD_D; i += 1) {
+            res[i] = (i + shift) % WORD_D;
+        }
         return res;
     }
 

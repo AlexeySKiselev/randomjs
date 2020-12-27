@@ -19,6 +19,10 @@ class DefaultPRNG extends BasicPRNG implements IPRNG {
         return Math.floor(this._random() * 0x100000000);
     }
 
+    /**
+     * @override
+     * @returns {Array<number>|number}
+     */
     random(n: ?number = 0): RandomArrayNumber {
         if (typeof n !== 'number') {
             return this._random();
@@ -35,6 +39,10 @@ class DefaultPRNG extends BasicPRNG implements IPRNG {
         return random_array;
     }
 
+    /**
+     * @override
+     * @returns {Array<number>|number}
+     */
     // eslint-disable-next-line
     randomInt(n: ?number = 0): RandomArrayNumber {
         if (typeof n !== 'number') {
@@ -52,10 +60,18 @@ class DefaultPRNG extends BasicPRNG implements IPRNG {
         return random_array;
     }
 
+    /**
+     * @override
+     * @returns {number}
+     */
     next(): number {
         return this._random();
     }
 
+    /**
+     * @override
+     * @returns {number}
+     */
     nextInt(): number {
         return this._randomInt();
     }

@@ -77,8 +77,8 @@ Unirand supports different PRNGs:
 | gfsr4 | gfsr4 PRNG, period ~2<sup>9689</sup> | fast | Yes |
 | dx1597 | Dx-1957-f PRNG, period ~10<sup>14903</sup> | slow | Yes |
 | tt800 | TT800 PRNG, period ~10<sup>240</sup> | medium | Yes |
-| xorwow | Xorwow PRNG, period ~10<sup>38</sup> | medium | Yes |
-| mt19937 | Marsenne Twister PRNG, period ~2<sup>19937</sup> | fast | Yes |
+| xorwow | Xorwow PRNG, period ~10<sup>38</sup> | fast | Yes |
+| mt19937 | Marsenne Twister PRNG, period ~2<sup>19937</sup> | medium | Yes |
 
 #### .random(), .randomInt() and .randomInRange(from, to)
 Returns random uniformly distributed value or array of length *n*. Returns different value each time without seed and same value with seed value.

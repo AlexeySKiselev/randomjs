@@ -15,6 +15,22 @@ const prngTest = (prngName) => {
         prng.set_prng(prngName);
     });
 
+    it('should cold started with .next() method', function(done) {
+        this.timeout(480000);
+        const values = [];
+        for (let i = 0; i < 100; i += 1) {
+            values[i] = 0;
+        }
+        let temp;
+        for (let i = 0; i < 10000000; i += 1) {
+            temp = prng.next();
+            values[Math.floor(temp * 100)] += 1;
+        }
+        for (let v = 0; v < values.length; v += 1) {
+            expect(values[v]).to.be.closeTo(100000, 2000); // 2%
+        }
+        done();
+    });
     it('should maintain seed', () =>  {
         prng.seed(123456);
         expect(prng._seed).to.be.equal(123456);
@@ -60,12 +76,12 @@ const prngTest = (prngName) => {
             values[i] = 0;
         }
         let temp;
-        for (let i = 0; i < 4000000; i += 1) {
+        for (let i = 0; i < 10000000; i += 1) {
             temp = prng.random();
             values[Math.floor(temp * 100)] += 1;
         }
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(40000, 1000);
+            expect(values[v]).to.be.closeTo(100000, 2000); // 2%
         }
         done();
     });
@@ -76,12 +92,12 @@ const prngTest = (prngName) => {
         for (let i = 0; i < 100; i += 1) {
             values[i] = 0;
         }
-        let temp = prng.random(4000000);
-        for (let i = 0; i < 4000000; i += 1) {
+        let temp = prng.random(10000000);
+        for (let i = 0; i < 10000000; i += 1) {
             values[Math.floor(temp[i] * 100)] += 1;
         }
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(40000, 1000);
+            expect(values[v]).to.be.closeTo(100000, 2000); // 2%
         }
         done();
     });
@@ -92,13 +108,13 @@ const prngTest = (prngName) => {
         for (let i = 0; i < 100; i += 1) {
             values[i] = 0;
         }
-        let temp = prng.random(2000000);
-        for (let i = 0; i < 2000000; i += 1) {
+        let temp = prng.random(4000000);
+        for (let i = 0; i < 4000000; i += 1) {
             values[Math.floor(temp[i] * 100)] += 1;
         }
 
         for (let v = 0; v < values.length; v += 1) {
-            expect(values[v]).to.be.closeTo(20000, 500);
+            expect(values[v]).to.be.closeTo(40000, 800); // 2%
         }
         done();
     });

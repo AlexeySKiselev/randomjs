@@ -396,7 +396,7 @@ class RandomJS {
 }
 
 // Add methods extractor
-const randomjs = new RandomJS();
+const randomjs: RandomJS = new RandomJS();
 const methods = {
     analyze: randomjs.analyze,
     utils: randomjs.utils,
