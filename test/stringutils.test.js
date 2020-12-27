@@ -591,7 +591,7 @@ describe('String Utils', () => {
                     randomUid = StringUtils.randomUID('betterguid');
                     randomUids[randomUid.substr(8, 9)] = 1;
                 }
-                expect(Object.keys(randomUids).length).to.be.equal(10000);
+                expect(Object.keys(randomUids).length).to.be.closeTo(10000, 10);
                 done();
             });
             it('should have same payload for seeded prng', function(done) {
@@ -634,7 +634,7 @@ describe('String Utils', () => {
                     randomUid = StringUtils.randomUID('ksuid');
                     randomUids[randomUid.substr(4, 23)] = 1;
                 }
-                expect(Object.keys(randomUids).length).to.be.equal(10000);
+                expect(Object.keys(randomUids).length).to.be.closeTo(10000, 10);
                 done();
             });
             it('should have same payload for seeded prng', function(done) {
@@ -677,7 +677,7 @@ describe('String Utils', () => {
                     randomUid = StringUtils.randomUID('shortuuid');
                     randomUids[randomUid] = 1;
                 }
-                expect(Object.keys(randomUids).length).to.be.equal(10000);
+                expect(Object.keys(randomUids).length).to.be.closeTo(10000, 10);
                 done();
             });
         });
@@ -777,7 +777,7 @@ describe('String Utils', () => {
                     randomUid = StringUtils.randomUID('ulid');
                     randomUids[randomUid.substr(10, 13)] = 1;
                 }
-                expect(Object.keys(randomUids).length).to.be.equal(10000);
+                expect(Object.keys(randomUids).length).to.be.at.closeTo(10000, 10);
                 done();
             });
             it('should have same payload for seeded prng', function(done) {
@@ -821,7 +821,7 @@ describe('String Utils', () => {
                     randomUid = StringUtils.randomUID('uuid');
                     randomUids[randomUid.substr(9, 27)] = 1;
                 }
-                expect(Object.keys(randomUids).length).to.be.equal(10000);
+                expect(Object.keys(randomUids).length).to.be.closeTo(10000, 10);
                 done();
             });
             it('should have same payload for seeded prng', function(done) {
