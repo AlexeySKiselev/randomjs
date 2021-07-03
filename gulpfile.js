@@ -1,6 +1,6 @@
 /**
  * Gulp Settings
- * Created by Alexey S. Kiselev on 08.09.2017.
+ * Created by Alexey S. Kiselev.
  */
 
 let gulp = require('gulp'),
@@ -8,13 +8,13 @@ let gulp = require('gulp'),
     babel = require('gulp-babel');
 
 // Bundle main Index File
-gulp.task('build:node', async function() {
+gulp.task('build:node', function(done) {
     gulp.src([
         './index.js',
         './core/**/*.js'
     ]).
-        on('error', function(){
-            console.error('Error occurred during build');
+        on('error', function(e){
+            console.error('Error occurred during build: ' + e);
             this.emit('end');
         }).
         pipe(babel({
@@ -28,8 +28,21 @@ gulp.task('build:node', async function() {
                 ]
             ]
         })).
+        on('error', function(e){
+            console.error('Error occurred during build: ' + e);
+            this.emit('end');
+        }).
         pipe(replace(/(\/core)/g,'')).
-        pipe(gulp.dest('./lib/'));
+        on('error', function(e){
+            console.error('Error occurred during build: ' + e);
+            this.emit('end');
+        }).
+        pipe(gulp.dest('./lib/')).
+        on('error', function(e){
+            console.error('Error occurred during build: ' + e);
+            this.emit('end');
+        });
+    done();
 });
 
 // Default task

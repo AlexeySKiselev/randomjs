@@ -216,27 +216,27 @@ describe('PRNGProxy', () => {
     });
 });
 
-describe('Tuchei PRNG', () =>  {
+describe('tuchei PRNG', () =>  {
     prngTest('tuchei');
 });
 
-describe('Xorshift PRNG', () =>  {
+describe('xorshift PRNG', () =>  {
     prngTest('xorshift');
 });
 
-describe('Kiss PRNG', () => {
+describe('kiss PRNG', () => {
     prngTest('kiss');
 });
 
-describe('ParkMiller PRNG', () => {
+describe('parkMiller PRNG', () => {
     prngTest('parkmiller');
 });
 
-describe('Coveyou PRNG', () => {
+describe('coveyou PRNG', () => {
     prngTest('coveyou');
 });
 
-describe('Knuthran2 PRNG', () => {
+describe('knuthran2 PRNG', () => {
     prngTest('knuthran2');
 });
 
@@ -260,10 +260,22 @@ describe('tt800 PRNG', () => {
     prngTest('tt800');
 });
 
-describe('Xorwow PRNG', () => {
+describe('xorwow PRNG', () => {
     prngTest('xorwow');
 });
 
 describe('mt19937 PRNG', () => {
     prngTest('mt19937');
+});
+
+describe('philox PRNG', () => {
+    prngTest('philox');
+});
+
+describe('taus113 PRNG', () => {
+    prngTest('taus113');
+});
+
+describe('swb2712 PRNG', () => {
+    prngTest('swb2712');
 });

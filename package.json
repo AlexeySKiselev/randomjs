@@ -1,12 +1,12 @@
 {
   "name": "unirand",
-  "version": "2.11.1",
+  "version": "2.12.0",
   "description": "Random numbers and Distributions generation",
   "main": "./lib/index.js",
   "scripts": {
     "mocha": "node node_modules/mocha/bin/mocha test/*.test.js",
     "lint": "node node_modules/eslint/bin/eslint --config .eslintrc.json ./",
-    "build:node": "node node_modules/gulp/bin/gulp build:node --watch",
+    "build:node": "node node_modules/gulp/bin/gulp build:node",
     "test": "node node_modules/npm-run-all/bin/run-s lint build:node mocha",
     "test:analyzer": "node node_modules/mocha/bin/mocha test/analyzer.test.js",
     "test:array-manipulation": "node node_modules/mocha/bin/mocha test/array_manipulation*.test.js",
@@ -62,6 +62,7 @@
     "@babel/plugin-proposal-decorators": "7.x",
     "@babel/preset-env": "7.x",
     "@babel/preset-flow": "7.x",
+    "@babel/register": "7.x",
     "babel-eslint": "10.x",
     "chai": "4.x",
     "eslint": "7.x",

@@ -23,6 +23,9 @@ import Dx1597PRNG from './Dx1597PRNG';
 import Tt800PRNG from './Tt800PRNG';
 import XorwowPRNG from './XorwowPRNG';
 import MarsenneTwisterPRNG from './MarsenneTwisterPRNG';
+import PhiloxPRNG from './PhiloxPRNG';
+import Taus113PRNG from './Taus113PRNG';
+import Swb2712PRNG from './Swb2712PRNG';
 
 const DEFAULT_GENERATOR = 'tuchei';
 
@@ -55,6 +58,9 @@ class PRNGProxy implements IPRNGProxy {
         tt800: 10434 ms, 38M per sec
         xorwow: 3093 ms, 130M per sec
         mt19937: 6250 ms, 64M per sec
+        philox: 36008 ms, 11.1M per sec
+        taus113: 1290ms, 310M per sec
+        swb2712: 3520ms, 113M per sec
          */
         this._allowed_generators = {
             'default': DefaultPRNG,
@@ -70,7 +76,10 @@ class PRNGProxy implements IPRNGProxy {
             'dx1597': Dx1597PRNG,
             'tt800': Tt800PRNG,
             'xorwow': XorwowPRNG,
-            'mt19937': MarsenneTwisterPRNG
+            'mt19937': MarsenneTwisterPRNG,
+            'philox': PhiloxPRNG,
+            'taus113': Taus113PRNG,
+            'swb2712': Swb2712PRNG
         };
 
         this._generators = {

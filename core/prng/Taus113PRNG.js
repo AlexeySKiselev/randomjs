@@ -1,20 +1,20 @@
 // @flow
 /**
- * Kiss32 PRNG
- * Period: 2^121
+ * Tausworthe PRNG
+ * Period: 2^113
+ * P. L'Ecuyer, "Maximally Equidistributed Combined Tausworthe Generators", Mathematics of Computation, 65, 213 (1996), 203--213
  */
 
 import BasicPRNG from './BasicPRNG';
 import type { IPRNG } from '../interfaces';
 import type {NumberString} from '../types';
 
-class KissPRNG extends BasicPRNG implements IPRNG {
+class Taus113PRNG extends BasicPRNG implements IPRNG {
 
-    _x: number;
-    _y: number;
-    _z: number;
-    _w: number;
-    _c: number;
+    _s1: number;
+    _s2: number;
+    _s3: number;
+    _s4: number;
     _no_seed: boolean;
     _state: {[prop: string]: number}; // state after setting seed
 
@@ -41,11 +41,10 @@ class KissPRNG extends BasicPRNG implements IPRNG {
      * @override
      */
     _initialize(): void {
-        this._x = 0;
-        this._y = 0;
-        this._z = 0;
-        this._w = 0;
-        this._c = 0;
+        this._s1 = 0;
+        this._s2 = 0;
+        this._s3 = 0;
+        this._s4 = 0;
     }
 
     /**
@@ -53,28 +52,26 @@ class KissPRNG extends BasicPRNG implements IPRNG {
      * @private
      */
     _initialize_with_seed(): void {
-        this._x = (this._seed: any) | 0;
-        this._y = (this._seed: any) << 5 | 0;
-        this._z = (this._seed: any) >> 7 | 0;
-        this._w = (this._seed: any) << 22 | 0;
-        this._c = 0;
+        const seed: number = ((this._seed: any) << 10) ^ (this._seed: any);
+        this._s1 = this._minSeed(seed, 2);
+        this._s2 = this._minSeed(seed, 8);
+        this._s3 = this._minSeed(seed, 16);
+        this._s4 = this._minSeed(seed, 128);
     }
 
     /**
      * Sets state for random number generating
-     * @param {number} x
-     * @param {number} y
-     * @param {number} z
-     * @param {number} w
-     * @param {number} c
+     * @param {number} s1
+     * @param {number} s2
+     * @param {number} s3
+     * @param {number} s4
      * @private
      */
-    _setState(x: number, y: number, z: number, w: number, c: number): void {
-        this._state._x = x;
-        this._state._y = y;
-        this._state._z = z;
-        this._state._w = w;
-        this._state._c = c;
+    _setState(s1: number, s2: number, s3: number, s4: number): void {
+        this._state._s1 = s1;
+        this._state._s2 = s2;
+        this._state._s3 = s3;
+        this._state._s4 = s4;
     }
 
     /**
@@ -83,11 +80,10 @@ class KissPRNG extends BasicPRNG implements IPRNG {
      * @override
      */
     _get_from_state(): void {
-        this._x = this._state._x;
-        this._y = this._state._y;
-        this._z = this._state._z;
-        this._w = this._state._w;
-        this._c = this._state._c;
+        this._s1 = this._state._s1;
+        this._s2 = this._state._s2;
+        this._s3 = this._state._s3;
+        this._s4 = this._state._s4;
     }
 
     /**
@@ -113,19 +109,21 @@ class KissPRNG extends BasicPRNG implements IPRNG {
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
             this._initialize_with_seed();
-            this._setState(this._x, this._y, this._z, this._w, this._c);
+            this._setState(this._s1, this._s2, this._s3, this._s4);
             this._no_seed = false;
         } else if (typeof seed_value === 'string') {
             this._seed = seed_value;
             for (let i = 0; i < this._seed.length + 20; i += 1) {
                 _tempSeed = this._seed.charCodeAt(i);
-                this._x ^= _tempSeed | 0;
-                this._y ^= _tempSeed << 5 | 0;
-                this._z ^= _tempSeed >> 7 | 0;
-                this._w ^= _tempSeed << 22 | 0;
+                _tempSeed = (_tempSeed << 10) ^ _tempSeed;
+                this._s1 ^= this._minSeed(_tempSeed, 2);
+                this._s2 ^= this._minSeed(_tempSeed, 8);
+                this._s3 ^= this._minSeed(_tempSeed, 16);
+                this._s4 ^= this._minSeed(_tempSeed, 128);
                 this._nextInt();
             }
-            this._setState(this._x, this._y, this._z, this._w, this._c);
+
+            this._setState(this._s1, this._s2, this._s3, this._s4);
             this._no_seed = false;
         } else {
             this._no_seed = true;
@@ -140,17 +138,16 @@ class KissPRNG extends BasicPRNG implements IPRNG {
      * @private
      */
     _nextInt(): number {
-        let t: number;
-        this._y ^= (this._y << 5);
-        this._y ^= (this._y >> 7);
-        this._y ^= (this._y << 22);
-        t = this._z + this._w + this._c;
-        this._z = this._w;
-        this._c = ((t < 0): any);
-        this._w = t & 0x7FFFFFFF;
-        this._x += 0x542023AB;
+        let b: number = ((this._s1 << 6) ^ this._s1) >> 13;
+        this._s1 = ((this._s1 & 4294967294) << 18) ^ b;
+        b = ((this._s2 << 2) ^ this._s2) >> 27;
+        this._s2 = ((this._s2 & 4294967288) << 2) ^ b;
+        b = ((this._s3 << 13) ^ this._s3) >> 21;
+        this._s3 = ((this._s3 & 4294967280) << 7) ^ b;
+        b = ((this._s4 << 3) ^ this._s4) >> 12;
+        this._s4 = ((this._s4 & 4294967168) << 13) ^ b;
 
-        return this._x + this._y + this._w;
+        return this._s1 ^ this._s2 ^ this._s3 ^ this._s4;
     }
 
     /**
@@ -160,6 +157,14 @@ class KissPRNG extends BasicPRNG implements IPRNG {
     next(): number {
         return (this._nextInt() >>> 0) / 0x100000000;
     }
+
+    /**
+     * Defines minimum value for seed
+     */
+    _minSeed(seed: number, minValue: number): number {
+        return (seed < minValue) ? seed + minValue : seed;
+    }
+
 }
 
-export default KissPRNG;
+export default Taus113PRNG;

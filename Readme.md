@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/AlexeySKiselev/randomjs.svg?branch=master)](https://travis-ci.org/AlexeySKiselev/randomjs)
 [![dependencies Status](https://david-dm.org/AlexeySKiselev/randomjs/status.svg)](https://david-dm.org/AlexeySKiselev/randomjs)
+[![GitHub](https://img.shields.io/github/license/AlexeySKiselev/randomjs)](https://github.com/AlexeySKiselev/randomjs)
 
 # Unirand
 A JavaScript module for generating seeded random distributions and its statistical analysis.
@@ -68,7 +69,7 @@ Unirand supports different PRNGs:
 | default | Default JS PRNG | fast | No |
 | tuchei | Tuchei PRNG, period ~2<sup>32</sup> | very fast | Yes |
 | xorshift | Xorshift PRNG, period ~2<sup>32</sup> | very fast | Yes |
-| kiss | Kiss PRNG, period ~2<sup>30</sup> | fast | Yes |
+| kiss | Kiss PRNG, period ~2<sup>121</sup> | fast | Yes |
 | parkmiller | Park-Miller PRNG, period ~2<sup>31</sup> | medium | Yes |
 | coveyou | Coveyou PRNG, period ~2<sup>31</sup> | slow | Yes |
 | knuthran2 | knuthran2 PRNG, period ~10<sup>18</sup> | slow | Yes |
@@ -79,6 +80,9 @@ Unirand supports different PRNGs:
 | tt800 | TT800 PRNG, period ~10<sup>240</sup> | medium | Yes |
 | xorwow | Xorwow PRNG, period ~10<sup>38</sup> | fast | Yes |
 | mt19937 | Marsenne Twister PRNG, period ~2<sup>19937</sup> | medium | Yes |
+| philox | Philox 4x32 PRNG, period ~2<sup>193</sup> | slow | Yes |
+| swb2712 | Swb2712 PRNG, period ~2<sup>1492</sup> | fast | Yes |
+| taus113 | Tausworthe PRNG, period ~2<sup>113</sup> | very fast | Yes |
 
 #### .random(), .randomInt() and .randomInRange(from, to)
 Returns random uniformly distributed value or array of length *n*. Returns different value each time without seed and same value with seed value.
@@ -333,7 +337,7 @@ const syncSmoothedData = unirand.smoothSync(data: Array<number>, ?options); // S
 // for data [2, 6, 9, 4, 6, 7, 3, 2, 4, 7] .smooth method will return [4.375, 5, 5.75, 6.375, 5.75, 4.75, 4.25, 4, 4.5, 5.25]
 ```
 
-![Smoothed data example](https://github.com/AlexeySKiselev/randomjs/blob/master/smooth.png "Smoothed data example")
+![Smoothed data example](https://github.com/AlexeySKiselev/randomjs/raw/master/smooth.png "Smoothed data example")
 
 You can also specify `options` for smoothing. Multiple options are allowed:
 
