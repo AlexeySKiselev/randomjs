@@ -27,7 +27,7 @@ import PhiloxPRNG from './PhiloxPRNG';
 import Taus113PRNG from './Taus113PRNG';
 import Swb2712PRNG from './Swb2712PRNG';
 
-const DEFAULT_GENERATOR = 'tuchei';
+const DEFAULT_GENERATOR: string = 'tuchei';
 
 class PRNGProxy implements IPRNGProxy {
 

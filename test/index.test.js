@@ -11,7 +11,7 @@ chai.should();
 
 const methods = ['analyze', 'utils', 'stringutils', 'sample', 'kfold', 'shuffle', 'derange', 'chance', 'winsorize',
     'hash', 'smooth', 'smoothSync', 'seed', 'random', 'next', 'randomInt', 'nextInt',
-    'randomInRange', 'nextInRange', 'newRouletteWheel', 'randomColor', 'nextColor', 'encoder', 'uid']; // check prng separately
+    'randomInRange', 'nextInRange', 'newRouletteWheel', 'newPrng', 'randomColor', 'nextColor', 'encoder', 'uid']; // check prng separately
 
 describe('Index', () => {
     it('unirand should have all supported methods', () => {
