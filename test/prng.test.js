@@ -6,7 +6,8 @@
 let chai = require('chai'),
     expect = chai.expect,
     {describe, it} = require('mocha'),
-    prng = require('../lib/prng/prngProxy').default;
+    prng = require('../lib/prng/prngProxy').default,
+    newPrng = require('../lib').newPrng;
 
 chai.should();
 
@@ -213,6 +214,59 @@ describe('PRNGProxy', () => {
             }
         };
         goodPRNG.should.not.throw(Error);
+    });
+});
+
+describe('newPrng', () => {
+    it('should support .random(), .randomInt(), .next(), .nextInt(), .seed() methods', () => {
+        const prng = newPrng('tt800', 12345);
+        expect(prng).to.have.property('random');
+        expect(prng).to.respondsTo('random');
+
+        expect(prng).to.have.property('randomInt');
+        expect(prng).to.respondsTo('randomInt');
+
+        expect(prng).to.have.property('next');
+        expect(prng).to.respondsTo('next');
+
+        expect(prng).to.have.property('nextInt');
+        expect(prng).to.respondsTo('nextInt');
+
+        expect(prng).to.have.property('seed');
+        expect(prng).to.respondsTo('seed');
+    });
+    it('should support all allowed generators', () => {
+        const prng = newPrng('default');
+        const generators = prng.generators;
+
+        for (let generator of generators) {
+            let goodPrng = () => {
+                return newPrng(generator);
+            };
+            goodPrng.should.not.throw(Error);
+        }
+    });
+    it('should throw an error for unsupported generator', () => {
+        let badPrng = () => {
+            return newPrng('abc');
+        };
+        badPrng.should.throw(Error);
+    });
+    it('should support seed', () => {
+        const prng = newPrng('tt800', 'unirand');
+        expect(prng.random()).to.be.closeTo(prng.random(), 0.00001);
+
+        const prngNoSeed = newPrng('tt800');
+        expect(Math.abs(prngNoSeed.random() - prngNoSeed.random()) > 0.00001).to.be.equal(true);
+    });
+    it('should be independent', () => {
+        const prng1 = newPrng('tt800', 'unirand');
+        const prng2 = newPrng('tt800', 'random seed');
+        const prng3 = newPrng('r250', 'unirand');
+
+        expect(Math.abs(prng1.random() - prng2.random()) > 0.00001).to.be.equal(true);
+        expect(Math.abs(prng2.random() - prng3.random()) > 0.00001).to.be.equal(true);
+        expect(Math.abs(prng1.random() - prng3.random()) > 0.00001).to.be.equal(true);
     });
 });
 

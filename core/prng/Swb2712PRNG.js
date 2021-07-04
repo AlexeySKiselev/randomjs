@@ -132,6 +132,7 @@ class Swb2712PRNG extends BasicPRNG implements IPRNG {
             this._no_seed = false;
         } else if (typeof seed_value === 'string') {
             this._seed = seed_value;
+            this._pointer = 0;
             for (let i = 0; i < this._seed.length; i += 1) {
                 this._pointer = (this._pointer + this._seed.charCodeAt(i)) % LAG_R;
             }

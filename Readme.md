@@ -130,6 +130,26 @@ If you want to unset *seed* and generate different values each time use:
 unirand.seed(); // unset seed value for all generators
 ```
 
+#### PRNG Factory
+Unirand allows you to generate independent PRNGs of all supported types.
+
+```javascript
+let prng = newPrng(<prng name>[, <seed value>]); // unseeded by default
+
+// example
+prng = newPrng('r250');
+prng.random(); // 0.6259469939395785
+prng.random(); // 0.3127290401607752
+prng.next();   // 0.10631363722495735
+
+// you can generate seeded PRNG
+prng = newPrng('tuchei', 'unirand');
+prng.random();  // 0.026891989167779684
+prng.random();  // same 0.026891989167779684
+prng.next();    // 0.23777238093316555
+prng.nextInt(); // 2513331331
+``` 
+
 ### Random number
 Generates random number with given distribution. For example, if you want to generate random number with *normal distribution*:
 ```javascript
