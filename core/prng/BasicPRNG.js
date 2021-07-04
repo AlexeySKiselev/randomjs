@@ -114,7 +114,10 @@ class BasicPRNG implements IPRNG {
      */
     static random_seed(): number {
         let _seed: number = hashProxy.hash(Date.now() + Math.floor(Math.random() * BasicPRNG.modulo));
-        _seed = _seed % BasicPRNG.modulo;
+        if (_seed >= BasicPRNG.modulo) {
+            _seed = _seed % BasicPRNG.modulo;
+        }
+
         if (_seed < 0) {
             _seed += BasicPRNG.modulo - 1;
         }

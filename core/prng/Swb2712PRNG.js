@@ -1,10 +1,9 @@
 // @flow
 /**
- * gfsr4 PRNG
- * Robert M. Ziff, “Four-tap shift-register-sequence random-number generators”, Computers in Physics, 12(4), Jul/Aug 1998, pp 385–392.
- * r_n = r_{n-A} ^ r_{n-B} ^ r_{n-C} ^ r_{n-D}
- * A=471, B=1586, C=6988, D=9689
- * Period: 2^D - 1
+ * swb2712 PRNG - Modified subtract with borrow generator
+ * https://www.jstatsoft.org/article/view/v005i08
+ * https://www.doornik.com/research/ziggurat.pdf
+ * Period: ~2^1492
  */
 
 import BasicPRNG from './BasicPRNG';
@@ -12,36 +11,32 @@ import TucheiPRNG from './TucheiPRNG';
 import type { IPRNG } from '../interfaces';
 import type {NumberString} from '../types';
 
-const WORD_A: number = 471;
-const WORD_B: number = 1586;
-const WORD_C: number = 6988;
-const WORD_D: number = 9689;
-const NEGATIVE_WORD_A: number = WORD_D - WORD_A; // need it for simplify calculation
-const NEGATIVE_WORD_B: number = WORD_D - WORD_B; // need it for simplify calculation
-const NEGATIVE_WORD_C: number = WORD_D - WORD_C; // need it for simplify calculation
-const RECALCULATE_FREQ: number = 65536;
+const LAG_R: number = 27;
+const LAG_S: number = 12;
+const RECALCULATE_FREQ: number = 65536; // 2 ^ 16
 
-class Gfsr4PRNG extends BasicPRNG implements IPRNG {
+class Swb2712PRNG extends BasicPRNG implements IPRNG {
 
-    _localPrng: IPRNG;
+    _M: number;
     _words: Array<number>;
-    _pointer: number; // track current pointer in words array
-    _recalculate_counter: number;
-    _no_seed: boolean;
+    _localPrng: IPRNG;
     _state: {[prop: string]: number}; // state after setting seed
-    _pointersA: Array<number>;
-    _pointersB: Array<number>;
-    _pointersC: Array<number>;
+    _no_seed: boolean;
+    _recalculate_counter: number;
+    _pointer: number;
+    _pointersS: Array<number>;
+    _c: number;
 
     constructor() {
         super();
         this._no_seed = true;
         this._state = {};
         this._localPrng = new TucheiPRNG();
+        this._words = [];
+        this._M = 0xFFFFFFFF;
         this._recalculate_counter = 0;
-        this._pointersA = this._generate_shifted_pointers(NEGATIVE_WORD_A);
-        this._pointersB = this._generate_shifted_pointers(NEGATIVE_WORD_B);
-        this._pointersC = this._generate_shifted_pointers(NEGATIVE_WORD_C);
+        this._pointersS = this._generate_shifted_pointers(LAG_S);
+
         this._initialize();
         this._set_random_seed();
     }
@@ -57,14 +52,16 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
 
     /**
      * Initializes initial values and sets state for calculating random number
-     * @param {number} pointer
      * @private
      * @override
      */
     _initialize(pointer: number = 0): void {
         this._localPrng.seed(this._seed);
-        this._words = (this._localPrng.randomInt(WORD_D): any);
+        for (let i = 0; i < LAG_R; i += 1) {
+            this._words[i] = Math.floor(this._localPrng.next() * this._M);
+        }
         this._pointer = pointer;
+        this._c = 0;
     }
 
     /**
@@ -73,9 +70,10 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
      * @param {Array<number>} words
      * @private
      */
-    _setState(pointer: number, words: Array<number>): void {
+    _setState(pointer: number, words: Array<number>, c: number): void {
         this._state._pointer = pointer;
         this._state._words = (words: any).slice();
+        this._state._c = c;
     }
 
     /**
@@ -86,6 +84,7 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
     _get_from_state(): void {
         this._pointer = this._state._pointer;
         this._words = (this._state._words: any).slice();
+        this._c = this._state._c;
     }
 
     /**
@@ -109,7 +108,7 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
     _set_random_seed(): void {
         this._seed = BasicPRNG.random_seed();
         if (this._recalculate_counter === 0) {
-            this._initialize(this._seed % WORD_D);
+            this._initialize(this._seed % LAG_R);
         }
         this._recalculate_counter += 1;
         if (this._recalculate_counter === RECALCULATE_FREQ) {
@@ -127,17 +126,17 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
             this._set_random_seed();
         } else if (typeof seed_value === 'number') {
             this._seed = Math.floor(seed_value);
-            this._pointer = this._seed % WORD_D;
+            this._pointer = this._seed % LAG_R;
             this._initialize(this._pointer);
-            this._setState(this._pointer, this._words);
+            this._setState(this._pointer, this._words, this._c);
             this._no_seed = false;
         } else if (typeof seed_value === 'string') {
             this._seed = seed_value;
             for (let i = 0; i < this._seed.length; i += 1) {
-                this._pointer = (this._pointer + this._seed.charCodeAt(i)) % WORD_D;
+                this._pointer = (this._pointer + this._seed.charCodeAt(i)) % LAG_R;
             }
             this._initialize(this._pointer);
-            this._setState(this._pointer, this._words);
+            this._setState(this._pointer, this._words, this._c);
             this._no_seed = false;
         } else {
             this._no_seed = true;
@@ -152,20 +151,29 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
      * @private
      */
     _nextInt(): number {
-        let res: number;
+        const res: number = (this._words[this._pointersS[this._pointer]] - this._words[this._pointer] - this._c) % this._M;
 
-        this._words[this._pointer] =
-            this._words[this._pointersA[this._pointer]]
-            ^ this._words[this._pointersB[this._pointer]]
-            ^ this._words[this._pointersC[this._pointer]]
-            ^ this._words[this._pointer];
-        res = this._words[this._pointer];
+        this._words[this._pointer] = res;
         this._pointer += 1;
-        if (this._pointer >= WORD_D) {
-            this._pointer = this._pointer % WORD_D;
+        if (this._pointer >= LAG_R) {
+            this._pointer = this._pointer - LAG_R;
         }
 
+        if (res < 0) {
+            this._c = 1;
+            return res + this._M;
+        }
+
+        this._c = 0;
         return res;
+    }
+
+    /**
+     * @override
+     * @returns {number}
+     */
+    next(): number {
+        return ((this._nextInt() >>> 0)) / this._M;
     }
 
     /**
@@ -175,19 +183,14 @@ class Gfsr4PRNG extends BasicPRNG implements IPRNG {
      */
     _generate_shifted_pointers(shift: number): Array<number> {
         const res: Array<number> = [];
-        for (let i = 0; i < WORD_D; i += 1) {
-            res[i] = (i + shift) % WORD_D;
+        for (let i = 0; i < LAG_R; i += 1) {
+            res[i] = i - shift;
+            if (res[i] < 0) {
+                res[i] += LAG_R;
+            }
         }
         return res;
     }
-
-    /**
-     * @override
-     * @returns {number}
-     */
-    next(): number {
-        return (this._nextInt() >>> 0) / 0x100000000;
-    }
 }
 
-export default Gfsr4PRNG;
+export default Swb2712PRNG;

@@ -21,7 +21,7 @@ const NEGATIVE_WORD_3: number = WORD_4 - WORD_3; // need it for simplify calcula
 const NEGATIVE_WORD_2: number = WORD_4 - WORD_2; // need it for simplify calculation
 const NEGATIVE_WORD_1: number = WORD_4 - WORD_1; // need it for simplify calculation
 
-const RECALCULATE_FREQ = 65536;
+const RECALCULATE_FREQ: number = 65536;
 
 class Dx1597PRNG extends BasicPRNG implements IPRNG {
 
@@ -163,7 +163,7 @@ class Dx1597PRNG extends BasicPRNG implements IPRNG {
     }
 
     /**
-     * Multiply value by A with modulo
+     * Multiply value by B with modulo
      * Need it for more precise calculation
      * @private
      */
