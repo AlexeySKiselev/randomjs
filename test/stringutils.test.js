@@ -220,7 +220,7 @@ describe('String Utils', () => {
             const randomStrings = {};
             let randomString;
             for (let i = 0; i < 10000; i += 1) {
-                randomString = StringUtils.randomAscii(100);
+                randomString = StringUtils.randomAscii(200);
                 randomStrings[randomString] = 1;
             }
             expect(Object.keys(randomStrings).length).to.be.equal(10000);

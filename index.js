@@ -11,7 +11,7 @@ import Winsorize from './core/array_manipulation/winsorize';
 import KFold from './core/array_manipulation/kfold';
 import hashProxy from './core/utils/hash';
 import smoothProxy from './core/array_manipulation/smooth';
-import prngProxy from './core/prng/prngProxy';
+import prngProxy, { PRNGProxy } from './core/prng/prngProxy';
 import encoderProxy from './core/utils/encoders/encoderProxy';
 import UidFactory from './core/uidFactory';
 import {DEFAULT_GENERATOR} from './core/prng/prngProxy';
@@ -60,6 +60,7 @@ class RandomJS {
     smooth: ISmooth;
     smoothSync: ISmooth;
     newRouletteWheel: IRouletteWheel;
+    newPrng: IPRNGProxy;
     _randomColorFabric: IRandomColor;
     randomColor: any;
     nextColor: any;
@@ -290,6 +291,19 @@ class RandomJS {
         }: Object));
 
         /**
+         * Factory produces new PRNGs
+         */
+        Object.defineProperty(this, 'newPrng', ({
+            __proto__: null,
+            value: (name: string, seed: any = undefined): IPRNGProxy => {
+                const _prngProxy: IPRNGProxy = new PRNGProxy();
+                _prngProxy.seed(seed);
+                _prngProxy.set_prng(name);
+                return _prngProxy;
+            }
+        }: Object));
+
+        /**
          * PRNG seed
          */
         Object.defineProperty(this, 'seed', ({
@@ -421,6 +435,7 @@ const methods = {
     randomInRange: randomjs.randomInRange,
     nextInRange: randomjs.nextInRange,
     newRouletteWheel: randomjs.newRouletteWheel,
+    newPrng: randomjs.newPrng,
     randomColor: randomjs.randomColor,
     nextColor: randomjs.nextColor
 };
